@@ -19,7 +19,7 @@ async def feed_meili_medias():
     items = await media_select_all_titles(get_edgedb())
     if len(items) == 0:
         return
-    items_dict = [item.dict() for item in items]
+    items_dict = [item.model_dump() for item in items]
     logger.debug(f"indexing {len(items_dict)} medias")
     async with get_meilisearch() as client:
         index = client.index(f"{INSTANCE_NAME}_medias")
@@ -33,7 +33,7 @@ async def feed_meili_charas():
     items = await chara_select_all_names(get_edgedb())
     if len(items) == 0:
         return
-    items_dict = [item.dict() for item in items]
+    items_dict = [item.model_dump() for item in items]
     logger.debug(f"indexing {len(items_dict)} charas")
     async with get_meilisearch() as client:
         index = client.index(f"{INSTANCE_NAME}_charas")
@@ -46,7 +46,7 @@ async def feed_meili_staffs():
     items = await staff_select_all_names(get_edgedb())
     if len(items) == 0:
         return
-    items_dict = [item.dict() for item in items]
+    items_dict = [item.model_dump() for item in items]
     logger.debug(f"indexing {len(items_dict)} staffs")
     async with get_meilisearch() as client:
         index = client.index(f"{INSTANCE_NAME}_staffs")
