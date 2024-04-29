@@ -71,10 +71,11 @@ async def feed_meili_collections():
 
 
 async def main():
-    await feed_meili_medias()
-    await feed_meili_charas()
-    await feed_meili_staffs()
-    await feed_meili_collections()
+    async with asyncio.TaskGroup() as tg:
+        tg.create_task(feed_meili_medias())
+        tg.create_task(feed_meili_charas())
+        tg.create_task(feed_meili_staffs())
+        tg.create_task(feed_meili_collections())
 
 
 if __name__ == '__main__':
