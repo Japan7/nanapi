@@ -17,7 +17,7 @@ nanapi = "nanapi.__main__:main"
 [tool.poetry.dependencies]
 python = "~3.12"
 edgedb = "1.9.0"
-fastapi = "0.110.3"
+fastapi = "0.111.0"
 uvloop = "0.19.0"
 pydantic = "2.7.1"
 aiohttp = { version = "3.9.5", extras = ["speedups"] }
