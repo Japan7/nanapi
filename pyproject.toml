@@ -45,7 +45,7 @@ pyjwt = "2.8.0"
 pyright = "1.1.364"
 ruff = "0.4.4"
 edgedb-pydantic-codegen = "2024.5.3"
-uvicorn = { version = "0.29.0", extras = ["standard"] }
+uvicorn = { version = "0.30.0", extras = ["standard"] }
 pyinstrument = "4.6.2"
 
 [build-system]
