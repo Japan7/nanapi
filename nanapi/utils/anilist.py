@@ -1199,7 +1199,7 @@ async def get_entries_df():
 
 
 def entries_to_scores_df(entries: pl.DataFrame) -> pl.DataFrame:
-    scores = entries.pivot(columns='discord_id', index='id_al',
+    scores = entries.pivot('discord_id', index='id_al',
                            values='score', aggregate_function='max')
     return scores
 
