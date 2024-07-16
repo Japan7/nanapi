@@ -32,7 +32,8 @@ JWT_SECRET_KEY = ''  # openssl rand -hex 32
 
 # General
 # TZ = ZoneInfo('Europe/Paris')
-# HIKARI_UPLOAD_ENDPOINT = 'https://hikari.butaishoujo.moe/upload'
+# PRODUCER_UPLOAD_ENDPOINT = 'https://producer.japan7.bde.enseeiht.fr'
+# PRODUCER_TOKEN = ''
 
 # AniList
 # LOW_PRIORITY_THRESH = 30

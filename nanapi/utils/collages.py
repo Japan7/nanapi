@@ -26,7 +26,7 @@ from nanapi.database.anilist.image_select import image_select
 from nanapi.database.anilist.media_select import MediaSelectResult, media_select
 from nanapi.database.waicolle.waifu_insert import WaicolleCollagePosition
 from nanapi.utils.clients import get_edgedb, get_session
-from nanapi.utils.misc import default_backoff, to_hikari
+from nanapi.utils.misc import default_backoff, to_producer
 from nanapi.utils.waicolle import CHARA_TYPES, RNG, WAIFU_TYPES
 
 logger = logging.getLogger(__name__)
@@ -385,7 +385,7 @@ async def waifu_collage(waifus: list[WAIFU_TYPES]) -> str:
     try:
         with io.BytesIO() as image_binary:
             await asyncio.to_thread(_make_collage, image_binary, chara_images)
-            hikari = await to_hikari(image_binary, filename=f'wc_{uuid4()}.webp')
+            hikari = await to_producer(image_binary, filename=f'wc_{uuid4()}.webp')
             return hikari['url']
     finally:
         for group in chara_images:
@@ -487,7 +487,7 @@ async def chara_album(
     try:
         with io.BytesIO() as image_binary:
             await asyncio.to_thread(_make_collage, image_binary, chara_images)
-            hikari = await to_hikari(image_binary, filename=f'wc_{uuid4()}.webp')
+            hikari = await to_producer(image_binary, filename=f'wc_{uuid4()}.webp')
             return hikari['url']
     finally:
         for group in chara_images:
