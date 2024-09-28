@@ -44,7 +44,7 @@ pyright = "1.1.382.post1"
 ruff = "0.6.8"
 edgedb-pydantic-codegen = "2024.9.3"
 pyinstrument = "4.7.3"
-uvicorn = "0.30.6"
+uvicorn = "0.31.0"
 
 [build-system]
 requires = ["poetry-core"]
