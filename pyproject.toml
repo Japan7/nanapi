@@ -23,7 +23,7 @@ aiohttp = { version = "3.10.8", extras = ["speedups"] }
 # https://github.com/PyYoshi/cChardet/issues/81
 faust-cchardet = "2.1.19"
 orjson = "3.10.7"
-toolz = "0.12.1"
+toolz = "1.0.0"
 backoff = "2.2.1"
 meilisearch-python-sdk = "3.5.0"
 numpy = "2.1.1"
