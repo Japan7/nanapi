@@ -35,7 +35,7 @@ dev-dependencies = [
     "ruff==0.6.9",
     "uvicorn==0.31.1",
     "edgedb-pydantic-codegen==2024.10.0",
-    "pyinstrument==4.7.3",
+    "pyinstrument==5.0.0",
 ]
 
 [tool.pyright]
