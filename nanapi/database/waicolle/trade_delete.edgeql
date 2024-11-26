@@ -1,4 +1,4 @@
 with
   id := <uuid>$id,
-delete waicolle::Trade
+delete waicolle::TradeOperation
 filter .id = id

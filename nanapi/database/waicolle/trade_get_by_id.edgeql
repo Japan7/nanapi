@@ -1,24 +1,20 @@
 with
   id := <uuid>$id,
-select waicolle::Trade {
-  id,
-  player_a: {
+select waicolle::TradeOperation {
+  *,
+  author: {
     user: {
       discord_id,
       discord_id_str,
     },
   },
-  waifus_a,
-  moecoins_a,
-  blood_shards_a,
-  player_b: {
+  received,
+  offeree: {
     user: {
       discord_id,
       discord_id_str,
     },
   },
-  waifus_b,
-  moecoins_b,
-  blood_shards_b,
+  offered,
 }
 filter .id = id

@@ -1,23 +1,13 @@
-select waicolle::Trade {
-  id,
-  player_a: {
+select waicolle::TradeOperation {
+  *,
+  author: {
     user: {
       discord_id,
       discord_id_str,
     },
   },
-  waifus_a: {
-    id,
-    timestamp,
-    level,
-    locked,
-    trade_locked,
-    blooded,
-    nanaed,
-    custom_image,
-    custom_name,
-    custom_collage,
-    custom_position,
+  received: {
+    *,
     character: { id_al },
     owner: {
       user: {
@@ -33,26 +23,14 @@ select waicolle::Trade {
     },
     custom_position_waifu: { id },
   },
-  moecoins_a,
-  blood_shards_a,
-  player_b: {
+  offeree: {
     user: {
       discord_id,
       discord_id_str,
     },
   },
-  waifus_b: {
-    id,
-    timestamp,
-    level,
-    locked,
-    trade_locked,
-    blooded,
-    nanaed,
-    custom_image,
-    custom_name,
-    custom_collage,
-    custom_position,
+  offered: {
+    *,
     character: { id_al },
     owner: {
       user: {
@@ -68,7 +46,5 @@ select waicolle::Trade {
     },
     custom_position_waifu: { id },
   },
-  moecoins_b,
-  blood_shards_b,
 }
 filter .client = global client

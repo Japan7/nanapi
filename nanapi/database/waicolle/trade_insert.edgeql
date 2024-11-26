@@ -1,47 +1,31 @@
 with
-  player_a_discord_id := <int64>$player_a_discord_id,
-  waifus_a_ids := <array<uuid>>$waifus_a_ids,
-  moecoins_a := <optional int32>$moecoins_a ?? 0,
-  blood_shards_a := <optional int32>$blood_shards_a ?? 0,
-  player_b_discord_id := <int64>$player_b_discord_id,
-  waifus_b_ids := <array<uuid>>$waifus_b_ids,
-  moecoins_b := <optional int32>$moecoins_b ?? 0,
-  blood_shards_b := <optional int32>$blood_shards_b ?? 0,
-  player_a := (select waicolle::Player filter .client = global client and .user.discord_id = player_a_discord_id),
-  player_b := (select waicolle::Player filter .client = global client and .user.discord_id = player_b_discord_id),
+  author_discord_id := <int64>$author_discord_id,
+  received_ids := <array<uuid>>$received_ids,
+  blood_shards := <optional int32>$blood_shards ?? 0,
+  offeree_discord_id := <int64>$offeree_discord_id,
+  offered_ids := <array<uuid>>$offered_ids,
+  author := (select waicolle::Player filter .client = global client and .user.discord_id = author_discord_id),
+  offeree := (select waicolle::Player filter .client = global client and .user.discord_id = offeree_discord_id),
   inserted := (
-    insert waicolle::Trade {
+    insert waicolle::TradeOperation {
       client := global client,
-      player_a := player_a,
-      waifus_a := (select waicolle::Waifu filter .id in array_unpack(waifus_a_ids)),
-      moecoins_a := moecoins_a,
-      blood_shards_a := blood_shards_a,
-      player_b := player_b,
-      waifus_b := (select waicolle::Waifu filter .id in array_unpack(waifus_b_ids)),
-      moecoins_b := moecoins_b,
-      blood_shards_b := blood_shards_b,
+      author := author,
+      received := (select waicolle::Waifu filter .id in array_unpack(received_ids)),
+      blood_shards := blood_shards,
+      offeree := offeree,
+      offered := (select waicolle::Waifu filter .id in array_unpack(offered_ids)),
     }
   )
 select inserted {
-  id,
-  player_a: {
+  *,
+  author: {
     user: {
       discord_id,
       discord_id_str,
     },
   },
-  waifus_a: {
-    id,
-    timestamp,
-    level,
-    locked,
-    trade_locked,
-    blooded,
-    nanaed,
-    custom_image,
-    custom_name,
-    custom_collage,
-    custom_position,
+  received: {
+    *,
     character: { id_al },
     owner: {
       user: {
@@ -57,26 +41,14 @@ select inserted {
     },
     custom_position_waifu: { id },
   },
-  moecoins_a,
-  blood_shards_a,
-  player_b: {
+  offeree: {
     user: {
       discord_id,
       discord_id_str,
     },
   },
-  waifus_b: {
-    id,
-    timestamp,
-    level,
-    locked,
-    trade_locked,
-    blooded,
-    nanaed,
-    custom_image,
-    custom_name,
-    custom_collage,
-    custom_position,
+  offered: {
+    *,
     character: { id_al },
     owner: {
       user: {
@@ -92,6 +64,4 @@ select inserted {
     },
     custom_position_waifu: { id },
   },
-  moecoins_b,
-  blood_shards_b,
 }

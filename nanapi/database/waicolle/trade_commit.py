@@ -6,23 +6,26 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 with
   id := <uuid>$id,
-delete waicolle::TradeOperation
+update waicolle::TradeOperation
 filter .id = id
+set {
+  completed_at := datetime_current(),
+}
 """
 
 
-class TradeDeleteResult(BaseModel):
+class TradeCommitResult(BaseModel):
     id: UUID
 
 
-adapter = TypeAdapter(TradeDeleteResult | None)
+adapter = TypeAdapter(TradeCommitResult | None)
 
 
-async def trade_delete(
+async def trade_commit(
     executor: AsyncIOExecutor,
     *,
     id: UUID,
-) -> TradeDeleteResult | None:
+) -> TradeCommitResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,
         id=id,

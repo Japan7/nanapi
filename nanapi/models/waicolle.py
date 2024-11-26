@@ -189,19 +189,16 @@ class BulkUpdateWaifusBody(BaseModel):
 
 
 class NewTradeBody(BaseModel):
-    player_a_discord_id: int
-    waifus_a_ids: list[UUID]
-    moecoins_a: int | None = None
-    blood_shards_a: int | None = None
-    player_b_discord_id: int
-    waifus_b_ids: list[UUID]
-    moecoins_b: int | None = None
-    blood_shards_b: int | None = None
+    author_discord_id: int
+    received_ids: list[UUID]
+    offeree_discord_id: int
+    offered_ids: list[UUID]
+    blood_shards: int | None = None
 
 
 class CommitTradeResponse(BaseModel):
-    waifus_a: list[WaifuSelectResult]
-    waifus_b: list[WaifuSelectResult]
+    received: list[WaifuSelectResult]
+    offered: list[WaifuSelectResult]
 
 
 class RerollBody(BaseModel):

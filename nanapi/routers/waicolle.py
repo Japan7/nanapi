@@ -80,6 +80,7 @@ from nanapi.database.waicolle.player_tracked_items import (
     PlayerTrackedItemsResult,
     player_tracked_items,
 )
+from nanapi.database.waicolle.trade_commit import trade_commit
 from nanapi.database.waicolle.trade_delete import TradeDeleteResult, trade_delete
 from nanapi.database.waicolle.trade_get_by_id import trade_get_by_id
 from nanapi.database.waicolle.trade_insert import trade_insert
@@ -1069,11 +1070,11 @@ async def new_offering(body: NewOfferingBody,
     rank = RANKS[chara.rank]
 
     return await trade_insert(edgedb,
-                              player_a_discord_id=body.bot_discord_id,
-                              waifus_a_ids=[to_trade.id],
-                              player_b_discord_id=body.player_discord_id,
-                              waifus_b_ids=[],
-                              blood_shards_b=rank.blood_price * pow(4, to_trade.level))
+                              author_discord_id=body.player_discord_id,
+                              received_ids=[to_trade.id],
+                              offeree_discord_id=body.bot_discord_id,
+                              offered_ids=[],
+                              blood_shards=rank.blood_price * pow(4, to_trade.level))
 
 
 @router.oauth2_client_restricted.delete(
@@ -1102,34 +1103,32 @@ async def commit_trade(id: UUID,
             trade = await trade_get_by_id(tx, id=id)
             if trade is None:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-            delete = await trade_delete(tx, id=id)
-            assert delete is not None
+            commit = await trade_commit(tx, id=id)
+            assert commit is not None
 
             try:
                 await player_add_coins(
                     tx,
-                    discord_id=trade.player_a.user.discord_id,
-                    moecoins=-(trade.moecoins_a or 0),
-                    blood_shards=-(trade.blood_shards_a or 0))
+                    discord_id=trade.author.user.discord_id,
+                    blood_shards=-trade.blood_shards or 0)
                 await player_add_coins(
                     tx,
-                    discord_id=trade.player_b.user.discord_id,
-                    moecoins=-(trade.moecoins_b or 0),
-                    blood_shards=-(trade.blood_shards_b or 0))
+                    discord_id=trade.offeree.user.discord_id,
+                    blood_shards=trade.blood_shards or 0)
             except ConstraintViolationError as e:
                 raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                                     detail=str(e))
 
             resp3 = await waifu_change_owner(
                 tx,
-                discord_id=trade.player_a.user.discord_id,
-                ids=[w.id for w in trade.waifus_b])
+                discord_id=trade.author.user.discord_id,
+                ids=[w.id for w in trade.received])
             resp4 = await waifu_change_owner(
                 tx,
-                discord_id=trade.player_b.user.discord_id,
-                ids=[w.id for w in trade.waifus_a])
+                discord_id=trade.offeree.user.discord_id,
+                ids=[w.id for w in trade.offered])
 
-            return dict(waifus_a=resp3, waifus_b=resp4)
+            return dict(received=resp3, offered=resp4)
 
 
 ###############

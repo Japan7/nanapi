@@ -7,49 +7,33 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  player_a_discord_id := <int64>$player_a_discord_id,
-  waifus_a_ids := <array<uuid>>$waifus_a_ids,
-  moecoins_a := <optional int32>$moecoins_a ?? 0,
-  blood_shards_a := <optional int32>$blood_shards_a ?? 0,
-  player_b_discord_id := <int64>$player_b_discord_id,
-  waifus_b_ids := <array<uuid>>$waifus_b_ids,
-  moecoins_b := <optional int32>$moecoins_b ?? 0,
-  blood_shards_b := <optional int32>$blood_shards_b ?? 0,
-  player_a := (select waicolle::Player filter .client = global client and .user.discord_id = player_a_discord_id),
-  player_b := (select waicolle::Player filter .client = global client and .user.discord_id = player_b_discord_id),
+  author_discord_id := <int64>$author_discord_id,
+  received_ids := <array<uuid>>$received_ids,
+  blood_shards := <optional int32>$blood_shards ?? 0,
+  offeree_discord_id := <int64>$offeree_discord_id,
+  offered_ids := <array<uuid>>$offered_ids,
+  author := (select waicolle::Player filter .client = global client and .user.discord_id = author_discord_id),
+  offeree := (select waicolle::Player filter .client = global client and .user.discord_id = offeree_discord_id),
   inserted := (
-    insert waicolle::Trade {
+    insert waicolle::TradeOperation {
       client := global client,
-      player_a := player_a,
-      waifus_a := (select waicolle::Waifu filter .id in array_unpack(waifus_a_ids)),
-      moecoins_a := moecoins_a,
-      blood_shards_a := blood_shards_a,
-      player_b := player_b,
-      waifus_b := (select waicolle::Waifu filter .id in array_unpack(waifus_b_ids)),
-      moecoins_b := moecoins_b,
-      blood_shards_b := blood_shards_b,
+      author := author,
+      received := (select waicolle::Waifu filter .id in array_unpack(received_ids)),
+      blood_shards := blood_shards,
+      offeree := offeree,
+      offered := (select waicolle::Waifu filter .id in array_unpack(offered_ids)),
     }
   )
 select inserted {
-  id,
-  player_a: {
+  *,
+  author: {
     user: {
       discord_id,
       discord_id_str,
     },
   },
-  waifus_a: {
-    id,
-    timestamp,
-    level,
-    locked,
-    trade_locked,
-    blooded,
-    nanaed,
-    custom_image,
-    custom_name,
-    custom_collage,
-    custom_position,
+  received: {
+    *,
     character: { id_al },
     owner: {
       user: {
@@ -65,26 +49,14 @@ select inserted {
     },
     custom_position_waifu: { id },
   },
-  moecoins_a,
-  blood_shards_a,
-  player_b: {
+  offeree: {
     user: {
       discord_id,
       discord_id_str,
     },
   },
-  waifus_b: {
-    id,
-    timestamp,
-    level,
-    locked,
-    trade_locked,
-    blooded,
-    nanaed,
-    custom_image,
-    custom_name,
-    custom_collage,
-    custom_position,
+  offered: {
+    *,
     character: { id_al },
     owner: {
       user: {
@@ -100,8 +72,6 @@ select inserted {
     },
     custom_position_waifu: { id },
   },
-  moecoins_b,
-  blood_shards_b,
 }
 """
 
@@ -112,122 +82,121 @@ class WaicolleCollagePosition(StrEnum):
     RIGHT_OF = 'RIGHT_OF'
 
 
-class TradeInsertResultWaifusBCustomPositionWaifu(BaseModel):
+class TradeInsertResultOfferedCustomPositionWaifu(BaseModel):
     id: UUID
 
 
-class TradeInsertResultWaifusBOriginalOwnerUser(BaseModel):
+class TradeInsertResultOfferedOriginalOwnerUser(BaseModel):
     discord_id: int
     discord_id_str: str
 
 
-class TradeInsertResultWaifusBOriginalOwner(BaseModel):
-    user: TradeInsertResultWaifusBOriginalOwnerUser
+class TradeInsertResultOfferedOriginalOwner(BaseModel):
+    user: TradeInsertResultOfferedOriginalOwnerUser
 
 
-class TradeInsertResultWaifusBOwnerUser(BaseModel):
+class TradeInsertResultOfferedOwnerUser(BaseModel):
     discord_id: int
     discord_id_str: str
 
 
-class TradeInsertResultWaifusBOwner(BaseModel):
-    user: TradeInsertResultWaifusBOwnerUser
+class TradeInsertResultOfferedOwner(BaseModel):
+    user: TradeInsertResultOfferedOwnerUser
 
 
-class TradeInsertResultWaifusBCharacter(BaseModel):
+class TradeInsertResultOfferedCharacter(BaseModel):
     id_al: int
 
 
-class TradeInsertResultWaifusB(BaseModel):
+class TradeInsertResultOffered(BaseModel):
+    character: TradeInsertResultOfferedCharacter
+    owner: TradeInsertResultOfferedOwner
+    original_owner: TradeInsertResultOfferedOriginalOwner | None
+    custom_position_waifu: TradeInsertResultOfferedCustomPositionWaifu | None
     id: UUID
-    timestamp: datetime
-    level: int
-    locked: bool
-    trade_locked: bool
     blooded: bool
-    nanaed: bool
+    custom_collage: bool
     custom_image: str | None
     custom_name: str | None
-    custom_collage: bool
     custom_position: WaicolleCollagePosition
-    character: TradeInsertResultWaifusBCharacter
-    owner: TradeInsertResultWaifusBOwner
-    original_owner: TradeInsertResultWaifusBOriginalOwner | None
-    custom_position_waifu: TradeInsertResultWaifusBCustomPositionWaifu | None
+    level: int
+    locked: bool
+    nanaed: bool
+    timestamp: datetime
+    trade_locked: bool
 
 
-class TradeInsertResultPlayerBUser(BaseModel):
+class TradeInsertResultOffereeUser(BaseModel):
     discord_id: int
     discord_id_str: str
 
 
-class TradeInsertResultPlayerB(BaseModel):
-    user: TradeInsertResultPlayerBUser
+class TradeInsertResultOfferee(BaseModel):
+    user: TradeInsertResultOffereeUser
 
 
-class TradeInsertResultWaifusACustomPositionWaifu(BaseModel):
+class TradeInsertResultReceivedCustomPositionWaifu(BaseModel):
     id: UUID
 
 
-class TradeInsertResultWaifusAOriginalOwnerUser(BaseModel):
+class TradeInsertResultReceivedOriginalOwnerUser(BaseModel):
     discord_id: int
     discord_id_str: str
 
 
-class TradeInsertResultWaifusAOriginalOwner(BaseModel):
-    user: TradeInsertResultWaifusAOriginalOwnerUser
+class TradeInsertResultReceivedOriginalOwner(BaseModel):
+    user: TradeInsertResultReceivedOriginalOwnerUser
 
 
-class TradeInsertResultWaifusAOwnerUser(BaseModel):
+class TradeInsertResultReceivedOwnerUser(BaseModel):
     discord_id: int
     discord_id_str: str
 
 
-class TradeInsertResultWaifusAOwner(BaseModel):
-    user: TradeInsertResultWaifusAOwnerUser
+class TradeInsertResultReceivedOwner(BaseModel):
+    user: TradeInsertResultReceivedOwnerUser
 
 
-class TradeInsertResultWaifusACharacter(BaseModel):
+class TradeInsertResultReceivedCharacter(BaseModel):
     id_al: int
 
 
-class TradeInsertResultWaifusA(BaseModel):
+class TradeInsertResultReceived(BaseModel):
+    character: TradeInsertResultReceivedCharacter
+    owner: TradeInsertResultReceivedOwner
+    original_owner: TradeInsertResultReceivedOriginalOwner | None
+    custom_position_waifu: TradeInsertResultReceivedCustomPositionWaifu | None
     id: UUID
-    timestamp: datetime
-    level: int
-    locked: bool
-    trade_locked: bool
     blooded: bool
-    nanaed: bool
+    custom_collage: bool
     custom_image: str | None
     custom_name: str | None
-    custom_collage: bool
     custom_position: WaicolleCollagePosition
-    character: TradeInsertResultWaifusACharacter
-    owner: TradeInsertResultWaifusAOwner
-    original_owner: TradeInsertResultWaifusAOriginalOwner | None
-    custom_position_waifu: TradeInsertResultWaifusACustomPositionWaifu | None
+    level: int
+    locked: bool
+    nanaed: bool
+    timestamp: datetime
+    trade_locked: bool
 
 
-class TradeInsertResultPlayerAUser(BaseModel):
+class TradeInsertResultAuthorUser(BaseModel):
     discord_id: int
     discord_id_str: str
 
 
-class TradeInsertResultPlayerA(BaseModel):
-    user: TradeInsertResultPlayerAUser
+class TradeInsertResultAuthor(BaseModel):
+    user: TradeInsertResultAuthorUser
 
 
 class TradeInsertResult(BaseModel):
+    author: TradeInsertResultAuthor
+    received: list[TradeInsertResultReceived]
+    offeree: TradeInsertResultOfferee
+    offered: list[TradeInsertResultOffered]
+    created_at: datetime
+    completed_at: datetime | None
+    blood_shards: int
     id: UUID
-    player_a: TradeInsertResultPlayerA
-    waifus_a: list[TradeInsertResultWaifusA]
-    moecoins_a: int
-    blood_shards_a: int
-    player_b: TradeInsertResultPlayerB
-    waifus_b: list[TradeInsertResultWaifusB]
-    moecoins_b: int
-    blood_shards_b: int
 
 
 adapter = TypeAdapter(TradeInsertResult)
@@ -236,24 +205,18 @@ adapter = TypeAdapter(TradeInsertResult)
 async def trade_insert(
     executor: AsyncIOExecutor,
     *,
-    player_a_discord_id: int,
-    waifus_a_ids: list[UUID],
-    player_b_discord_id: int,
-    waifus_b_ids: list[UUID],
-    moecoins_a: int | None = None,
-    blood_shards_a: int | None = None,
-    moecoins_b: int | None = None,
-    blood_shards_b: int | None = None,
+    author_discord_id: int,
+    received_ids: list[UUID],
+    offeree_discord_id: int,
+    offered_ids: list[UUID],
+    blood_shards: int | None = None,
 ) -> TradeInsertResult:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,
-        player_a_discord_id=player_a_discord_id,
-        waifus_a_ids=waifus_a_ids,
-        player_b_discord_id=player_b_discord_id,
-        waifus_b_ids=waifus_b_ids,
-        moecoins_a=moecoins_a,
-        blood_shards_a=blood_shards_a,
-        moecoins_b=moecoins_b,
-        blood_shards_b=blood_shards_b,
+        author_discord_id=author_discord_id,
+        received_ids=received_ids,
+        offeree_discord_id=offeree_discord_id,
+        offered_ids=offered_ids,
+        blood_shards=blood_shards,
     )
     return adapter.validate_json(resp, strict=False)

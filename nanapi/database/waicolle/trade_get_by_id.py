@@ -1,3 +1,4 @@
+from datetime import datetime
 from uuid import UUID
 
 from edgedb import AsyncIOExecutor
@@ -6,67 +7,62 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 with
   id := <uuid>$id,
-select waicolle::Trade {
-  id,
-  player_a: {
+select waicolle::TradeOperation {
+  *,
+  author: {
     user: {
       discord_id,
       discord_id_str,
     },
   },
-  waifus_a,
-  moecoins_a,
-  blood_shards_a,
-  player_b: {
+  received,
+  offeree: {
     user: {
       discord_id,
       discord_id_str,
     },
   },
-  waifus_b,
-  moecoins_b,
-  blood_shards_b,
+  offered,
 }
 filter .id = id
 """
 
 
-class TradeGetByIdResultWaifusB(BaseModel):
+class TradeGetByIdResultOffered(BaseModel):
     id: UUID
 
 
-class TradeGetByIdResultPlayerBUser(BaseModel):
+class TradeGetByIdResultOffereeUser(BaseModel):
     discord_id: int
     discord_id_str: str
 
 
-class TradeGetByIdResultPlayerB(BaseModel):
-    user: TradeGetByIdResultPlayerBUser
+class TradeGetByIdResultOfferee(BaseModel):
+    user: TradeGetByIdResultOffereeUser
 
 
-class TradeGetByIdResultWaifusA(BaseModel):
+class TradeGetByIdResultReceived(BaseModel):
     id: UUID
 
 
-class TradeGetByIdResultPlayerAUser(BaseModel):
+class TradeGetByIdResultAuthorUser(BaseModel):
     discord_id: int
     discord_id_str: str
 
 
-class TradeGetByIdResultPlayerA(BaseModel):
-    user: TradeGetByIdResultPlayerAUser
+class TradeGetByIdResultAuthor(BaseModel):
+    user: TradeGetByIdResultAuthorUser
 
 
 class TradeGetByIdResult(BaseModel):
+    author: TradeGetByIdResultAuthor
+    received: list[TradeGetByIdResultReceived]
+    offeree: TradeGetByIdResultOfferee
+    offered: list[TradeGetByIdResultOffered]
     id: UUID
-    player_a: TradeGetByIdResultPlayerA
-    waifus_a: list[TradeGetByIdResultWaifusA]
-    moecoins_a: int
-    blood_shards_a: int
-    player_b: TradeGetByIdResultPlayerB
-    waifus_b: list[TradeGetByIdResultWaifusB]
-    moecoins_b: int
-    blood_shards_b: int
+    blood_shards: int
+    completed_at: datetime | None
+    created_at: datetime
 
 
 adapter = TypeAdapter(TradeGetByIdResult | None)
