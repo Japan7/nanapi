@@ -71,7 +71,10 @@ module waicolle {
     link custom_position_waifu -> Waifu {
       on target delete allow;
     }
-    property trade_locked := exists .<waifus_a[is Trade] or exists .<waifus_b[is Trade];
+    property trade_locked := exists (
+      select .<received[is TradeOperation] union .<offered[is TradeOperation]
+      filter not exists .completed_at
+    );
   }
 
   type Collection extending default::ClientObject {
@@ -89,31 +92,42 @@ module waicolle {
     constraint exclusive on ((.name, .author));
   }
 
-  type Trade extending default::ClientObject {
-    required link player_a -> Player {
+  abstract type Operation {
+    required link author -> Player {
       on target delete delete source;
     }
-    multi link waifus_a -> Waifu {
+    multi link received -> Waifu {
       on target delete delete source;
     }
-    required property moecoins_a -> int32 {
+    required property created_at -> datetime {
+      default := datetime_current();
+    }
+  }
+
+  type RollOperation extending default::ClientObject, Operation {
+    required property roll_id -> str;
+    required property moecoins -> int32 {
       default := 0;
     }
-    required property blood_shards_a -> int32 {
-      default := 0;
-    }
-    required link player_b -> Player {
+  }
+
+  type RerollOperation extending default::ClientObject, Operation {
+    multi link rerolled -> Waifu {
       on target delete delete source;
     }
-    multi link waifus_b -> Waifu {
+  }
+
+  type TradeOperation extending default::ClientObject, Operation {
+    required link offeree -> Player {
       on target delete delete source;
     }
-    required property moecoins_b -> int32 {
+    multi link offered -> Waifu {
+      on target delete delete source;
+    }
+    required property blood_shards -> int32 {
       default := 0;
     }
-    required property blood_shards_b -> int32 {
-      default := 0;
-    }
+    property completed_at -> datetime;
   }
 
   type Coupon extending default::ClientObject {
