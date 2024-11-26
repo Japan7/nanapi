@@ -80,6 +80,8 @@ from nanapi.database.waicolle.player_tracked_items import (
     PlayerTrackedItemsResult,
     player_tracked_items,
 )
+from nanapi.database.waicolle.rerollop_insert import rerollop_insert
+from nanapi.database.waicolle.rollop_insert import rollop_insert
 from nanapi.database.waicolle.trade_commit import trade_commit
 from nanapi.database.waicolle.trade_delete import TradeDeleteResult, trade_delete
 from nanapi.database.waicolle.trade_get_by_id import trade_get_by_id
@@ -293,6 +295,7 @@ async def player_roll(discord_id: int,
                 await coupon_add_player(tx,
                                         code=coupon_code,
                                         discord_id=discord_id)
+                roll_id = 'coupon'
                 roll = UserRoll(3)
             elif roll_id is not None:
                 roll_getter = ROLLS.get(roll_id, None)
@@ -301,6 +304,7 @@ async def player_roll(discord_id: int,
                                         detail='Roll Not Found')
                 roll = roll_getter()
             elif nb is not None:
+                roll_id = 'drop'
                 roll = UserRoll(nb)
             else:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
@@ -330,6 +334,14 @@ async def player_roll(discord_id: int,
 
             # Do after task
             await roll.after(tx, discord_id)
+
+            await rollop_insert(
+                tx,
+                author_discord_id=discord_id,
+                received_ids=[w.id for w in new_waifus],
+                roll_id=roll_id,
+                moecoins=price,
+            )
 
             return new_waifus
 
@@ -885,6 +897,14 @@ async def reroll(body: RerollBody,
                                       discord_id=body.player_discord_id,
                                       charas_ids=charas_ids)
             await roll.after(tx, body.player_discord_id)
+
+            await rerollop_insert(
+                tx,
+                author_discord_id=body.player_discord_id,
+                received_ids=[w.id for w in resp],
+                rerolled_ids=[w.id for w in rerolled],
+            )
+
             return dict(obtained=resp, nanascends=nanascends)
 
 
