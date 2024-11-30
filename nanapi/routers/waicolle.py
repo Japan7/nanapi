@@ -190,6 +190,18 @@ async def get_player(discord_id: int,
     return resp
 
 
+@router.oauth2_client_restricted.put(
+    '/players/{discord_id}/freeze',
+    response_model=PlayerFreezeResult,
+    responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)})
+async def freeze_player(discord_id: int,
+                        edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    resp = await player_freeze(edgedb, discord_id=discord_id)
+    if resp is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    return resp
+
+
 @router.oauth2_client_restricted.post(
     '/players/{discord_id}/coins/add',
     response_model=PlayerAddCoinsResult,
