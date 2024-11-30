@@ -9,17 +9,7 @@ EDGEQL_QUERY = r"""
 with
   id_al := <int32>$id_al,
 select waicolle::Waifu {
-  id,
-  timestamp,
-  trade_locked,
-  level,
-  locked,
-  blooded,
-  nanaed,
-  custom_image,
-  custom_name,
-  custom_collage,
-  custom_position,
+  *,
   character: { id_al },
   owner: {
     user: {
@@ -75,21 +65,23 @@ class WaifuSelectByCharaResultCharacter(BaseModel):
 
 
 class WaifuSelectByCharaResult(BaseModel):
-    id: UUID
-    timestamp: datetime
-    trade_locked: bool
-    level: int
-    locked: bool
-    blooded: bool
-    nanaed: bool
-    custom_image: str | None
-    custom_name: str | None
-    custom_collage: bool
-    custom_position: WaicolleCollagePosition
     character: WaifuSelectByCharaResultCharacter
     owner: WaifuSelectByCharaResultOwner
     original_owner: WaifuSelectByCharaResultOriginalOwner | None
     custom_position_waifu: WaifuSelectByCharaResultCustomPositionWaifu | None
+    id: UUID
+    blooded: bool
+    custom_collage: bool
+    custom_image: str | None
+    custom_name: str | None
+    custom_position: WaicolleCollagePosition
+    level: int
+    locked: bool
+    nanaed: bool
+    timestamp: datetime
+    trade_locked: bool
+    disabled: bool
+    frozen: bool
 
 
 adapter = TypeAdapter(list[WaifuSelectByCharaResult])

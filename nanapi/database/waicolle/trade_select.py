@@ -108,6 +108,7 @@ class TradeSelectResultOffered(BaseModel):
     timestamp: datetime
     trade_locked: bool
     disabled: bool
+    frozen: bool
 
 
 class TradeSelectResultOffereeUser(BaseModel):
@@ -162,6 +163,7 @@ class TradeSelectResultReceived(BaseModel):
     timestamp: datetime
     trade_locked: bool
     disabled: bool
+    frozen: bool
 
 
 class TradeSelectResultAuthorUser(BaseModel):

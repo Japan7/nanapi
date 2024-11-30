@@ -8,12 +8,11 @@ with
     set {
       moecoins := .moecoins + (moecoins ?? 0),
       blood_shards := .blood_shards + (blood_shards ?? 0),
+      frozen_at := {},
     }
   )
 select updated {
-  game_mode,
-  moecoins,
-  blood_shards,
+  *,
   user: {
     discord_id,
     discord_id_str,

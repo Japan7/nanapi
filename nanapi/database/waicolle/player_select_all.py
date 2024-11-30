@@ -1,13 +1,13 @@
+from datetime import datetime
 from enum import StrEnum
+from uuid import UUID
 
 from edgedb import AsyncIOExecutor
 from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 select waicolle::Player {
-  game_mode,
-  moecoins,
-  blood_shards,
+  *,
   user: {
     discord_id,
     discord_id_str,
@@ -29,10 +29,12 @@ class PlayerSelectAllResultUser(BaseModel):
 
 
 class PlayerSelectAllResult(BaseModel):
+    user: PlayerSelectAllResultUser
+    id: UUID
+    blood_shards: int
     game_mode: WaicolleGameMode
     moecoins: int
-    blood_shards: int
-    user: PlayerSelectAllResultUser
+    frozen_at: datetime | None
 
 
 adapter = TypeAdapter(list[PlayerSelectAllResult])

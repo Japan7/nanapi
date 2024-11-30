@@ -48,17 +48,7 @@ with
     )
   ),
 select distinct (tracked union duplicated) {
-  id,
-  timestamp,
-  level,
-  locked,
-  trade_locked,
-  blooded,
-  nanaed,
-  custom_image,
-  custom_name,
-  custom_collage,
-  custom_position,
+  *,
   character: { id_al },
   owner: {
     user: {
@@ -111,21 +101,23 @@ class WaifuTrackUnlockedResultCharacter(BaseModel):
 
 
 class WaifuTrackUnlockedResult(BaseModel):
-    id: UUID
-    timestamp: datetime
-    level: int
-    locked: bool
-    trade_locked: bool
-    blooded: bool
-    nanaed: bool
-    custom_image: str | None
-    custom_name: str | None
-    custom_collage: bool
-    custom_position: WaicolleCollagePosition
     character: WaifuTrackUnlockedResultCharacter
     owner: WaifuTrackUnlockedResultOwner
     original_owner: WaifuTrackUnlockedResultOriginalOwner | None
     custom_position_waifu: WaifuTrackUnlockedResultCustomPositionWaifu | None
+    id: UUID
+    timestamp: datetime
+    nanaed: bool
+    locked: bool
+    level: int
+    custom_position: WaicolleCollagePosition
+    custom_name: str | None
+    custom_image: str | None
+    custom_collage: bool
+    blooded: bool
+    frozen: bool
+    disabled: bool
+    trade_locked: bool
 
 
 adapter = TypeAdapter(list[WaifuTrackUnlockedResult])

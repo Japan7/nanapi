@@ -1,4 +1,6 @@
+from datetime import datetime
 from enum import StrEnum
+from uuid import UUID
 
 from edgedb import AsyncIOExecutor
 from pydantic import BaseModel, TypeAdapter
@@ -8,9 +10,7 @@ with
   id_al := <int32>$id_al,
   character := (select anilist::Character filter .id_al = id_al),
 select waicolle::Player {
-  game_mode,
-  moecoins,
-  blood_shards,
+  *,
   user: {
     discord_id,
     discord_id_str,
@@ -33,10 +33,12 @@ class PlayerSelectByCharaResultUser(BaseModel):
 
 
 class PlayerSelectByCharaResult(BaseModel):
+    user: PlayerSelectByCharaResultUser
+    id: UUID
+    blood_shards: int
     game_mode: WaicolleGameMode
     moecoins: int
-    blood_shards: int
-    user: PlayerSelectByCharaResultUser
+    frozen_at: datetime | None
 
 
 adapter = TypeAdapter(list[PlayerSelectByCharaResult])

@@ -1,17 +1,7 @@
 with
   id_al := <int32>$id_al,
 select waicolle::Waifu {
-  id,
-  timestamp,
-  trade_locked,
-  level,
-  locked,
-  blooded,
-  nanaed,
-  custom_image,
-  custom_name,
-  custom_collage,
-  custom_position,
+  *,
   character: { id_al },
   owner: {
     user: {

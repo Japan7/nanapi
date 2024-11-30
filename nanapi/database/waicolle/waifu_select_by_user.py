@@ -20,17 +20,7 @@ with
   disabled := <optional bool>$disabled ?? false,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
 select waicolle::Waifu {
-  id,
-  timestamp,
-  level,
-  locked,
-  trade_locked,
-  blooded,
-  nanaed,
-  custom_image,
-  custom_name,
-  custom_collage,
-  custom_position,
+  *,
   character: { id_al },
   owner: {
     user: {
@@ -94,21 +84,23 @@ class WaifuSelectByUserResultCharacter(BaseModel):
 
 
 class WaifuSelectByUserResult(BaseModel):
-    id: UUID
-    timestamp: datetime
-    level: int
-    locked: bool
-    trade_locked: bool
-    blooded: bool
-    nanaed: bool
-    custom_image: str | None
-    custom_name: str | None
-    custom_collage: bool
-    custom_position: WaicolleCollagePosition
     character: WaifuSelectByUserResultCharacter
     owner: WaifuSelectByUserResultOwner
     original_owner: WaifuSelectByUserResultOriginalOwner | None
     custom_position_waifu: WaifuSelectByUserResultCustomPositionWaifu | None
+    id: UUID
+    blooded: bool
+    custom_collage: bool
+    custom_image: str | None
+    custom_name: str | None
+    custom_position: WaicolleCollagePosition
+    level: int
+    locked: bool
+    nanaed: bool
+    timestamp: datetime
+    trade_locked: bool
+    disabled: bool
+    frozen: bool
 
 
 adapter = TypeAdapter(list[WaifuSelectByUserResult])

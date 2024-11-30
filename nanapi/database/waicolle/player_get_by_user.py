@@ -1,4 +1,6 @@
+from datetime import datetime
 from enum import StrEnum
+from uuid import UUID
 
 from edgedb import AsyncIOExecutor
 from pydantic import BaseModel, TypeAdapter
@@ -11,9 +13,7 @@ with
     filter .client = global client and .user.discord_id = discord_id
   ),
 select player {
-  game_mode,
-  moecoins,
-  blood_shards,
+  *,
   user: {
     discord_id,
     discord_id_str,
@@ -34,10 +34,12 @@ class PlayerGetByUserResultUser(BaseModel):
 
 
 class PlayerGetByUserResult(BaseModel):
+    user: PlayerGetByUserResultUser
+    id: UUID
+    blood_shards: int
     game_mode: WaicolleGameMode
     moecoins: int
-    blood_shards: int
-    user: PlayerGetByUserResultUser
+    frozen_at: datetime | None
 
 
 adapter = TypeAdapter(PlayerGetByUserResult | None)

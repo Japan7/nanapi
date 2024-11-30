@@ -30,6 +30,7 @@ unless conflict on ((.client, .user))
 else (
   update waicolle::Player set {
     game_mode := game_mode,
+    frozen_at := {},
   }
 )
 """

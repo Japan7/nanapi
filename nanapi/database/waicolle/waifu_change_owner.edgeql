@@ -15,17 +15,7 @@ with
     }
   )
 select updated {
-  id,
-  timestamp,
-  level,
-  locked,
-  trade_locked,
-  blooded,
-  nanaed,
-  custom_image,
-  custom_name,
-  custom_collage,
-  custom_position,
+  *,
   character: { id_al },
   owner: {
     user: {
