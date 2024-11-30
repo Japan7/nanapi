@@ -16,6 +16,7 @@ with
   nanaed := <optional bool>$nanaed,
   custom_collage := <optional bool>$custom_collage,
   ascended := <optional bool>$ascended,
+  disabled := <optional bool>$disabled,
   as_og := <optional bool>$as_og ?? false,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
 select waicolle::Waifu {
@@ -55,6 +56,7 @@ and (.blooded = blooded if exists blooded else true)
 and (.nanaed = nanaed if exists nanaed else true)
 and (.custom_collage = custom_collage if exists custom_collage else true)
 and (.level > 0 if exists ascended else true)
+and (.disabled = disabled if exists disabled else false)
 order by .timestamp desc
 """
 
@@ -124,6 +126,7 @@ async def waifu_select_by_user(
     nanaed: bool | None = None,
     custom_collage: bool | None = None,
     ascended: bool | None = None,
+    disabled: bool | None = None,
     as_og: bool | None = None,
 ) -> list[WaifuSelectByUserResult]:
     resp = await executor.query_json(
@@ -137,6 +140,7 @@ async def waifu_select_by_user(
         nanaed=nanaed,
         custom_collage=custom_collage,
         ascended=ascended,
+        disabled=disabled,
         as_og=as_og,
     )
     return adapter.validate_json(resp, strict=False)

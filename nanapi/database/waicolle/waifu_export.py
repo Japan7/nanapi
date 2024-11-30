@@ -7,7 +7,7 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 with
   players := (select waicolle::Player filter .client = global client),
-  waifus := (select waicolle::Waifu filter .client = global client),
+  waifus := (select waicolle::Waifu filter .client = global client and not .disabled),
   charas := (select anilist::Character filter .id_al in waifus.character.id_al),
 select {
   players := players {

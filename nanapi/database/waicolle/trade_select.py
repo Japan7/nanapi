@@ -107,6 +107,7 @@ class TradeSelectResultOffered(BaseModel):
     nanaed: bool
     timestamp: datetime
     trade_locked: bool
+    disabled: bool
 
 
 class TradeSelectResultOffereeUser(BaseModel):
@@ -160,6 +161,7 @@ class TradeSelectResultReceived(BaseModel):
     nanaed: bool
     timestamp: datetime
     trade_locked: bool
+    disabled: bool
 
 
 class TradeSelectResultAuthorUser(BaseModel):

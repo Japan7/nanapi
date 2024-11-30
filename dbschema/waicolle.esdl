@@ -71,6 +71,11 @@ module waicolle {
     link custom_position_waifu -> Waifu {
       on target delete allow;
     }
+    multi link ascended_from -> Waifu {
+      on target delete allow;
+    }
+    multi link ascended_to := .<ascended_from[is Waifu];
+    property disabled := exists .ascended_to;
     property trade_locked := exists (
       select .<received[is TradeOperation] union .<offered[is TradeOperation]
       filter not exists .completed_at

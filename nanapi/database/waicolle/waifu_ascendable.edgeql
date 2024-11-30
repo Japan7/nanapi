@@ -6,6 +6,7 @@ with
     filter .client = global client
     and .owner = assert_exists(player)
     and not .trade_locked and not .blooded
+    and not .disabled
   ),
   grouped := (
     group waifus

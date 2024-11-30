@@ -37,6 +37,7 @@ select waicolle::Waifu {
 }
 filter .client = global client
 and .character.id_al = id_al
+and not .disabled
 order by .timestamp desc
 """
 

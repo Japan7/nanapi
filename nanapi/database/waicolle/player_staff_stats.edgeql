@@ -13,6 +13,7 @@ with
     filter .client = global client
     and .owner = assert_exists(player)
     and .character in charas
+    and not .disabled
   ),
   owned_ids := (select owned.character.id_al),
   nb_owned := count(owned_ids),

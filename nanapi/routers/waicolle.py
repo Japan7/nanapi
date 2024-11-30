@@ -90,7 +90,6 @@ from nanapi.database.waicolle.trade_select import TradeSelectResult, trade_selec
 from nanapi.database.waicolle.waifu_ascendable import waifu_ascendable
 from nanapi.database.waicolle.waifu_bulk_update import WaifuBulkUpdateResult, waifu_bulk_update
 from nanapi.database.waicolle.waifu_change_owner import waifu_change_owner
-from nanapi.database.waicolle.waifu_delete import waifu_delete
 from nanapi.database.waicolle.waifu_edged import waifu_edged
 from nanapi.database.waicolle.waifu_export import WaifuExportResult, waifu_export
 from nanapi.database.waicolle.waifu_insert import waifu_insert
@@ -105,6 +104,7 @@ from nanapi.database.waicolle.waifu_select_by_chara import (
 )
 from nanapi.database.waicolle.waifu_select_by_user import waifu_select_by_user
 from nanapi.database.waicolle.waifu_track_unlocked import waifu_track_unlocked
+from nanapi.database.waicolle.waifu_update_ascended_from import waifu_update_ascended_from
 from nanapi.database.waicolle.waifu_update_custom_image_name import (
     WaifuUpdateCustomImageNameResult,
     waifu_update_custom_image_name,
@@ -923,7 +923,11 @@ async def ascend_all(tx: AsyncIOExecutor,
                                                ids=[to_ascend.id],
                                                level=to_ascend.level + 1,
                                                timestamp=datetime.now(tz=TZ))
-                await waifu_delete(tx, ids=[e.id for e in to_delete])
+                await waifu_update_ascended_from(
+                    tx,
+                    ascended_id=to_ascend.id,
+                    ascended_from_ids=[e.id for e in to_delete],
+                )
                 _ascended.append(resp[0])
                 elements = elements[4:]
         if _ascended:
@@ -1013,7 +1017,11 @@ async def ascend_waifu(id: UUID,
                                                ids=[to_ascend.id],
                                                level=to_ascend.level + 1,
                                                timestamp=datetime.now(tz=TZ))
-            await waifu_delete(tx, ids=[e.id for e in to_delete])
+            await waifu_update_ascended_from(
+                tx,
+                ascended_id=to_ascend.id,
+                ascended_from_ids=[e.id for e in to_delete],
+            )
 
             return ascended[0]
 

@@ -16,6 +16,7 @@ with
     filter .client = global client
     and not .locked
     and not .blooded
+    and not .disabled
   ),
   tracked := (
     select unlocked
