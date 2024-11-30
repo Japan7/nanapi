@@ -224,7 +224,7 @@ class NewOfferingBody(BaseModel):
     bot_discord_id: int
 
 
-class NewFrozenAutotradeBody(BaseModel):
+class NewLootBody(BaseModel):
     player_discord_id: int
     chara_id_al: int
 

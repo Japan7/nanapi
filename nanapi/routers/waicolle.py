@@ -125,7 +125,7 @@ from nanapi.models.waicolle import (
     MediaAlbumResult,
     NewCollectionBody,
     NewCouponBody,
-    NewFrozenAutotradeBody,
+    NewLootBody,
     NewOfferingBody,
     NewTradeBody,
     PlayerSelectResult,
@@ -1120,12 +1120,11 @@ async def new_offering(body: NewOfferingBody,
 
 
 @router.oauth2_client_restricted.post(
-    '/trades/frozen',
+    '/trades/loots',
     response_model=TradeSelectResult,
     status_code=status.HTTP_201_CREATED,
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)})
-async def new_frozen_autotrade(body: NewFrozenAutotradeBody,
-                               edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+async def new_loot(body: NewLootBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     waifus = await waifu_select_by_chara(edgedb, id_al=body.chara_id_al)
     waifus = sorted(waifus, key=lambda w: (w.level, w.timestamp))
     for waifu in waifus:
