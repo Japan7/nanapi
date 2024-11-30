@@ -15,6 +15,7 @@ module waicolle {
       constraint min_value(0);
       default := 0;
     }
+    property frozen_at -> datetime;
     required link user -> user::User {
       on target delete delete source;
     }
@@ -76,6 +77,7 @@ module waicolle {
     }
     multi link ascended_to := .<ascended_from[is Waifu];
     property disabled := exists .ascended_to;
+    property frozen := exists .owner.frozen_at;
     property trade_locked := exists (
       select .<received[is TradeOperation] union .<offered[is TradeOperation]
       filter not exists .completed_at
