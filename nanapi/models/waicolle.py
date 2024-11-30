@@ -224,6 +224,11 @@ class NewOfferingBody(BaseModel):
     bot_discord_id: int
 
 
+class NewFrozenAutotradeBody(BaseModel):
+    player_discord_id: int
+    chara_id_al: int
+
+
 class NewCouponBody(BaseModel):
     code: str | None = None
 
