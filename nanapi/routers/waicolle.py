@@ -1128,7 +1128,7 @@ async def new_loot(body: NewLootBody, edgedb: AsyncIOClient = Depends(get_client
     waifus = await waifu_select_by_chara(edgedb, id_al=body.chara_id_al)
     waifus = sorted(waifus, key=lambda w: (w.level, w.timestamp))
     for waifu in waifus:
-        if waifu.frozen and not waifu.blooded and not waifu.trade_locked:
+        if all((waifu.frozen, not waifu.blooded, not waifu.locked, not waifu.trade_locked)):
             to_trade = waifu
             break
     else:
