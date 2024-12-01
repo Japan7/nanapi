@@ -18,9 +18,11 @@ module user {
   }
 
   type Profile {
+    property birthday -> datetime;
     property full_name -> str;
     property photo -> str;
     property promotion -> str;
+    property pronouns -> str;
     property telephone -> str;
     required link user -> User {
       constraint exclusive;
