@@ -7,9 +7,10 @@ with
 select profiles {
   birthday,
   full_name,
+  graduation_year,
   photo,
-  promotion,
   pronouns,
+  n7_major,
   telephone,
   user: {
     discord_id,

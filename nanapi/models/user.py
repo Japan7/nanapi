@@ -18,7 +18,8 @@ class UpsertProfileBody(BaseModel):
     birthday: datetime | None = None
     discord_username: str
     full_name: str | None = None
+    graduation_year: str | None = None
+    n7_specialty: str | None = None
     photo: str | None = None
-    promotion: str | None = None
     pronouns: str | None = None
     telephone: str | None = None
