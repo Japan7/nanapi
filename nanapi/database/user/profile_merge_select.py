@@ -9,7 +9,7 @@ with
   discord_username := <str>$discord_username,
   birthday := <optional datetime>$birthday,
   full_name := <optional str>$full_name,
-  graduation_year := <optional str>$graduation_year,
+  graduation_year := <optional int16>$graduation_year,
   photo := <optional str>$photo,
   pronouns := <optional str>$pronouns,
   n7_major := <optional str>$n7_major,
@@ -73,7 +73,7 @@ class ProfileMergeSelectResultUser(BaseModel):
 
 class ProfileMergeSelectResult(BaseModel):
     birthday: datetime | None
-    graduation_year: str | None
+    graduation_year: int | None
     full_name: str | None
     photo: str | None
     pronouns: str | None
@@ -92,7 +92,7 @@ async def profile_merge_select(
     discord_username: str,
     birthday: datetime | None = None,
     full_name: str | None = None,
-    graduation_year: str | None = None,
+    graduation_year: int | None = None,
     photo: str | None = None,
     pronouns: str | None = None,
     n7_major: str | None = None,

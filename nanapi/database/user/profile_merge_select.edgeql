@@ -3,7 +3,7 @@ with
   discord_username := <str>$discord_username,
   birthday := <optional datetime>$birthday,
   full_name := <optional str>$full_name,
-  graduation_year := <optional str>$graduation_year,
+  graduation_year := <optional int16>$graduation_year,
   photo := <optional str>$photo,
   pronouns := <optional str>$pronouns,
   n7_major := <optional str>$n7_major,

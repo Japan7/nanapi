@@ -20,7 +20,7 @@ module user {
   type Profile {
     property birthday -> datetime;
     property full_name -> str;
-    property graduation_year -> str;
+    property graduation_year -> int16;
     property photo -> str;
     property pronouns -> str;
     property n7_major -> str;

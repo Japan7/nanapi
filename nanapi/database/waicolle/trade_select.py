@@ -178,10 +178,10 @@ class TradeSelectResult(BaseModel):
     received: list[TradeSelectResultReceived]
     offeree: TradeSelectResultOfferee
     offered: list[TradeSelectResultOffered]
-    id: UUID
     blood_shards: int
     completed_at: datetime | None
     created_at: datetime
+    id: UUID
 
 
 adapter = TypeAdapter(list[TradeSelectResult])

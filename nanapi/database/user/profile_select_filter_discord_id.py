@@ -33,7 +33,7 @@ class ProfileSelectFilterDiscordIdResultUser(BaseModel):
 class ProfileSelectFilterDiscordIdResult(BaseModel):
     birthday: datetime | None
     full_name: str | None
-    graduation_year: str | None
+    graduation_year: int | None
     photo: str | None
     pronouns: str | None
     n7_major: str | None
