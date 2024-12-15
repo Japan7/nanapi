@@ -39,7 +39,7 @@ dependencies = [
 dev = [
     "pyright==1.1.390",
     "ruff==0.8.3",
-    "uvicorn==0.32.1",
+    "uvicorn==0.34.0",
     "edgedb-pydantic-codegen==2024.10.6",
     "pyinstrument==5.0.0",
 ]
