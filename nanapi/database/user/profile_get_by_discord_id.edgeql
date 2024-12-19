@@ -5,9 +5,12 @@ with
     filter .user.discord_id = discord_id
   )
 select profiles {
+  birthday,
   full_name,
+  graduation_year,
   photo,
-  promotion,
+  pronouns,
+  n7_major,
   telephone,
   user: {
     discord_id,

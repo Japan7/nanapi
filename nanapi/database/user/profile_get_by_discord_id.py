@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from edgedb import AsyncIOExecutor
 from pydantic import BaseModel, TypeAdapter
 
@@ -9,9 +11,12 @@ with
     filter .user.discord_id = discord_id
   )
 select profiles {
+  birthday,
   full_name,
+  graduation_year,
   photo,
-  promotion,
+  pronouns,
+  n7_major,
   telephone,
   user: {
     discord_id,
@@ -27,9 +32,12 @@ class ProfileGetByDiscordIdResultUser(BaseModel):
 
 
 class ProfileGetByDiscordIdResult(BaseModel):
+    birthday: datetime | None
     full_name: str | None
+    graduation_year: int | None
     photo: str | None
-    promotion: str | None
+    pronouns: str | None
+    n7_major: str | None
     telephone: str | None
     user: ProfileGetByDiscordIdResultUser
 
