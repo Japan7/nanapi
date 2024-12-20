@@ -65,6 +65,16 @@ class ProjectionStatus(StrEnum):
     COMPLETED = 'COMPLETED'
 
 
+class GuildEventMergeResultProjection(BaseModel):
+    id: UUID
+    channel_id: int
+    message_id: int | None
+    name: str
+    status: ProjectionStatus
+    channel_id_str: str
+    message_id_str: str | None
+
+
 class GuildEventMergeResultOrganizer(BaseModel):
     id: UUID
     discord_id: int
@@ -79,20 +89,10 @@ class GuildEventMergeResultParticipants(BaseModel):
     discord_username: str
 
 
-class GuildEventMergeResultProjection(BaseModel):
-    id: UUID
-    channel_id: int
-    channel_id_str: str
-    message_id: int | None
-    message_id_str: str | None
-    name: str
-    status: ProjectionStatus
-
-
 class GuildEventMergeResultClient(BaseModel):
+    username: str
     id: UUID
     password_hash: str
-    username: str
 
 
 class GuildEventMergeResult(BaseModel):
@@ -107,9 +107,9 @@ class GuildEventMergeResult(BaseModel):
     start_time: datetime
     url: str | None
     client: GuildEventMergeResultClient
-    projection: GuildEventMergeResultProjection | None
     participants: list[GuildEventMergeResultParticipants]
     organizer: GuildEventMergeResultOrganizer
+    projection: GuildEventMergeResultProjection | None
 
 
 adapter = TypeAdapter(GuildEventMergeResult)
