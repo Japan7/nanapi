@@ -94,11 +94,11 @@ class ProjoSelectResult(BaseModel):
     external_medias: list[ProjoSelectResultExternalMedias]
     participants: list[ProjoSelectResultParticipants]
     guild_events: list[ProjoSelectResultGuildEvents]
+    message_id_str: str | None
+    channel_id_str: str
     status: ProjectionStatus
     name: str
-    message_id_str: str | None
     message_id: int | None
-    channel_id_str: str
     channel_id: int
     id: UUID
 

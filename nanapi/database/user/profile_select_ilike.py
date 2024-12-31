@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from edgedb import AsyncIOExecutor
 from pydantic import BaseModel, TypeAdapter
 
@@ -5,16 +7,19 @@ EDGEQL_QUERY = r"""
 with
   pattern := <str>$pattern
 select user::Profile {
+  birthday,
   full_name,
+  graduation_year,
   photo,
-  promotion,
+  pronouns,
+  n7_major,
   telephone,
   user: {
     discord_id,
     discord_id_str,
   },
 }
-filter .full_name ilike pattern or .promotion ilike pattern or .telephone ilike pattern
+filter .full_name ilike pattern or .telephone ilike pattern
 """
 
 
@@ -24,9 +29,12 @@ class ProfileSelectIlikeResultUser(BaseModel):
 
 
 class ProfileSelectIlikeResult(BaseModel):
+    birthday: datetime | None
     full_name: str | None
+    graduation_year: int | None
     photo: str | None
-    promotion: str | None
+    pronouns: str | None
+    n7_major: str | None
     telephone: str | None
     user: ProfileSelectIlikeResultUser
 
