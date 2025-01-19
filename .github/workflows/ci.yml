@@ -43,7 +43,7 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.config.gh_image }}
     permissions:
       contents: read
       packages: write
@@ -51,18 +51,23 @@ jobs:
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
 
+    strategy:
+      matrix:
+        config:
+          - gh_image: ubuntu-latest
+            arch: x86_64
+          - gh_image: ubuntu-24.04-arm
+            arch: aarch64
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
-      - name: Install cosign
-        if: (github.event_name != 'pull_request') && !startsWith(github.ref, 'refs/heads/renovate')
-        uses: sigstore/cosign-installer@v3
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      # - name: Install cosign
+      #   if: (github.event_name != 'pull_request') && !startsWith(github.ref, 'refs/heads/renovate')
+      #   uses: sigstore/cosign-installer@v3
 
       - name: Setup Docker buildx
         uses: docker/setup-buildx-action@v3
@@ -98,27 +103,100 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          platforms: linux/amd64,linux/arm64
-          push: ${{ (github.event_name != 'pull_request') && !startsWith(github.ref, 'refs/heads/renovate') }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ matrix.config.arch }}
           labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=docker,dest=${{ runner.temp }}/${{ matrix.config.arch }}.tar
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.config.arch }}.tar
+          path: ${{ runner.temp }}/${{ matrix.config.arch }}.tar
 
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
       # repository is public to avoid leaking data.  If you would like to publish
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image
-        if: ${{ (github.event_name != 'pull_request') && !startsWith(github.ref, 'refs/heads/renovate') }}
-        env:
-          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-          TAGS: ${{ steps.meta.outputs.tags }}
-          DIGEST: ${{ steps.build-and-push.outputs.digest }}
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+      # - name: Sign the published Docker image
+      #   env:
+      #     # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+      #     TAGS: ${{ steps.meta.outputs.tags }}
+      #     DIGEST: ${{ steps.build-and-push.outputs.digest }}
+      #   # This step uses the identity token to provision an ephemeral certificate
+      #   # against the sigstore community Fulcio instance.
+      #   run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
+      - uses: sarisia/actions-status-discord@v1
+        if: failure()
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+
+  publish_manifest:
+    runs-on: ubuntu-latest
+
+    # don’t run on PR or renovate commit
+    if: (github.event_name != 'pull_request') && !startsWith(github.ref, 'refs/heads/renovate')
+    needs: 
+      - build
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Podman login
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Extract metadata (tags, labels) for Docker
+      # https://github.com/docker/metadata-action
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=tag
+            type=ref,event=pr
+            type=sha
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: "*.tar"
+          path: ${{ runner.temp }}
+          merge-multiple: true
+
+      - name: push manifest
+        run: |
+          image_base_raw=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          image_base=${image_base_raw@L}
+          image_base_sha=${image_base}:${{ github.sha }}
+          manifest=nanapi
+
+          podman manifest create ${manifest}
+
+          archs="x86_64 aarch64"
+
+          for arch in ${archs}; do
+            podman load --input ${{ runner.temp }}/${arch}.tar
+            podman tag ${arch} ${image_base_sha}-${arch}
+            podman push ${image_base_sha}-${arch}
+            podman manifest add ${manifest} ${image_base_sha}-${arch}
+          done
+
+          tags="${{ steps.meta.outputs.tags }}"
+
+          for tag in ${tags}; do
+            podman manifest push ${manifest} $tag
+          done
 
       - uses: sarisia/actions-status-discord@v1
         if: failure()
@@ -127,7 +205,8 @@ jobs:
 
   deploy:
     if: (github.event_name != 'pull_request') && !startsWith(github.ref, 'refs/heads/renovate')
-    needs: build
+    needs:
+      - publish_manifest
     runs-on: ubuntu-latest
     permissions:
       contents: write
