@@ -37,7 +37,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "pyright==1.1.394",
+    "pyright==1.1.395",
     "ruff==0.9.8",
     "uvicorn==0.34.0",
     "edgedb-pydantic-codegen==2024.10.6",
