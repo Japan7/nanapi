@@ -7,8 +7,9 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  edges := <json>$edges,
-for edge in json_array_unpack(edges) union (
+  staff := <int32>$staff,
+  characters := <json>$characters,
+for edge in json_array_unpack(characters) union (
   with
     voice_actor_ids := <array<int32>>json_get(edge, 'voice_actor_ids'),
     character_id := <int32>json_get(edge, 'character_id'),
@@ -33,20 +34,22 @@ for edge in json_array_unpack(edges) union (
 """
 
 
-class CEdgeMergeMultipleResult(BaseModel):
+class StaffCEdgeMergeResult(BaseModel):
     id: UUID
 
 
-adapter = TypeAdapter(list[CEdgeMergeMultipleResult])
+adapter = TypeAdapter(list[StaffCEdgeMergeResult])
 
 
-async def c_edge_merge_multiple(
+async def staff_c_edge_merge(
     executor: AsyncIOExecutor,
     *,
-    edges: Any,
-) -> list[CEdgeMergeMultipleResult]:
+    staff: int,
+    characters: Any,
+) -> list[StaffCEdgeMergeResult]:
     resp = await executor.query_json(
         EDGEQL_QUERY,
-        edges=orjson.dumps(edges).decode(),
+        staff=staff,
+        characters=orjson.dumps(characters).decode(),
     )
     return adapter.validate_json(resp, strict=False)

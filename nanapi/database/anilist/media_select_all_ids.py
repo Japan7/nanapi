@@ -7,8 +7,10 @@ EDGEQL_QUERY = r"""
 select anilist::Media {
   type,
   id_al,
-  id_mal
+  id_mal,
+  last_update
 }
+order by .last_update
 """
 
 
@@ -21,6 +23,7 @@ class MediaSelectAllIdsResult(BaseModel):
     type: AnilistMediaType
     id_al: int
     id_mal: int | None
+    last_update: int
 
 
 adapter = TypeAdapter(list[MediaSelectAllIdsResult])
