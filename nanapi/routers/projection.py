@@ -53,7 +53,7 @@ from nanapi.models.projection import (
     SetProjectionNameBody,
     SetProjectionStatusBody,
 )
-from nanapi.utils.anilist import ALMultitons, Media
+from nanapi.utils.anilist import fetch_media
 from nanapi.utils.fastapi import HTTPExceptionModel, NanAPIRouter, get_client_edgedb
 
 router = NanAPIRouter(prefix='/projections', tags=['projection'])
@@ -150,13 +150,10 @@ async def set_projection_message_id(
 async def add_projection_anilist_media(
     id: UUID, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    multitons = ALMultitons()
-    media = Media.get(multitons, id_al)
-    async for m in Media.load({media}, full=False):
-        await m.edgedb_merge(edgedb)
-        break
-    else:
+    medias = await fetch_media(id_al)
+    if len(medias) == 0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Media Not found')
+    # FIXME: merge media in db
     resp = await projo_add_media(edgedb, id=id, id_al=id_al)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Projection Not found')

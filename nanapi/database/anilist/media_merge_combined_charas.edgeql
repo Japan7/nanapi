@@ -1,14 +1,6 @@
-from typing import Any
-from uuid import UUID
-
-import orjson
-from gel import AsyncIOExecutor
-from pydantic import BaseModel, TypeAdapter
-
-EDGEQL_QUERY = r"""
 with
   media := <json>$media,
-  characters := <json>$characters,
+  characters := <array<int32>>$characters,
   last_update := <int64>$last_update,
   _media := (
     with
@@ -108,7 +100,7 @@ with
     )
   ),
   _characters := (
-    for chara_id in json_array_unpack(characters) union (
+    for chara_id in array_unpack(characters) union (
         select anilist::Character filter .id_al = <int32>chara_id
     )
   )
@@ -116,36 +108,3 @@ select {
   media := _media,
   characters := assert_distinct(_characters),
 }
-"""
-
-
-class MediaMergeCombinedCharasResultCharacters(BaseModel):
-    id: UUID
-
-
-class MediaMergeCombinedCharasResultMedia(BaseModel):
-    id: UUID
-
-
-class MediaMergeCombinedCharasResult(BaseModel):
-    media: MediaMergeCombinedCharasResultMedia
-    characters: list[MediaMergeCombinedCharasResultCharacters]
-
-
-adapter = TypeAdapter(MediaMergeCombinedCharasResult)
-
-
-async def media_merge_combined_charas(
-    executor: AsyncIOExecutor,
-    *,
-    media: Any,
-    characters: Any,
-    last_update: int,
-) -> MediaMergeCombinedCharasResult:
-    resp = await executor.query_single_json(
-        EDGEQL_QUERY,
-        media=orjson.dumps(media).decode(),
-        characters=orjson.dumps(characters).decode(),
-        last_update=last_update,
-    )
-    return adapter.validate_json(resp, strict=False)

@@ -1,11 +1,3 @@
-from typing import Any
-from uuid import UUID
-
-import orjson
-from gel import AsyncIOExecutor
-from pydantic import BaseModel, TypeAdapter
-
-EDGEQL_QUERY = r"""
 with
   medias := <json>$medias,
 for media in json_array_unpack(medias) union (
@@ -103,23 +95,3 @@ for media in json_array_unpack(medias) union (
     }
   )
 )
-"""
-
-
-class MediaMergeMultipleResult(BaseModel):
-    id: UUID
-
-
-adapter = TypeAdapter(list[MediaMergeMultipleResult])
-
-
-async def media_merge_multiple(
-    executor: AsyncIOExecutor,
-    *,
-    medias: Any,
-) -> list[MediaMergeMultipleResult]:
-    resp = await executor.query_json(
-        EDGEQL_QUERY,
-        medias=orjson.dumps(medias).decode(),
-    )
-    return adapter.validate_json(resp, strict=False)

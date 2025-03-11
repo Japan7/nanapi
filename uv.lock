@@ -812,7 +812,6 @@ dependencies = [
     { name = "python-multipart" },
     { name = "rich" },
     { name = "starlette" },
-    { name = "toolz" },
     { name = "tzdata" },
     { name = "yarl" },
 ]
@@ -848,7 +847,6 @@ requires-dist = [
     { name = "python-multipart", specifier = "==0.0.20" },
     { name = "rich", specifier = "==13.9.4" },
     { name = "starlette", specifier = "==0.46.1" },
-    { name = "toolz", specifier = "==1.0.0" },
     { name = "tzdata", specifier = "==2025.2" },
     { name = "yarl", specifier = "==1.18.3" },
 ]
@@ -1383,15 +1381,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e4/f8/20ede366a64e682ce734573e4ed81e16ff7d6dd23eb809c64b7a9659c124/tatsu-5.13.1.tar.gz", hash = "sha256:df8c216eecd09af9b5b308624f1bfda1e4b5af3d3df1bdc4f331a1e8ea6bc012", size = 131775 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/f5/68/12d01401a484cc8466b48c9cc4f56b1b3207b683af3b9d740481f1b2bf9b/TatSu-5.13.1-py3-none-any.whl", hash = "sha256:941e12df8798f444957600346c52a5ff3455f485de5b4570a3a71a00ed896a14", size = 80195 },
-]
-
-[[package]]
-name = "toolz"
-version = "1.0.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/8a/0b/d80dfa675bf592f636d1ea0b835eab4ec8df6e9415d8cfd766df54456123/toolz-1.0.0.tar.gz", hash = "sha256:2c86e3d9a04798ac556793bced838816296a2f085017664e4995cb40a1047a02", size = 66790 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/03/98/eb27cc78ad3af8e302c9d8ff4977f5026676e130d28dd7578132a457170c/toolz-1.0.0-py3-none-any.whl", hash = "sha256:292c8f1c4e7516bf9086f8850935c799a874039c8bcf959d47b600e4c44a6236", size = 56383 },
 ]
 
 [[package]]

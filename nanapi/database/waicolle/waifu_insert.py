@@ -79,6 +79,8 @@ class WaifuInsertResult(BaseModel):
     owner: WaifuInsertResultOwner
     original_owner: WaifuInsertResultOriginalOwner | None
     custom_position_waifu: WaifuInsertResultCustomPositionWaifu | None
+    frozen: bool
+    disabled: bool
     trade_locked: bool
     timestamp: datetime
     nanaed: bool
@@ -89,8 +91,6 @@ class WaifuInsertResult(BaseModel):
     custom_image: str | None
     custom_collage: bool
     blooded: bool
-    disabled: bool
-    frozen: bool
     id: UUID
 
 
