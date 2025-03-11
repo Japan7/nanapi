@@ -45,6 +45,10 @@ module anilist {
       constraint exclusive;
     }
     required property type -> MediaType;
+    required property last_update -> int64 {
+      constraint min_value(0);
+      default := 0;
+    }
     property id_mal -> int32;
     required property title_user_preferred -> str;
     property title_native -> str;
@@ -72,6 +76,10 @@ module anilist {
   type Character extending AniListData {
     overloaded required property id_al -> int32 {
       constraint exclusive;
+    }
+    required property last_update -> int64 {
+      constraint min_value(0);
+      default := 0;
     }
     required property name_user_preferred -> str;
     required property name_alternative -> array<str>;
@@ -118,6 +126,10 @@ module anilist {
   type Staff extending AniListData, waicolle::Trackable {
     overloaded required property id_al -> int32 {
       constraint exclusive;
+    }
+    required property last_update -> int64 {
+      constraint min_value(0);
+      default := 0;
     }
     required property name_user_preferred -> str;
     required property name_alternative -> array<str>;
