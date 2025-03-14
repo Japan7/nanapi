@@ -1,14 +1,7 @@
-from typing import Any
-from uuid import UUID
-
-import orjson
-from gel import AsyncIOExecutor
-from pydantic import BaseModel, TypeAdapter
-
-EDGEQL_QUERY = r"""
 with
-  edges := <json>$edges,
-for edge in json_array_unpack(edges) union (
+  staff := <int32>$staff,
+  characters := <json>$characters,
+for edge in json_array_unpack(characters) union (
   with
     voice_actor_ids := <array<int32>>json_get(edge, 'voice_actor_ids'),
     character_id := <int32>json_get(edge, 'character_id'),
@@ -30,23 +23,3 @@ for edge in json_array_unpack(edges) union (
     }
   )
 )
-"""
-
-
-class CEdgeMergeMultipleResult(BaseModel):
-    id: UUID
-
-
-adapter = TypeAdapter(list[CEdgeMergeMultipleResult])
-
-
-async def c_edge_merge_multiple(
-    executor: AsyncIOExecutor,
-    *,
-    edges: Any,
-) -> list[CEdgeMergeMultipleResult]:
-    resp = await executor.query_json(
-        EDGEQL_QUERY,
-        edges=orjson.dumps(edges).decode(),
-    )
-    return adapter.validate_json(resp, strict=False)
