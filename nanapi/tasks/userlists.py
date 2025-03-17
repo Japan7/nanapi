@@ -46,12 +46,12 @@ async def refresh_lists() -> None:
 async def refresh_list(userlist: Userlist, media_type: MediaType):
     logger_list = f'{userlist.service}/{userlist.username}/{media_type}'
     logger.info(f'refresh_list: fetching {logger_list}')
-    entries = await userlist.refresh(media_type, al_low_priority=True)
+    entries = await userlist.refresh(media_type)
     medias = {i.id_al for i in entries}
     logger.info(f'refresh_list: {logger_list} fetched with {len(entries)} entries')
 
     if len(entries) > 0:
-        await update_missing_media(medias, low_priority=True)
+        await update_missing_media(medias)
         logger.info('updated medias for entries')
         edgedb_data = userlist.to_edgedb(media_type, entries)
         _ = await account_replace_entries(get_edgedb(), **edgedb_data)

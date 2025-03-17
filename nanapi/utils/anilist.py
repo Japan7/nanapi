@@ -10,6 +10,7 @@ import aiohttp
 import orjson
 from pydantic import BaseModel
 
+import nanapi.settings as settings
 from nanapi.database.anilist.chara_merge_multiple import chara_merge_multiple
 from nanapi.database.anilist.chara_select_all_ids import chara_select_all_ids
 from nanapi.database.anilist.media_merge_multiple import media_merge_multiple
@@ -31,7 +32,7 @@ from nanapi.models.anilist import (
     MediaTag,
     MediaType,
 )
-from nanapi.settings import LOW_PRIORITY_THRESH, MAL_CLIENT_ID
+from nanapi.settings import MAL_CLIENT_ID
 from nanapi.utils.clients import get_edgedb, get_session
 from nanapi.utils.misc import default_backoff
 
@@ -214,7 +215,7 @@ class ALAPI:
     def remaining(self, value: int):
         logger.debug(f'ALAPI rate limit: {value} remaining requests')
         self._remaining = value
-        if value > LOW_PRIORITY_THRESH:
+        if value > settings.AL_LOW_PRIORITY_THRESH:
             self.low_priority_ready.set()
         else:
             self.low_priority_ready.clear()
@@ -280,12 +281,11 @@ class ALAPI:
         *,
         model: type[T],
         raise_rate_limit: bool = False,
-        low_priority: bool = False,
         timeout: aiohttp.ClientTimeout | None = None,
     ) -> T:
         json_query = orjson.dumps(json)
 
-        logger.debug(f'ALAPI call: {low_priority=}')
+        logger.debug(f'ALAPI call: {model=}')
 
         request = partial(
             self._call,
@@ -295,7 +295,7 @@ class ALAPI:
             model=model,
         )
 
-        if low_priority:
+        if settings.AL_LOW_PRIORITY_THRESH > 0:
             async with self.low_priority_semaphore:
                 _ = await self.low_priority_ready.wait()
                 return await request()
@@ -365,7 +365,8 @@ class Userlist:
         self.username: str = username
 
     async def refresh(
-        self, media_type: MediaType, al_low_priority: bool = False
+        self,
+        media_type: MediaType,
     ) -> list[ListEntry]:
         return []
 
@@ -390,11 +391,9 @@ class ALUserlist(Userlist):
     service = AnilistService.ANILIST
 
     @override
-    async def refresh(
-        self, media_type: MediaType, al_low_priority: bool = False
-    ) -> list[ListEntry]:
+    async def refresh(self, media_type: MediaType) -> list[ListEntry]:
         # fetch updated list
-        entries = await self.fetch_entries(media_type, al_low_priority)
+        entries = await self.fetch_entries(media_type)
 
         user_entries: list[ListEntry] = []
         for entry in entries.values():
@@ -409,9 +408,7 @@ class ALUserlist(Userlist):
 
         return user_entries
 
-    async def fetch_entries(
-        self, media_type: MediaType, al_low_priority: bool = False
-    ) -> dict[int, ALListEntry]:
+    async def fetch_entries(self, media_type: MediaType) -> dict[int, ALListEntry]:
         query = """
         query ($username: String, $type: MediaType) {
             MediaListCollection(userName: $username, type: $type) {
@@ -437,7 +434,6 @@ class ALUserlist(Userlist):
             {'query': query, 'variables': variables},
             model=ALEntriesResponse,
             timeout=aiohttp.ClientTimeout(total=300),
-            low_priority=al_low_priority,
         )
 
         entries = chain.from_iterable(l.entries for l in jsonData.data.MediaListCollection.lists)
@@ -479,9 +475,7 @@ class MALUserlist(Userlist):
     refresh_lock = asyncio.Lock()
 
     @override
-    async def refresh(
-        self, media_type: MediaType, al_low_priority: bool = False
-    ) -> list[ListEntry]:
+    async def refresh(self, media_type: MediaType) -> list[ListEntry]:
         for _ in range(3):
             try:
                 userlist = await self.fetch_list(self.username, media_type)
@@ -493,9 +487,7 @@ class MALUserlist(Userlist):
             logger.error(f'MALUserlist: refresh failed for {self.username}')
             return []
 
-        al_ids = await self.get_al_ids(
-            media_type, set(entry.node.id for entry in userlist), low_priority=al_low_priority
-        )
+        al_ids = await self.get_al_ids(media_type, set(entry.node.id for entry in userlist))
 
         user_entries: list[ListEntry] = []
         for entry in userlist:
@@ -549,9 +541,7 @@ class MALUserlist(Userlist):
             return entries
 
     @classmethod
-    async def get_al_ids(
-        cls, media_type: MediaType, ids_mal: set[int], low_priority: bool = False
-    ) -> dict[int, int | None]:
+    async def get_al_ids(cls, media_type: MediaType, ids_mal: set[int]) -> dict[int, int | None]:
         to_fetch = [id_mal for id_mal in ids_mal if id_mal not in malmapper[media_type]]
 
         if to_fetch:
@@ -579,7 +569,6 @@ class MALUserlist(Userlist):
                     jsonData = await anilist_api(
                         {'query': query, 'variables': variables},
                         model=ALMediaResponse,
-                        low_priority=low_priority,
                     )
                     for almedia in jsonData.data.Page.media:
                         assert almedia.idMal is not None
@@ -612,7 +601,7 @@ class ALTagResponse(BaseModel):
     data: ALTagData
 
 
-async def get_tags(al_low_priority: bool = False) -> list[MediaTag]:
+async def get_tags() -> list[MediaTag]:
     query = (
         """
     query {
@@ -623,9 +612,7 @@ async def get_tags(al_low_priority: bool = False) -> list[MediaTag]:
     """
         % tag_fields
     )
-    jsonData = await anilist_api(
-        dict(query=query), model=ALTagResponse, low_priority=al_low_priority
-    )
+    jsonData = await anilist_api(dict(query=query), model=ALTagResponse)
     return jsonData.data.MediaTagCollection
 
 
@@ -634,7 +621,7 @@ merge_lock = asyncio.Lock()
 T = TypeVar('T', bound=ALBaseModel)
 
 
-async def fetch_media(*media_ids: int, page: int = 1, low_priority: bool = False) -> list[ALMedia]:
+async def fetch_media(*media_ids: int, page: int = 1) -> list[ALMedia]:
     if len(media_ids) == 0:
         return []
 
@@ -662,7 +649,6 @@ async def fetch_media(*media_ids: int, page: int = 1, low_priority: bool = False
             jsonData = await anilist_api(
                 dict(query=query, variables=variables),
                 model=ALMediaResponse,
-                low_priority=low_priority,
             )
             for almedia in jsonData.data.Page.media:
                 not_found.remove(almedia.id)
@@ -691,9 +677,7 @@ class ALCharaResponse(BaseModel):
     data: ALCharaData
 
 
-async def fetch_chara(
-    *charas_ids: int, page: int = 1, low_priority: bool = False
-) -> list[ALCharacter]:
+async def fetch_chara(*charas_ids: int, page: int = 1) -> list[ALCharacter]:
     if len(charas_ids) == 0:
         return []
 
@@ -730,7 +714,6 @@ async def fetch_chara(
             jsonData = await anilist_api(
                 dict(query=query, variables=variables),
                 model=ALCharaResponse,
-                low_priority=low_priority,
             )
             for alchara in jsonData.data.Page.characters:
                 not_found.remove(alchara.id)
@@ -759,7 +742,7 @@ class ALStaffResponse(BaseModel):
     data: ALStaffData
 
 
-async def fetch_staff(*staff_ids: int, page: int = 1, low_priority: bool = False) -> list[ALStaff]:
+async def fetch_staff(*staff_ids: int, page: int = 1) -> list[ALStaff]:
     if len(staff_ids) == 0:
         return []
 
@@ -787,7 +770,6 @@ async def fetch_staff(*staff_ids: int, page: int = 1, low_priority: bool = False
             jsonData = await anilist_api(
                 dict(query=query, variables=variables),
                 model=ALStaffResponse,
-                low_priority=low_priority,
             )
             for alstaff in jsonData.data.Page.staff:
                 not_found.remove(alstaff.id)
@@ -804,7 +786,7 @@ async def fetch_staff(*staff_ids: int, page: int = 1, low_priority: bool = False
     return staffs
 
 
-async def update_missing_media(media_ids: set[int], low_priority: bool = True) -> None:
+async def update_missing_media(media_ids: set[int]) -> None:
     all_ids = await media_select_all_ids(get_edgedb())
     ids_db = {i.id_al for i in all_ids}
 
@@ -816,13 +798,13 @@ async def update_missing_media(media_ids: set[int], low_priority: bool = True) -
     logger.info(f'updating {len(ids)} medias in {len(batches)} requests')
 
     for mbatch in batches:
-        medias = await fetch_media(*mbatch, low_priority=low_priority)
+        medias = await fetch_media(*mbatch)
         _ = await media_merge_multiple(
             get_edgedb(), medias=[media.to_edgedb() for media in medias]
         )
 
 
-async def update_missing_characters(charas_ids: set[int], low_priority: bool = True) -> None:
+async def update_missing_characters(charas_ids: set[int]) -> None:
     all_ids = await chara_select_all_ids(get_edgedb())
     ids_db = {i.id_al for i in all_ids}
 
@@ -833,13 +815,13 @@ async def update_missing_characters(charas_ids: set[int], low_priority: bool = T
     logger.info(f'updating {len(ids)} charas in {len(batches)} requests')
 
     for cbatch in batches:
-        charas = await fetch_chara(*cbatch, low_priority=low_priority)
+        charas = await fetch_chara(*cbatch)
         _ = await chara_merge_multiple(
             get_edgedb(), characters=[chara.to_edgedb() for chara in charas]
         )
 
 
-async def update_missing_staff(staff_ids: set[int], low_priority: bool = True) -> None:
+async def update_missing_staff(staff_ids: set[int]) -> None:
     all_ids = await staff_select_all_ids(get_edgedb())
     ids_db = {i.id_al for i in all_ids}
 
@@ -851,5 +833,5 @@ async def update_missing_staff(staff_ids: set[int], low_priority: bool = True) -
     logger.info(f'updating {len(ids)} staffs in {len(batches)} requests')
 
     for sbatch in batches:
-        staff = await fetch_staff(*sbatch, low_priority=low_priority)
+        staff = await fetch_staff(*sbatch)
         _ = await staff_merge_multiple(get_edgedb(), staffs=[s.to_edgedb() for s in staff])

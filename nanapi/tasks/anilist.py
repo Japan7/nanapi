@@ -1,11 +1,15 @@
+import argparse
 import asyncio
 import logging
+import sys
 import time
 from collections import defaultdict
 from contextlib import suppress
+from dataclasses import dataclass
 from itertools import batched, chain
 from typing import TypedDict
 
+import nanapi.settings as settings
 from nanapi.database.anilist.c_edge_merge_multiple import (
     CEdgeMergeMultipleEdges,
     c_edge_merge_multiple,
@@ -19,7 +23,6 @@ from nanapi.database.anilist.staff_select_all_ids import staff_select_all_ids
 from nanapi.database.anilist.staff_update_multiple import staff_update_multiple
 from nanapi.database.anilist.tag_merge_multiple import tag_merge_multiple
 from nanapi.models.anilist import ALMedia, ALStaff
-from nanapi.settings import LOG_LEVEL
 from nanapi.tasks.userlists import refresh_lists
 from nanapi.utils.anilist import (
     fetch_chara,
@@ -38,7 +41,7 @@ logger = logging.getLogger(__name__)
 
 @webhook_exceptions
 async def refresh_tags():
-    tags = await get_tags(al_low_priority=True)
+    tags = await get_tags()
     await tag_merge_multiple(get_edgedb(), tags=[tag.to_edgedb() for tag in tags])
 
 
@@ -62,7 +65,7 @@ async def refresh_medias() -> None:
         to_merge: list[int] = []
 
         for mbatch in batches:
-            medias = await fetch_media(*mbatch, page=page, low_priority=True)
+            medias = await fetch_media(*mbatch, page=page)
 
             to_update.difference_update(mbatch)
             for m in medias:
@@ -80,7 +83,7 @@ async def refresh_medias() -> None:
         characters = set(chain.from_iterable(media_characters.values()))
 
         logger.info(f'merging characters from {len(media_characters)} medias')
-        await update_missing_characters(characters, low_priority=True)
+        await update_missing_characters(characters)
         for media_id in to_merge:
             charas = media_characters.pop(media_id)
             _ = await media_merge_combined_charas(
@@ -122,7 +125,7 @@ async def refresh_charas() -> None:
         logger.info(f'refreshing {len(to_update)} charas')
 
         for cbatch in batches:
-            charas = await fetch_chara(*cbatch, page=page, low_priority=True)
+            charas = await fetch_chara(*cbatch, page=page)
 
             to_update.difference_update(cbatch)
             for c in charas:
@@ -146,8 +149,8 @@ async def refresh_charas() -> None:
         page += 1
 
     # media links will be linked the next time refresh_medias runs
-    await update_missing_media(medias, low_priority=True)
-    await update_missing_staff(voice_actors, low_priority=True)
+    await update_missing_media(medias)
+    await update_missing_staff(voice_actors)
     logger.info(f'adding {len(chara_edges)} character edges')
     _ = await c_edge_merge_multiple(tx, edges=chara_edges)
     _ = await chara_update(tx, characters=list(updated), last_update=int(time.time()))
@@ -173,7 +176,7 @@ async def refresh_staffs() -> None:
         to_merge: list[ALStaff] = []
 
         for sbatch in batches:
-            staffs = await fetch_staff(*sbatch, page=page, low_priority=True)
+            staffs = await fetch_staff(*sbatch, page=page)
 
             to_update.difference_update(sbatch)
             for s in staffs:
@@ -189,7 +192,7 @@ async def refresh_staffs() -> None:
                     with suppress(KeyError):
                         del staff_infos[s.id]
 
-        await update_missing_characters(charas, low_priority=True)
+        await update_missing_characters(charas)
         _ = await staff_update_multiple(
             get_edgedb(),
             staffs=[s.to_edgedb() for s in to_merge],
@@ -199,7 +202,28 @@ async def refresh_staffs() -> None:
         page += 1
 
 
+@dataclass
+class Args:
+    high_priority: bool = False
+
+
 async def main():
+    parser = argparse.ArgumentParser('anilist_tasks')
+    _ = parser.add_argument(
+        '--high-priority',
+        help=(
+            'for development purposes only, '
+            'doesn’t keep a budget of requests for interactive actions.'
+        ),
+        action=argparse.BooleanOptionalAction,
+    )
+    args = Args()
+    _ = parser.parse_args(sys.argv[1:], namespace=args)
+
+    if args.high_priority:
+        logger.info('running this task with higher priority on Anilist API call budget')
+        settings.AL_LOW_PRIORITY_THRESH = 0
+
     logger.info('refreshing tags')
     await refresh_tags()
     logger.info('refreshing lists')
@@ -213,5 +237,5 @@ async def main():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=LOG_LEVEL)
+    logging.basicConfig(level=settings.LOG_LEVEL)
     asyncio.run(main())
