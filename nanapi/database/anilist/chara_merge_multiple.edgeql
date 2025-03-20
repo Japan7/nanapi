@@ -1,11 +1,3 @@
-from typing import Any
-from uuid import UUID
-
-import orjson
-from gel import AsyncIOExecutor
-from pydantic import BaseModel, TypeAdapter
-
-EDGEQL_QUERY = r"""
 with
   characters := <json>$characters,
 for character in json_array_unpack(characters) union (
@@ -59,23 +51,3 @@ for character in json_array_unpack(characters) union (
     }
   )
 )
-"""
-
-
-class CharaMergeMultipleResult(BaseModel):
-    id: UUID
-
-
-adapter = TypeAdapter(list[CharaMergeMultipleResult])
-
-
-async def chara_merge_multiple(
-    executor: AsyncIOExecutor,
-    *,
-    characters: Any,
-) -> list[CharaMergeMultipleResult]:
-    resp = await executor.query_json(
-        EDGEQL_QUERY,
-        characters=orjson.dumps(characters).decode(),
-    )
-    return adapter.validate_json(resp, strict=False)

@@ -1,11 +1,3 @@
-from typing import Any, Literal
-from uuid import UUID
-
-import orjson
-from gel import AsyncIOExecutor
-from pydantic import BaseModel, TypeAdapter
-
-EDGEQL_QUERY = r"""
 with
   service := <anilist::Service>$service,
   username := <str>$username,
@@ -34,40 +26,3 @@ for entry in json_array_unpack(entries) union (
     media := media,
   }
 );
-"""
-
-
-ACCOUNT_REPLACE_ENTRIES_SERVICE = Literal[
-    'ANILIST',
-    'MYANIMELIST',
-]
-
-ACCOUNT_REPLACE_ENTRIES_TYPE = Literal[
-    'ANIME',
-    'MANGA',
-]
-
-
-class AccountReplaceEntriesResult(BaseModel):
-    id: UUID
-
-
-adapter = TypeAdapter(list[AccountReplaceEntriesResult])
-
-
-async def account_replace_entries(
-    executor: AsyncIOExecutor,
-    *,
-    service: ACCOUNT_REPLACE_ENTRIES_SERVICE,
-    username: str,
-    type: ACCOUNT_REPLACE_ENTRIES_TYPE,
-    entries: Any,
-) -> list[AccountReplaceEntriesResult]:
-    resp = await executor.query_json(
-        EDGEQL_QUERY,
-        service=service,
-        username=username,
-        type=type,
-        entries=orjson.dumps(entries).decode(),
-    )
-    return adapter.validate_json(resp, strict=False)
