@@ -1,11 +1,3 @@
-from typing import Any
-from uuid import UUID
-
-import orjson
-from gel import AsyncIOExecutor
-from pydantic import BaseModel, TypeAdapter
-
-EDGEQL_QUERY = r"""
 with
   staffs := <json>$staffs,
 for staff in json_array_unpack(staffs) union (
@@ -65,23 +57,3 @@ for staff in json_array_unpack(staffs) union (
     }
   )
 )
-"""
-
-
-class StaffMergeMultipleResult(BaseModel):
-    id: UUID
-
-
-adapter = TypeAdapter(list[StaffMergeMultipleResult])
-
-
-async def staff_merge_multiple(
-    executor: AsyncIOExecutor,
-    *,
-    staffs: Any,
-) -> list[StaffMergeMultipleResult]:
-    resp = await executor.query_json(
-        EDGEQL_QUERY,
-        staffs=orjson.dumps(staffs).decode(),
-    )
-    return adapter.validate_json(resp, strict=False)

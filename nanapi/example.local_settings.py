@@ -36,7 +36,7 @@ JWT_SECRET_KEY = ''  # openssl rand -hex 32
 # REDOC_URL = '/redoc'
 
 ## AniList
-# LOW_PRIORITY_THRESH = 30
+# AL_LOW_PRIORITY_THRESH = 30
 
 ## MyAnimeList
 MAL_CLIENT_ID = ''
