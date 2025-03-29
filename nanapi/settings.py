@@ -35,7 +35,11 @@ SWAGGER_UI_OAUTH2_REDIRECT_URL = DOCS_URL + '/oauth2-redirect'
 REDOC_URL = '/redoc'
 
 ## AniList
-AL_LOW_PRIORITY_THRESH = 30
+# AniList API is currently in “degraded” mode and limits to
+# 60 requests per minutes. The headers are still reporting 90
+# so we set it to 70 per default to keep an interactive budget
+# of 10 requests.
+AL_LOW_PRIORITY_THRESH = 70
 
 ## MyAnimeList
 # MAL_CLIENT_ID = ''
