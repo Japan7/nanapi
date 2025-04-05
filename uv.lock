@@ -519,7 +519,7 @@ wheels = [
 
 [[package]]
 name = "gel-pydantic-codegen"
-version = "1.0.0"
+version = "1.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gel" },
@@ -528,9 +528,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "ruff" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/09/d3/143c56ca7b43a93f3d88136ef6576bf12761b5588c0875361539787bb5b5/gel_pydantic_codegen-1.0.0.tar.gz", hash = "sha256:15d46562521133fa218fa03f448c3f5d18cefb527b238c2d2cc81e226ff25026", size = 26234 }
+sdist = { url = "https://files.pythonhosted.org/packages/04/70/47ea39846c538442bb41d86d6e4fe08fab9e340ccfe2f48b5c50841068af/gel_pydantic_codegen-1.0.1.tar.gz", hash = "sha256:a524797291a99584133ed5544fdf997bce986739512b97235c6e493880b31978", size = 27652 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5b/24/3d147aa53331bee5c0e9edcbc82aab86e7406b73fbc4dca5b6817724dd33/gel_pydantic_codegen-1.0.0-py3-none-any.whl", hash = "sha256:39d5221693f241c2bfd0f726844c3b0df8e7738137394017466696385a905dbf", size = 9038 },
+    { url = "https://files.pythonhosted.org/packages/1e/b3/a822a61f596fb36d655256b68c21e6d1591c1ae3208bb13bcc24c2a0e579/gel_pydantic_codegen-1.0.1-py3-none-any.whl", hash = "sha256:feebfa1c7b481b41db8daf829e146205ff093a9f560f2528e9b0df272884b894", size = 9136 },
 ]
 
 [[package]]
@@ -875,8 +875,8 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "fawltydeps", specifier = ">=0.19.0" },
-    { name = "gel-pydantic-codegen", specifier = "==1.0.0" },
+    { name = "fawltydeps", specifier = "==0.19.0" },
+    { name = "gel-pydantic-codegen", specifier = "==1.0.1" },
     { name = "pyinstrument", specifier = "==5.0.1" },
     { name = "pyright", specifier = "==1.1.398" },
     { name = "ruff", specifier = "==0.11.4" },
