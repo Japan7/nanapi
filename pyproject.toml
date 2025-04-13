@@ -33,7 +33,7 @@ dependencies = [
     "pyjwt==2.10.1",
     "ics==0.7.2",
     "yarl==1.19.0",
-    "starlette==0.46.1",
+    "starlette==0.46.2",
 ]
 
 [dependency-groups]
