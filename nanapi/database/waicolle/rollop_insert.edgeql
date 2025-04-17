@@ -1,5 +1,5 @@
 with
-  author_discord_id := <int64>$author_discord_id,
+  author_discord_id := <str>$author_discord_id,
   received_ids := <array<uuid>>$received_ids,
   reason := <str>$reason,
   moecoins := <optional int32>$moecoins ?? 0,

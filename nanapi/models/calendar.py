@@ -16,5 +16,5 @@ class UpsertGuildEventBody(BaseModel):
     end_time: datetime
     image: str | None = None
     url: str | None = None
-    organizer_id: int
+    organizer_id: str
     organizer_username: str

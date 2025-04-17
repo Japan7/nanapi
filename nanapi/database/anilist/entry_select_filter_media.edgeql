@@ -7,7 +7,6 @@ select anilist::Entry {
   account: {
     user: {
       discord_id,
-      discord_id_str,
     },
   }
 }

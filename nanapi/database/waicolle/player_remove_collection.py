@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   id := <uuid>$id,
   collection := (select waicolle::Collection filter .id = id),
 update waicolle::Player
@@ -26,7 +26,7 @@ adapter = TypeAdapter(PlayerRemoveCollectionResult | None)
 async def player_remove_collection(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     id: UUID,
 ) -> PlayerRemoveCollectionResult | None:
     resp = await executor.query_single_json(

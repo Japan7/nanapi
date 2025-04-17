@@ -44,7 +44,7 @@ async def new_quizz(body: NewQuizzBody, edgedb: AsyncIOClient = Depends(get_clie
     response_model=QuizzGetOldestResult,
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
-async def get_oldest_quizz(channel_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+async def get_oldest_quizz(channel_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     resp = await quizz_get_oldest(edgedb, channel_id=channel_id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -114,7 +114,7 @@ async def new_game(body: NewGameBody, edgedb: AsyncIOClient = Depends(get_client
     response_model=GameGetCurrentResult,
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
-async def get_current_game(channel_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+async def get_current_game(channel_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     resp = await game_get_current(edgedb, channel_id=channel_id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -126,7 +126,7 @@ async def get_current_game(channel_id: int, edgedb: AsyncIOClient = Depends(get_
     response_model=GameGetLastResult,
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
-async def get_last_game(channel_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+async def get_last_game(channel_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     resp = await game_get_last(edgedb, channel_id=channel_id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -138,7 +138,7 @@ async def get_last_game(channel_id: int, edgedb: AsyncIOClient = Depends(get_cli
     response_model=GameDeleteByMessageIdResult,
     responses={status.HTTP_204_NO_CONTENT: {}},
 )
-async def delete_game(message_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+async def delete_game(message_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     resp = await game_delete_by_message_id(edgedb, message_id=message_id)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)

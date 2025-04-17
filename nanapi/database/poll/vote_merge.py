@@ -5,9 +5,9 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   discord_username := <str>$discord_username,
-  message_id := <int64>$message_id,
+  message_id := <str>$message_id,
   rank := <int32>$rank,
   user := (
     insert user::User {
@@ -47,9 +47,9 @@ adapter = TypeAdapter(VoteMergeResult | None)
 async def vote_merge(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     discord_username: str,
-    message_id: int,
+    message_id: str,
     rank: int,
 ) -> VoteMergeResult | None:
     resp = await executor.query_single_json(

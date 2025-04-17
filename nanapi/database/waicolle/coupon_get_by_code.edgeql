@@ -5,7 +5,6 @@ select waicolle::Coupon {
   claimed_by: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
 }

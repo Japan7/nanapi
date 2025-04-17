@@ -5,8 +5,8 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
-  participant_id := <int64>$participant_id,
+  discord_id := <str>$discord_id,
+  participant_id := <str>$participant_id,
 update calendar::GuildEvent
 filter .client = global client and .discord_id = discord_id
 set {
@@ -25,8 +25,8 @@ adapter = TypeAdapter(GuildEventParticipantRemoveResult | None)
 async def guild_event_participant_remove(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
-    participant_id: int,
+    discord_id: str,
+    participant_id: str,
 ) -> GuildEventParticipantRemoveResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

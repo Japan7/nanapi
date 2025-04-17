@@ -6,7 +6,7 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 with
   code := <str>$code,
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
 update waicolle::Coupon
 filter .client = global client and .code = code
@@ -27,7 +27,7 @@ async def coupon_add_player(
     executor: AsyncIOExecutor,
     *,
     code: str,
-    discord_id: int,
+    discord_id: str,
 ) -> CouponAddPlayerResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

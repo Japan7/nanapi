@@ -7,7 +7,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
   waifus := (
     select waicolle::Waifu
@@ -35,13 +35,11 @@ select counted {
     owner: {
     user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
     user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },
@@ -62,8 +60,7 @@ class WaifuEdgedResultElementsCustomPositionWaifu(BaseModel):
 
 
 class WaifuEdgedResultElementsOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuEdgedResultElementsOriginalOwner(BaseModel):
@@ -71,8 +68,7 @@ class WaifuEdgedResultElementsOriginalOwner(BaseModel):
 
 
 class WaifuEdgedResultElementsOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuEdgedResultElementsOwner(BaseModel):
@@ -88,8 +84,6 @@ class WaifuEdgedResultElements(BaseModel):
     owner: WaifuEdgedResultElementsOwner
     original_owner: WaifuEdgedResultElementsOriginalOwner | None
     custom_position_waifu: WaifuEdgedResultElementsCustomPositionWaifu | None
-    frozen: bool
-    disabled: bool
     trade_locked: bool
     timestamp: datetime
     nanaed: bool
@@ -100,6 +94,8 @@ class WaifuEdgedResultElements(BaseModel):
     custom_image: str | None
     custom_collage: bool
     blooded: bool
+    disabled: bool
+    frozen: bool
     id: UUID
 
 
@@ -119,7 +115,7 @@ adapter = TypeAdapter(list[WaifuEdgedResult])
 async def waifu_edged(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
 ) -> list[WaifuEdgedResult]:
     resp = await executor.query_json(
         EDGEQL_QUERY,

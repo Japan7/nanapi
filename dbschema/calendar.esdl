@@ -8,8 +8,7 @@ module calendar {
   }
 
   type GuildEvent extending default::ClientObject {
-    required property discord_id -> int64;
-    required property discord_id_str := <str>.discord_id;
+    required property discord_id -> str;
     required property name -> str;
     property description -> str;
     property location -> str;

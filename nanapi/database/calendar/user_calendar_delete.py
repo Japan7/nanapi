@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id
+  discord_id := <str>$discord_id
 delete calendar::UserCalendar
 filter .user.discord_id = discord_id
 """
@@ -21,7 +21,7 @@ adapter = TypeAdapter(UserCalendarDeleteResult | None)
 async def user_calendar_delete(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
 ) -> UserCalendarDeleteResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

@@ -8,7 +8,7 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 with
   id := <uuid>$id,
-  winner_discord_id := <int64>$winner_discord_id,
+  winner_discord_id := <str>$winner_discord_id,
   winner_discord_username := <str>$winner_discord_username,
   winner := (
     insert user::User {
@@ -35,18 +35,15 @@ select updated {
   id,
   status,
   message_id,
-  message_id_str,
   answer_bananed,
   started_at,
   ended_at,
   winner: {
     discord_id,
-    discord_id_str,
   },
   quizz: {
     id,
     channel_id,
-    channel_id_str,
     description,
     url,
     is_image,
@@ -56,7 +53,6 @@ select updated {
     hikaried,
     author: {
       discord_id,
-      discord_id_str,
     },
   }
 }
@@ -69,14 +65,12 @@ class QuizzStatus(StrEnum):
 
 
 class GameEndResultQuizzAuthor(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class GameEndResultQuizz(BaseModel):
     id: UUID
-    channel_id: int
-    channel_id_str: str
+    channel_id: str
     description: str | None
     url: str | None
     is_image: bool
@@ -88,15 +82,13 @@ class GameEndResultQuizz(BaseModel):
 
 
 class GameEndResultWinner(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class GameEndResult(BaseModel):
     id: UUID
     status: QuizzStatus
-    message_id: int
-    message_id_str: str
+    message_id: str
     answer_bananed: str | None
     started_at: datetime
     ended_at: datetime | None
@@ -111,7 +103,7 @@ async def game_end(
     executor: AsyncIOExecutor,
     *,
     id: UUID,
-    winner_discord_id: int,
+    winner_discord_id: str,
     winner_discord_username: str,
 ) -> GameEndResult | None:
     resp = await executor.query_single_json(

@@ -6,7 +6,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   discord_username := <str>$discord_username,
   game_mode := <waicolle::GameMode>$game_mode,
   user := (
@@ -53,7 +53,7 @@ adapter = TypeAdapter(PlayerMergeResult | None)
 async def player_merge(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     discord_username: str,
     game_mode: PLAYER_MERGE_GAME_MODE,
 ) -> PlayerMergeResult | None:

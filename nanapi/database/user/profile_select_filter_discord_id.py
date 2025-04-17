@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_ids := <array<int64>>$discord_ids,
+  discord_ids := <array<str>>$discord_ids,
   _discord_ids := array_unpack(discord_ids),
 select user::Profile {
   birthday,
@@ -17,7 +17,6 @@ select user::Profile {
   telephone,
   user: {
     discord_id,
-    discord_id_str,
   },
 }
 filter .user.discord_id in _discord_ids
@@ -26,8 +25,7 @@ order by .full_name
 
 
 class ProfileSelectFilterDiscordIdResultUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class ProfileSelectFilterDiscordIdResult(BaseModel):
@@ -47,7 +45,7 @@ adapter = TypeAdapter(list[ProfileSelectFilterDiscordIdResult])
 async def profile_select_filter_discord_id(
     executor: AsyncIOExecutor,
     *,
-    discord_ids: list[int],
+    discord_ids: list[str],
 ) -> list[ProfileSelectFilterDiscordIdResult]:
     resp = await executor.query_json(
         EDGEQL_QUERY,

@@ -6,11 +6,10 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  channel_id := <int64>$channel_id
+  channel_id := <str>$channel_id
 select quizz::Quizz {
   id,
   channel_id,
-  channel_id_str,
   description,
   url,
   is_image,
@@ -20,7 +19,6 @@ select quizz::Quizz {
   hikaried,
   author: {
     discord_id,
-    discord_id_str,
   },
 }
 filter .client = global client and not exists .game and .channel_id = channel_id
@@ -30,14 +28,12 @@ limit 1
 
 
 class QuizzGetOldestResultAuthor(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class QuizzGetOldestResult(BaseModel):
     id: UUID
-    channel_id: int
-    channel_id_str: str
+    channel_id: str
     description: str | None
     url: str | None
     is_image: bool
@@ -54,7 +50,7 @@ adapter = TypeAdapter(QuizzGetOldestResult | None)
 async def quizz_get_oldest(
     executor: AsyncIOExecutor,
     *,
-    channel_id: int,
+    channel_id: str,
 ) -> QuizzGetOldestResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

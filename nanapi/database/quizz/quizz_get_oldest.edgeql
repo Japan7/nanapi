@@ -1,9 +1,8 @@
 with
-  channel_id := <int64>$channel_id
+  channel_id := <str>$channel_id
 select quizz::Quizz {
   id,
   channel_id,
-  channel_id_str,
   description,
   url,
   is_image,
@@ -13,7 +12,6 @@ select quizz::Quizz {
   hikaried,
   author: {
     discord_id,
-    discord_id_str,
   },
 }
 filter .client = global client and not exists .game and .channel_id = channel_id

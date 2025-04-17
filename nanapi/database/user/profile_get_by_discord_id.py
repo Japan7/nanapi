@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   profiles := (
     select user::Profile
     filter .user.discord_id = discord_id
@@ -20,15 +20,13 @@ select profiles {
   telephone,
   user: {
     discord_id,
-    discord_id_str,
   },
 }
 """
 
 
 class ProfileGetByDiscordIdResultUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class ProfileGetByDiscordIdResult(BaseModel):
@@ -48,7 +46,7 @@ adapter = TypeAdapter(ProfileGetByDiscordIdResult | None)
 async def profile_get_by_discord_id(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
 ) -> ProfileGetByDiscordIdResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

@@ -1,5 +1,5 @@
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   charas_ids := <array<int32>>$charas_ids,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
 for id_al in array_unpack(charas_ids) union (
@@ -19,13 +19,11 @@ for id_al in array_unpack(charas_ids) union (
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },

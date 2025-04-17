@@ -3,7 +3,6 @@ with
 select quizz::Quizz {
   id,
   channel_id,
-  channel_id_str,
   description,
   url,
   is_image,
@@ -13,7 +12,6 @@ select quizz::Quizz {
   hikaried,
   author: {
     discord_id,
-    discord_id_str,
   },
 }
 filter .id = id;

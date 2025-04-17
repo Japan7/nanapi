@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   discord_username := <str>$discord_username,
   birthday := <optional datetime>$birthday,
   full_name := <optional str>$full_name,
@@ -60,15 +60,13 @@ select profile {
   telephone,
   user: {
     discord_id,
-    discord_id_str,
   },
 }
 """
 
 
 class ProfileMergeSelectResultUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class ProfileMergeSelectResult(BaseModel):
@@ -88,7 +86,7 @@ adapter = TypeAdapter(ProfileMergeSelectResult)
 async def profile_merge_select(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     discord_username: str,
     birthday: datetime | None = None,
     full_name: str | None = None,

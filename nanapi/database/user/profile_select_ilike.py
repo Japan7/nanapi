@@ -16,7 +16,6 @@ select user::Profile {
   telephone,
   user: {
     discord_id,
-    discord_id_str,
   },
 }
 filter (
@@ -28,8 +27,7 @@ filter (
 
 
 class ProfileSelectIlikeResultUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class ProfileSelectIlikeResult(BaseModel):

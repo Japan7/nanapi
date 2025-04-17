@@ -1,7 +1,7 @@
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   discord_username := <str>$discord_username,
-  channel_id := <int64>$channel_id,
+  channel_id := <str>$channel_id,
   message := <str>$message,
   timestamp := <datetime>$timestamp,
   user := (
@@ -28,11 +28,9 @@ with
 select reminder {
   id,
   channel_id,
-  channel_id_str,
   message,
   timestamp,
   user: {
     discord_id,
-    discord_id_str,
   },
 };

@@ -175,7 +175,7 @@ async def get_players(
 
 @router.oauth2_client_restricted.patch('/players/{discord_id}', response_model=PlayerMergeResult)
 async def upsert_player(
-    discord_id: int, body: UpsertPlayerBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, body: UpsertPlayerBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     return await player_merge(edgedb, discord_id=discord_id, **body.model_dump())
 
@@ -185,7 +185,7 @@ async def upsert_player(
     response_model=PlayerGetByUserResult,
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
-async def get_player(discord_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+async def get_player(discord_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     resp = await player_get_by_user(edgedb, discord_id=discord_id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -197,7 +197,7 @@ async def get_player(discord_id: int, edgedb: AsyncIOClient = Depends(get_client
     response_model=PlayerFreezeResult,
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
-async def freeze_player(discord_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+async def freeze_player(discord_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     resp = await player_freeze(edgedb, discord_id=discord_id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -213,7 +213,7 @@ async def freeze_player(discord_id: int, edgedb: AsyncIOClient = Depends(get_cli
     },
 )
 async def add_player_coins(
-    discord_id: int, body: AddPlayerCoinsBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, body: AddPlayerCoinsBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     try:
         resp = await player_add_coins(edgedb, discord_id=discord_id, **body.model_dump())
@@ -234,8 +234,8 @@ async def add_player_coins(
     },
 )
 async def donate_player_coins(
-    discord_id: int,
-    to_discord_id: int,
+    discord_id: str,
+    to_discord_id: str,
     body: DonatePlayerCoinsBody,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
@@ -286,11 +286,11 @@ async def donate_player_coins(
     },
 )
 async def player_roll(
-    discord_id: int,
+    discord_id: str,
     roll_id: str | None = None,
     coupon_code: str | None = None,
     nb: int | None = None,
-    pool_discord_id: int | None = None,
+    pool_discord_id: str | None = None,
     reason: str | None = None,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
@@ -372,7 +372,7 @@ async def player_roll(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_player_tracked_items(
-    discord_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     try:
         return await player_tracked_items(edgedb, discord_id=discord_id)
@@ -386,7 +386,7 @@ async def get_player_tracked_items(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_player_track_unlocked(
-    discord_id: int, hide_singles: int = 0, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, hide_singles: int = 0, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     try:
         return await waifu_track_unlocked(
@@ -402,7 +402,7 @@ async def get_player_track_unlocked(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_player_track_reversed(
-    discord_id: int, hide_singles: int = 0, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, hide_singles: int = 0, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     try:
         unlocked = await waifu_select_by_user(
@@ -425,13 +425,13 @@ async def get_player_track_reversed(
     resp_map: dict[
         int,
         tuple[
-            dict[int, PlayerSelectByCharaResult],
-            dict[int, list[WaifuSelectByCharaResult]],
+            dict[str, PlayerSelectByCharaResult],
+            dict[str, list[WaifuSelectByCharaResult]],
         ],
     ] = {}
     for id_al, ttask, wtask in tasks:
         trackers_map = {t.user.discord_id: t for t in ttask.result() if t.frozen_at is None}
-        locked_map = defaultdict[int, list[WaifuSelectByCharaResult]](list)
+        locked_map = defaultdict[str, list[WaifuSelectByCharaResult]](list)
         for w in wtask.result():
             if w.locked and not w.frozen:
                 locked_map[w.owner.user.discord_id].append(w)
@@ -461,7 +461,7 @@ async def get_player_track_reversed(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_player_media_stats(
-    discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     try:
         return await player_media_stats(edgedb, discord_id=discord_id, id_al=id_al)
@@ -475,7 +475,7 @@ async def get_player_media_stats(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def player_track_media(
-    discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     try:
         return await player_add_media(edgedb, discord_id=discord_id, id_al=id_al)
@@ -489,7 +489,7 @@ async def player_track_media(
     responses={status.HTTP_204_NO_CONTENT: {}},
 )
 async def player_untrack_media(
-    discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     resp = await player_remove_media(edgedb, discord_id=discord_id, id_al=id_al)
     if resp is None:
@@ -503,7 +503,7 @@ async def player_untrack_media(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_player_staff_stats(
-    discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     try:
         return await player_staff_stats(edgedb, discord_id=discord_id, id_al=id_al)
@@ -517,7 +517,7 @@ async def get_player_staff_stats(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def player_track_staff(
-    discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     try:
         return await player_add_staff(edgedb, discord_id=discord_id, id_al=id_al)
@@ -531,7 +531,7 @@ async def player_track_staff(
     responses={status.HTTP_204_NO_CONTENT: {}},
 )
 async def player_untrack_staff(
-    discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     resp = await player_remove_staff(edgedb, discord_id=discord_id, id_al=id_al)
     if resp is None:
@@ -545,7 +545,7 @@ async def player_untrack_staff(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_player_collection_stats(
-    discord_id: int, id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     try:
         return await player_collection_stats(edgedb, discord_id=discord_id, id=id)
@@ -559,7 +559,7 @@ async def get_player_collection_stats(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def player_track_collection(
-    discord_id: int, id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     try:
         return await player_add_collection(edgedb, discord_id=discord_id, id=id)
@@ -573,7 +573,7 @@ async def player_track_collection(
     responses={status.HTTP_204_NO_CONTENT: {}},
 )
 async def player_untrack_collection(
-    discord_id: int, id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     resp = await player_remove_collection(edgedb, discord_id=discord_id, id=id)
     if resp is None:
@@ -590,7 +590,7 @@ async def player_untrack_collection(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_player_collage(
-    discord_id: int, filter: COLLAGE_CHOICE, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, filter: COLLAGE_CHOICE, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     _filter = CollageChoice(filter)
 
@@ -637,7 +637,7 @@ async def get_player_collage(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_player_media_album(
-    discord_id: int,
+    discord_id: str,
     id_al: int,
     owned_only: int = 0,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
@@ -680,7 +680,7 @@ async def get_player_media_album(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_player_staff_album(
-    discord_id: int,
+    discord_id: str,
     id_al: int,
     owned_only: int = 0,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
@@ -723,7 +723,7 @@ async def get_player_staff_album(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_player_collection_album(
-    discord_id: int,
+    discord_id: str,
     id: UUID,
     owned_only: int = 0,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
@@ -769,7 +769,7 @@ async def get_player_collection_album(
 )
 async def get_waifus(
     ids: str | None = None,
-    discord_id: int | None = None,
+    discord_id: str | None = None,
     level: int | None = None,
     locked: int | None = None,
     trade_locked: int | None = None,
@@ -879,7 +879,7 @@ async def reroll(body: RerollBody, edgedb: AsyncIOClient = Depends(get_client_ed
             return dict(obtained=resp, nanascends=nanascends)
 
 
-async def ascend_all(tx: AsyncIOExecutor, discord_id: int) -> list[WaifuSelectResult]:
+async def ascend_all(tx: AsyncIOExecutor, discord_id: str) -> list[WaifuSelectResult]:
     ascended = []
     while True:
         ascendables = await waifu_ascendable(tx, discord_id=discord_id)
@@ -911,7 +911,7 @@ async def ascend_all(tx: AsyncIOExecutor, discord_id: int) -> list[WaifuSelectRe
 
 @router.oauth2_client_restricted.delete('/waifus/expired', response_model=list[WaifuSelectResult])
 async def blood_expired_waifus(
-    discord_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     async for tx in edgedb.transaction():
         async with tx:
@@ -1339,7 +1339,7 @@ async def get_ranks():
 
 
 @router.oauth2.get('/settings/rolls', response_model=list[RollData])
-async def get_rolls(discord_id: int):
+async def get_rolls(discord_id: str):
     rolls = {roll_id: roll_getter() for roll_id, roll_getter in ROLLS.items()}
     await asyncio.gather(*[roll.load(get_edgedb()) for roll in rolls.values()])
     return [

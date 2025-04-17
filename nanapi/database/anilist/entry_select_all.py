@@ -7,7 +7,7 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 with
   media_type := <optional anilist::MediaType>$media_type,
-  discord_id := <optional int64>$discord_id,
+  discord_id := <optional str>$discord_id,
   entries := (
     (select anilist::Entry filter .account.user.discord_id = discord_id)
     if (exists discord_id) else
@@ -23,7 +23,6 @@ select entries {
   account: {
     user: {
       discord_id,
-      discord_id_str,
     },
   }
 }
@@ -47,8 +46,7 @@ class AnilistEntryStatus(StrEnum):
 
 
 class EntrySelectAllResultAccountUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class EntrySelectAllResultAccount(BaseModel):
@@ -74,7 +72,7 @@ async def entry_select_all(
     executor: AsyncIOExecutor,
     *,
     media_type: ENTRY_SELECT_ALL_MEDIA_TYPE | None = None,
-    discord_id: int | None = None,
+    discord_id: str | None = None,
 ) -> list[EntrySelectAllResult]:
     resp = await executor.query_json(
         EDGEQL_QUERY,

@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   name := <str>$name,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
   inserted := (
@@ -21,7 +21,6 @@ select inserted {
   author: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
 }
@@ -29,8 +28,7 @@ select inserted {
 
 
 class CollectionInsertResultAuthorUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class CollectionInsertResultAuthor(BaseModel):
@@ -49,7 +47,7 @@ adapter = TypeAdapter(CollectionInsertResult)
 async def collection_insert(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     name: str,
 ) -> CollectionInsertResult:
     resp = await executor.query_single_json(

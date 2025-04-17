@@ -10,7 +10,6 @@ with
 select quizz::Quizz {
   id,
   channel_id,
-  channel_id_str,
   description,
   url,
   is_image,
@@ -20,7 +19,6 @@ select quizz::Quizz {
   hikaried,
   author: {
     discord_id,
-    discord_id_str,
   },
 }
 filter .id = id;
@@ -28,14 +26,12 @@ filter .id = id;
 
 
 class QuizzGetByIdResultAuthor(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class QuizzGetByIdResult(BaseModel):
     id: UUID
-    channel_id: int
-    channel_id_str: str
+    channel_id: str
     description: str | None
     url: str | None
     is_image: bool

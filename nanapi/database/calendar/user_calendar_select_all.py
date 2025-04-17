@@ -10,8 +10,7 @@ select calendar::UserCalendar { ** }
 
 class UserCalendarSelectAllResultUser(BaseModel):
     id: UUID
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
     discord_username: str
 
 

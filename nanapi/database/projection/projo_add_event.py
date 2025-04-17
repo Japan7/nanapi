@@ -6,7 +6,7 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 with
   id := <uuid>$id,
-  event_discord_id := <int64>$event_discord_id,
+  event_discord_id := <str>$event_discord_id,
   event := (
     select calendar::GuildEvent
     filter .client = global client and .discord_id = event_discord_id
@@ -30,7 +30,7 @@ async def projo_add_event(
     executor: AsyncIOExecutor,
     *,
     id: UUID,
-    event_discord_id: int,
+    event_discord_id: str,
 ) -> ProjoAddEventResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

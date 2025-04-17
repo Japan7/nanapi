@@ -1,6 +1,6 @@
 with
   id := <uuid>$id,
-  participant_id := <int64>$participant_id,
+  participant_id := <str>$participant_id,
 update projection::Projection
 filter .id = id
 set {

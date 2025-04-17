@@ -5,8 +5,8 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
-  message_id := <int64>$message_id,
+  discord_id := <str>$discord_id,
+  message_id := <str>$message_id,
   _user := (select user::User filter .discord_id = discord_id),
   _poll := (select poll::Poll { options } filter .message_id = message_id),
 delete poll::Vote
@@ -24,8 +24,8 @@ adapter = TypeAdapter(VoteDeleteResult | None)
 async def vote_delete(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
-    message_id: int,
+    discord_id: str,
+    message_id: str,
 ) -> VoteDeleteResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

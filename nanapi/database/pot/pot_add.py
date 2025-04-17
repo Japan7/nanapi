@@ -3,7 +3,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   discord_username := <str>$discord_username,
   amount := <float32>$amount,
   user := (
@@ -48,7 +48,7 @@ adapter = TypeAdapter(PotAddResult | None)
 async def pot_add(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     discord_username: str,
     amount: float,
 ) -> PotAddResult | None:

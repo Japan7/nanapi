@@ -13,15 +13,13 @@ select filtered {
   username,
   user: {
     discord_id,
-    discord_id_str,
   }
 }
 """
 
 
 class AccountSelectResultUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class AccountSelectResult(BaseModel):

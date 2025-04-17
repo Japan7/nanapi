@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
   id_al := <int32>$id_al,
   media := (select anilist::Media filter .id_al = id_al),
@@ -58,7 +58,7 @@ adapter = TypeAdapter(PlayerMediaStatsResult)
 async def player_media_stats(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     id_al: int,
 ) -> PlayerMediaStatsResult:
     resp = await executor.query_single_json(

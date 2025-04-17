@@ -1,8 +1,8 @@
 with
-  author_discord_id := <int64>$author_discord_id,
+  author_discord_id := <str>$author_discord_id,
   received_ids := <array<uuid>>$received_ids,
   blood_shards := <optional int32>$blood_shards ?? 0,
-  offeree_discord_id := <int64>$offeree_discord_id,
+  offeree_discord_id := <str>$offeree_discord_id,
   offered_ids := <array<uuid>>$offered_ids,
   author := (select waicolle::Player filter .client = global client and .user.discord_id = author_discord_id),
   offeree := (select waicolle::Player filter .client = global client and .user.discord_id = offeree_discord_id),
@@ -21,7 +21,6 @@ select inserted {
   author: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   received: {
@@ -30,13 +29,11 @@ select inserted {
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },
@@ -44,7 +41,6 @@ select inserted {
   offeree: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   offered: {
@@ -53,13 +49,11 @@ select inserted {
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },

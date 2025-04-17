@@ -1,1 +1,1 @@
-delete poll::Poll filter .message_id = <int64>$message_id
+delete poll::Poll filter .message_id = <str>$message_id

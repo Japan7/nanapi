@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  message_id := <int64>$message_id
+  message_id := <str>$message_id
 delete quizz::Game
 filter .message_id = message_id
 """
@@ -21,7 +21,7 @@ adapter = TypeAdapter(GameDeleteByMessageIdResult | None)
 async def game_delete_by_message_id(
     executor: AsyncIOExecutor,
     *,
-    message_id: int,
+    message_id: str,
 ) -> GameDeleteByMessageIdResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

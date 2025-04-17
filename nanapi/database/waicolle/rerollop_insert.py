@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  author_discord_id := <int64>$author_discord_id,
+  author_discord_id := <str>$author_discord_id,
   received_ids := <array<uuid>>$received_ids,
   rerolled_ids := <array<uuid>>$rerolled_ids,
   author := (select waicolle::Player filter .client = global client and .user.discord_id = author_discord_id),
@@ -28,7 +28,7 @@ adapter = TypeAdapter(RerollopInsertResult)
 async def rerollop_insert(
     executor: AsyncIOExecutor,
     *,
-    author_discord_id: int,
+    author_discord_id: str,
     received_ids: list[UUID],
     rerolled_ids: list[UUID],
 ) -> RerollopInsertResult:

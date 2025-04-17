@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   id := <uuid>$id,
   collection := (select waicolle::Collection filter .id = id),
   _update := (
@@ -45,7 +45,7 @@ adapter = TypeAdapter(PlayerAddCollectionResult)
 async def player_add_collection(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     id: UUID,
 ) -> PlayerAddCollectionResult:
     resp = await executor.query_single_json(

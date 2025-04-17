@@ -10,7 +10,6 @@ select waicolle::Player {
   *,
   user: {
     discord_id,
-    discord_id_str,
   },
 }
 filter .client = global client
@@ -24,17 +23,16 @@ class WaicolleGameMode(StrEnum):
 
 
 class PlayerSelectAllResultUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class PlayerSelectAllResult(BaseModel):
     user: PlayerSelectAllResultUser
     id: UUID
+    frozen_at: datetime | None
     blood_shards: int
     game_mode: WaicolleGameMode
     moecoins: int
-    frozen_at: datetime | None
 
 
 adapter = TypeAdapter(list[PlayerSelectAllResult])

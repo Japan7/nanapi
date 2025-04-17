@@ -6,7 +6,6 @@ select waicolle::Collection {
   author: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   medias_ids_al := .items[is anilist::Media].id_al,

@@ -32,13 +32,11 @@ select updated {
   owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   original_owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   custom_position_waifu: { id },
@@ -57,8 +55,7 @@ class WaifuBulkUpdateResultCustomPositionWaifu(BaseModel):
 
 
 class WaifuBulkUpdateResultOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuBulkUpdateResultOriginalOwner(BaseModel):
@@ -66,8 +63,7 @@ class WaifuBulkUpdateResultOriginalOwner(BaseModel):
 
 
 class WaifuBulkUpdateResultOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuBulkUpdateResultOwner(BaseModel):
@@ -83,8 +79,6 @@ class WaifuBulkUpdateResult(BaseModel):
     owner: WaifuBulkUpdateResultOwner
     original_owner: WaifuBulkUpdateResultOriginalOwner | None
     custom_position_waifu: WaifuBulkUpdateResultCustomPositionWaifu | None
-    frozen: bool
-    disabled: bool
     trade_locked: bool
     timestamp: datetime
     nanaed: bool
@@ -95,6 +89,8 @@ class WaifuBulkUpdateResult(BaseModel):
     custom_image: str | None
     custom_collage: bool
     blooded: bool
+    disabled: bool
+    frozen: bool
     id: UUID
 
 

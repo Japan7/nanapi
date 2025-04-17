@@ -6,7 +6,7 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 with
   id := <uuid>$id,
-  message_id := <int64>$message_id,
+  message_id := <str>$message_id,
 update projection::Projection
 filter .id = id
 set { message_id := message_id }
@@ -24,7 +24,7 @@ async def projo_update_message_id(
     executor: AsyncIOExecutor,
     *,
     id: UUID,
-    message_id: int,
+    message_id: str,
 ) -> ProjoUpdateMessageIdResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

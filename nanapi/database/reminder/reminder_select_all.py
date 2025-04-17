@@ -8,12 +8,10 @@ EDGEQL_QUERY = r"""
 select reminder::Reminder {
   id,
   channel_id,
-  channel_id_str,
   message,
   timestamp,
   user: {
     discord_id,
-    discord_id_str,
   },
 }
 filter .client = global client
@@ -21,14 +19,12 @@ filter .client = global client
 
 
 class ReminderSelectAllResultUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class ReminderSelectAllResult(BaseModel):
     id: UUID
-    channel_id: int
-    channel_id_str: str
+    channel_id: str
     message: str
     timestamp: datetime
     user: ReminderSelectAllResultUser

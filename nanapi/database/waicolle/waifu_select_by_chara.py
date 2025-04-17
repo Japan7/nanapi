@@ -14,13 +14,11 @@ select waicolle::Waifu {
   owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   original_owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   custom_position_waifu: { id },
@@ -43,8 +41,7 @@ class WaifuSelectByCharaResultCustomPositionWaifu(BaseModel):
 
 
 class WaifuSelectByCharaResultOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuSelectByCharaResultOriginalOwner(BaseModel):
@@ -52,8 +49,7 @@ class WaifuSelectByCharaResultOriginalOwner(BaseModel):
 
 
 class WaifuSelectByCharaResultOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuSelectByCharaResultOwner(BaseModel):
@@ -70,6 +66,8 @@ class WaifuSelectByCharaResult(BaseModel):
     original_owner: WaifuSelectByCharaResultOriginalOwner | None
     custom_position_waifu: WaifuSelectByCharaResultCustomPositionWaifu | None
     id: UUID
+    frozen: bool
+    disabled: bool
     blooded: bool
     custom_collage: bool
     custom_image: str | None
@@ -80,8 +78,6 @@ class WaifuSelectByCharaResult(BaseModel):
     nanaed: bool
     timestamp: datetime
     trade_locked: bool
-    disabled: bool
-    frozen: bool
 
 
 adapter = TypeAdapter(list[WaifuSelectByCharaResult])

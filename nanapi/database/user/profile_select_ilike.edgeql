@@ -10,7 +10,6 @@ select user::Profile {
   telephone,
   user: {
     discord_id,
-    discord_id_str,
   },
 }
 filter (

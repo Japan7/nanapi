@@ -10,8 +10,8 @@ EDGEQL_QUERY = r"""
 with
   id := <optional uuid>$id,
   status := <optional projection::Status>$status,
-  message_id := <optional int64>$message_id,
-  channel_id := <optional int64>$channel_id,
+  message_id := <optional str>$message_id,
+  channel_id := <optional str>$channel_id,
   all_projos := (select projection::Projection filter .client = global client),
   filtered := (
     (select all_projos filter .id = id)
@@ -57,9 +57,8 @@ class ProjectionStatus(StrEnum):
 
 class ProjoSelectResultGuildEvents(BaseModel):
     id: UUID
-    discord_id: int
+    discord_id: str
     description: str | None
-    discord_id_str: str
     end_time: datetime
     image: str | None
     location: str | None
@@ -70,8 +69,7 @@ class ProjoSelectResultGuildEvents(BaseModel):
 
 class ProjoSelectResultParticipants(BaseModel):
     id: UUID
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
     discord_username: str
 
 
@@ -94,12 +92,10 @@ class ProjoSelectResult(BaseModel):
     external_medias: list[ProjoSelectResultExternalMedias]
     participants: list[ProjoSelectResultParticipants]
     guild_events: list[ProjoSelectResultGuildEvents]
-    message_id_str: str | None
-    channel_id_str: str
     status: ProjectionStatus
     name: str
-    message_id: int | None
-    channel_id: int
+    message_id: str | None
+    channel_id: str
     id: UUID
 
 
@@ -111,8 +107,8 @@ async def projo_select(
     *,
     id: UUID | None = None,
     status: PROJO_SELECT_STATUS | None = None,
-    message_id: int | None = None,
-    channel_id: int | None = None,
+    message_id: str | None = None,
+    channel_id: str | None = None,
 ) -> list[ProjoSelectResult]:
     resp = await executor.query_json(
         EDGEQL_QUERY,

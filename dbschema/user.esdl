@@ -1,9 +1,8 @@
 module user {
   type User {
-    required property discord_id -> int64 {
+    required property discord_id -> str {
       constraint exclusive;
     }
-    required property discord_id_str := <str>.discord_id;
     required property discord_username -> str;
     link profile := .<user[is Profile];
     link amq := .<user[is amq::Account];

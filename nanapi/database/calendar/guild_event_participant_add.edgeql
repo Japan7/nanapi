@@ -1,6 +1,6 @@
 with
-  discord_id := <int64>$discord_id,
-  participant_id := <int64>$participant_id,
+  discord_id := <str>$discord_id,
+  participant_id := <str>$participant_id,
   participant_username := <str>$participant_username,
   participant := (
     insert user::User {

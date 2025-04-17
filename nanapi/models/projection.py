@@ -5,7 +5,7 @@ from nanapi.database.projection.projo_update_status import PROJO_UPDATE_STATUS_S
 
 class NewProjectionBody(BaseModel):
     name: str
-    channel_id: int
+    channel_id: str
 
 
 class SetProjectionNameBody(BaseModel):
@@ -17,7 +17,7 @@ class SetProjectionStatusBody(BaseModel):
 
 
 class SetProjectionMessageIdBody(BaseModel):
-    message_id: int
+    message_id: str
 
 
 class ProjoAddExternalMediaBody(BaseModel):

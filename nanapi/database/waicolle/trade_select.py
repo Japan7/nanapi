@@ -11,7 +11,6 @@ select waicolle::TradeOperation {
   author: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   received: {
@@ -20,13 +19,11 @@ select waicolle::TradeOperation {
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },
@@ -34,7 +31,6 @@ select waicolle::TradeOperation {
   offeree: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   offered: {
@@ -43,13 +39,11 @@ select waicolle::TradeOperation {
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },
@@ -71,8 +65,7 @@ class TradeSelectResultOfferedCustomPositionWaifu(BaseModel):
 
 
 class TradeSelectResultOfferedOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultOfferedOriginalOwner(BaseModel):
@@ -80,8 +73,7 @@ class TradeSelectResultOfferedOriginalOwner(BaseModel):
 
 
 class TradeSelectResultOfferedOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultOfferedOwner(BaseModel):
@@ -98,6 +90,8 @@ class TradeSelectResultOffered(BaseModel):
     original_owner: TradeSelectResultOfferedOriginalOwner | None
     custom_position_waifu: TradeSelectResultOfferedCustomPositionWaifu | None
     id: UUID
+    frozen: bool
+    disabled: bool
     blooded: bool
     custom_collage: bool
     custom_image: str | None
@@ -108,13 +102,10 @@ class TradeSelectResultOffered(BaseModel):
     nanaed: bool
     timestamp: datetime
     trade_locked: bool
-    disabled: bool
-    frozen: bool
 
 
 class TradeSelectResultOffereeUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultOfferee(BaseModel):
@@ -126,8 +117,7 @@ class TradeSelectResultReceivedCustomPositionWaifu(BaseModel):
 
 
 class TradeSelectResultReceivedOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultReceivedOriginalOwner(BaseModel):
@@ -135,8 +125,7 @@ class TradeSelectResultReceivedOriginalOwner(BaseModel):
 
 
 class TradeSelectResultReceivedOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultReceivedOwner(BaseModel):
@@ -153,6 +142,8 @@ class TradeSelectResultReceived(BaseModel):
     original_owner: TradeSelectResultReceivedOriginalOwner | None
     custom_position_waifu: TradeSelectResultReceivedCustomPositionWaifu | None
     id: UUID
+    frozen: bool
+    disabled: bool
     blooded: bool
     custom_collage: bool
     custom_image: str | None
@@ -163,13 +154,10 @@ class TradeSelectResultReceived(BaseModel):
     nanaed: bool
     timestamp: datetime
     trade_locked: bool
-    disabled: bool
-    frozen: bool
 
 
 class TradeSelectResultAuthorUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultAuthor(BaseModel):
@@ -182,9 +170,9 @@ class TradeSelectResult(BaseModel):
     offeree: TradeSelectResultOfferee
     offered: list[TradeSelectResultOffered]
     id: UUID
-    blood_shards: int
-    completed_at: datetime | None
     created_at: datetime
+    completed_at: datetime | None
+    blood_shards: int
 
 
 adapter = TypeAdapter(list[TradeSelectResult])

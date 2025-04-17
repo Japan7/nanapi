@@ -37,7 +37,7 @@ async def new_role(body: NewRoleBody, edgedb: AsyncIOClient = Depends(get_client
     response_model=RoleDeleteByRoleIdResult,
     responses={status.HTTP_204_NO_CONTENT: {}},
 )
-async def delete_role(role_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+async def delete_role(role_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     resp = await role_delete_by_role_id(edgedb, role_id=role_id)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)

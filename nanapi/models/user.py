@@ -6,7 +6,7 @@ from nanapi.database.user.profile_get_by_discord_id import ProfileGetByDiscordId
 
 
 class UpsertDiscordAccountBodyItem(BaseModel):
-    discord_id: int
+    discord_id: str
     discord_username: str
 
 

@@ -12,7 +12,6 @@ select waicolle::Collection {
   author: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   medias_ids_al := .items[is anilist::Media].id_al,
@@ -24,8 +23,7 @@ filter .id = id
 
 
 class CollectionGetByIdResultAuthorUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class CollectionGetByIdResultAuthor(BaseModel):

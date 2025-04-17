@@ -3,7 +3,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
 select pot::Pot { amount, count }
 filter .client = global client and .user.discord_id = discord_id
 """
@@ -20,7 +20,7 @@ adapter = TypeAdapter(PotGetByUserResult | None)
 async def pot_get_by_user(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
 ) -> PotGetByUserResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

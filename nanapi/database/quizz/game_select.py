@@ -13,18 +13,15 @@ select quizz::Game {
   id,
   status,
   message_id,
-  message_id_str,
   answer_bananed,
   started_at,
   ended_at,
   winner: {
     discord_id,
-    discord_id_str,
   },
   quizz: {
     id,
     channel_id,
-    channel_id_str,
     description,
     url,
     is_image,
@@ -34,7 +31,6 @@ select quizz::Game {
     hikaried,
     author: {
       discord_id,
-      discord_id_str,
     },
   }
 }
@@ -54,14 +50,12 @@ class QuizzStatus(StrEnum):
 
 
 class GameSelectResultQuizzAuthor(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class GameSelectResultQuizz(BaseModel):
     id: UUID
-    channel_id: int
-    channel_id_str: str
+    channel_id: str
     description: str | None
     url: str | None
     is_image: bool
@@ -73,15 +67,13 @@ class GameSelectResultQuizz(BaseModel):
 
 
 class GameSelectResultWinner(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class GameSelectResult(BaseModel):
     id: UUID
     status: QuizzStatus
-    message_id: int
-    message_id_str: str
+    message_id: str
     answer_bananed: str | None
     started_at: datetime
     ended_at: datetime | None

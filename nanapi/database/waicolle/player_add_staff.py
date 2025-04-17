@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   id_al := <int32>$id_al,
   staff := (select anilist::Staff filter .id_al = id_al),
   _update := (
@@ -47,7 +47,7 @@ adapter = TypeAdapter(PlayerAddStaffResult)
 async def player_add_staff(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     id_al: int,
 ) -> PlayerAddStaffResult:
     resp = await executor.query_single_json(

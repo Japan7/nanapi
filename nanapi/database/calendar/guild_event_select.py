@@ -7,7 +7,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <optional int64>$discord_id,
+  discord_id := <optional str>$discord_id,
   start_after := <optional datetime>$start_after,
 select calendar::GuildEvent { ** }
 filter .client = global client
@@ -21,28 +21,24 @@ class ProjectionStatus(StrEnum):
     COMPLETED = 'COMPLETED'
 
 
-class GuildEventSelectResultProjection(BaseModel):
-    id: UUID
-    channel_id: int
-    message_id: int | None
-    name: str
-    status: ProjectionStatus
-    channel_id_str: str
-    message_id_str: str | None
-
-
 class GuildEventSelectResultOrganizer(BaseModel):
     id: UUID
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
     discord_username: str
 
 
 class GuildEventSelectResultParticipants(BaseModel):
     id: UUID
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
     discord_username: str
+
+
+class GuildEventSelectResultProjection(BaseModel):
+    id: UUID
+    channel_id: str
+    message_id: str | None
+    name: str
+    status: ProjectionStatus
 
 
 class GuildEventSelectResultClient(BaseModel):
@@ -53,9 +49,8 @@ class GuildEventSelectResultClient(BaseModel):
 
 class GuildEventSelectResult(BaseModel):
     id: UUID
-    discord_id: int
+    discord_id: str
     description: str | None
-    discord_id_str: str
     end_time: datetime
     image: str | None
     location: str | None
@@ -63,9 +58,9 @@ class GuildEventSelectResult(BaseModel):
     start_time: datetime
     url: str | None
     client: GuildEventSelectResultClient
+    projection: GuildEventSelectResultProjection | None
     participants: list[GuildEventSelectResultParticipants]
     organizer: GuildEventSelectResultOrganizer
-    projection: GuildEventSelectResultProjection | None
 
 
 adapter = TypeAdapter(list[GuildEventSelectResult])
@@ -74,7 +69,7 @@ adapter = TypeAdapter(list[GuildEventSelectResult])
 async def guild_event_select(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int | None = None,
+    discord_id: str | None = None,
     start_after: datetime | None = None,
 ) -> list[GuildEventSelectResult]:
     resp = await executor.query_json(

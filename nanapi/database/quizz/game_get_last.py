@@ -7,23 +7,20 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  channel_id := <int64>$channel_id,
+  channel_id := <str>$channel_id,
 select quizz::Game {
   id,
   status,
   message_id,
-  message_id_str,
   answer_bananed,
   started_at,
   ended_at,
   winner: {
     discord_id,
-    discord_id_str,
   },
   quizz: {
     id,
     channel_id,
-    channel_id_str,
     description,
     url,
     is_image,
@@ -33,7 +30,6 @@ select quizz::Game {
     hikaried,
     author: {
       discord_id,
-      discord_id_str,
     },
   }
 }
@@ -49,14 +45,12 @@ class QuizzStatus(StrEnum):
 
 
 class GameGetLastResultQuizzAuthor(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class GameGetLastResultQuizz(BaseModel):
     id: UUID
-    channel_id: int
-    channel_id_str: str
+    channel_id: str
     description: str | None
     url: str | None
     is_image: bool
@@ -68,15 +62,13 @@ class GameGetLastResultQuizz(BaseModel):
 
 
 class GameGetLastResultWinner(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class GameGetLastResult(BaseModel):
     id: UUID
     status: QuizzStatus
-    message_id: int
-    message_id_str: str
+    message_id: str
     answer_bananed: str | None
     started_at: datetime
     ended_at: datetime | None
@@ -90,7 +82,7 @@ adapter = TypeAdapter(GameGetLastResult | None)
 async def game_get_last(
     executor: AsyncIOExecutor,
     *,
-    channel_id: int,
+    channel_id: str,
 ) -> GameGetLastResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,
