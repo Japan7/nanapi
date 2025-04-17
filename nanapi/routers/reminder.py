@@ -23,6 +23,7 @@ router = NanAPIRouter(prefix='/reminders', tags=['reminder'])
 
 @router.oauth2_client.get('/', response_model=list[ReminderSelectAllResult])
 async def get_reminders(edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Get all reminders."""
     return await reminder_select_all(edgedb)
 
 
@@ -30,6 +31,7 @@ async def get_reminders(edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     '/', response_model=ReminderInsertSelectResult, status_code=status.HTTP_201_CREATED
 )
 async def new_reminder(body: NewReminderBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Create a new reminder."""
     return await reminder_insert_select(edgedb, **body.model_dump())
 
 
@@ -37,6 +39,7 @@ async def new_reminder(body: NewReminderBody, edgedb: AsyncIOClient = Depends(ge
     '/{id}', response_model=ReminderDeleteByIdResult, responses={status.HTTP_204_NO_CONTENT: {}}
 )
 async def delete_reminder(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Delete a reminder by ID."""
     resp = await reminder_delete_by_id(edgedb, id=id)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)

@@ -17,6 +17,7 @@ router = NanAPIRouter(prefix='/clients', tags=['client'])
 
 @router.oauth2_client.get('/', response_model=WhoamiResponse)
 async def whoami(current_user: ClientGetByUsernameResult = Depends(get_current_client)):
+    """Get information about the currently authenticated client."""
     return current_user
 
 
@@ -27,6 +28,7 @@ async def whoami(current_user: ClientGetByUsernameResult = Depends(get_current_c
     responses={status.HTTP_409_CONFLICT: dict(model=HTTPExceptionModel)},
 )
 async def register(body: NewClientBody):
+    """Register a new client account."""
     password = body.password
     password_hash = get_password_hash(password)
     try:
@@ -44,6 +46,7 @@ async def register(body: NewClientBody):
     responses={status.HTTP_401_UNAUTHORIZED: dict(model=HTTPExceptionModel)},
 )
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+    """Authenticate client and return JWT access token."""
     client = await authenticate_client(form_data.username, form_data.password)
     if not client:
         raise HTTPException(
