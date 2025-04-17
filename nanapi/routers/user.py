@@ -15,16 +15,19 @@ router = NanAPIRouter(prefix='/user', tags=['user'])
 
 @router.oauth2.get('/accounts', response_model=list[UserSelectResult])
 async def discord_account_index():
+    """List all Discord accounts."""
     return await user_select(get_edgedb())
 
 
 @router.oauth2.patch('/accounts', response_model=list[UserBulkMergeResult])
 async def upsert_discord_accounts(body: list[UpsertDiscordAccountBodyItem]):
+    """Bulk upsert Discord accounts."""
     return await user_bulk_merge(get_edgedb(), users=[i.model_dump() for i in body])
 
 
 @router.oauth2.get('/profiles/search', response_model=list[ProfileSearchResult])
 async def profile_search(discord_ids: str | None = None, pattern: str | None = None):
+    """Search user profiles by Discord IDs or pattern."""
     if discord_ids is not None:
         try:
             parsed = [int(d_id) for d_id in discord_ids.split(',')] if len(discord_ids) > 0 else []
@@ -41,6 +44,7 @@ async def profile_search(discord_ids: str | None = None, pattern: str | None = N
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_profile(discord_id: int):
+    """Get a user profile by Discord ID."""
     resp = await profile_get_by_discord_id(get_edgedb(), discord_id=discord_id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -49,4 +53,5 @@ async def get_profile(discord_id: int):
 
 @router.oauth2.patch('/profiles/{discord_id}', response_model=ProfileSearchResult)
 async def upsert_profile(discord_id: int, body: UpsertProfileBody):
+    """Upsert a user profile by Discord ID."""
     return await profile_merge_select(get_edgedb(), discord_id=discord_id, **body.model_dump())

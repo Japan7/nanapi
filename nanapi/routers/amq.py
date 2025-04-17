@@ -14,16 +14,19 @@ router = NanAPIRouter(prefix='/amq', tags=['amq'])
 
 @router.oauth2.get('/accounts', response_model=list[AccountSelectResult])
 async def get_accounts(username: str | None = None):
+    """Retrieve AMQ accounts, optionally filtered by username."""
     return await account_select(get_edgedb(), username=username)
 
 
 @router.oauth2.patch('/accounts/{discord_id}', response_model=AccountMergeResult)
 async def upsert_account(discord_id: int, body: UpsertAMQAccountBody):
+    """Create or update an AMQ account by Discord ID."""
     return await account_merge(get_edgedb(), discord_id=discord_id, **body.model_dump())
 
 
 @router.oauth2_client.get('/settings', response_model=list[SettingsSelectAllResult])
 async def get_settings(edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Retrieve all AMQ settings."""
     return await settings_select_all(edgedb)
 
 
@@ -31,4 +34,5 @@ async def get_settings(edgedb: AsyncIOClient = Depends(get_client_edgedb)):
 async def update_settings(
     body: UpdateAMQSettingsBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Update AMQ settings."""
     return await settings_merge(edgedb, **body.model_dump())

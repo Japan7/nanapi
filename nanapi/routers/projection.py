@@ -66,6 +66,7 @@ async def get_projections(
     channel_id: int | None = None,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
+    """Get a list of projections."""
     return await projo_select(edgedb, status=status, message_id=message_id, channel_id=channel_id)
 
 
@@ -75,6 +76,7 @@ async def get_projections(
 async def new_projection(
     body: NewProjectionBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Create a new projection."""
     return await projo_insert(edgedb, **body.model_dump())
 
 
@@ -84,6 +86,7 @@ async def new_projection(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_projection(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Get a projection by ID."""
     resp = await projo_select(edgedb, id=id)
     if len(resp) == 0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -94,6 +97,7 @@ async def get_projection(id: UUID, edgedb: AsyncIOClient = Depends(get_client_ed
     '/{id}', response_model=ProjoDeleteResult, responses={status.HTTP_204_NO_CONTENT: {}}
 )
 async def delete_projection(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Delete a projection by ID."""
     resp = await projo_delete(edgedb, id=id)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -108,6 +112,7 @@ async def delete_projection(id: UUID, edgedb: AsyncIOClient = Depends(get_client
 async def set_projection_name(
     id: UUID, body: SetProjectionNameBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Set the name of a projection."""
     resp = await projo_update_name(edgedb, id=id, **body.model_dump())
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -122,6 +127,7 @@ async def set_projection_name(
 async def set_projection_status(
     id: UUID, body: SetProjectionStatusBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Set the status of a projection."""
     resp = await projo_update_status(edgedb, id=id, **body.model_dump())
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -136,6 +142,7 @@ async def set_projection_status(
 async def set_projection_message_id(
     id: UUID, body: SetProjectionMessageIdBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Set the message ID of a projection."""
     resp = await projo_update_message_id(edgedb, id=id, **body.model_dump())
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -150,6 +157,7 @@ async def set_projection_message_id(
 async def add_projection_anilist_media(
     id: UUID, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Add an AniList media to a projection."""
     medias = await fetch_media(id_al)
     if len(medias) == 0:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Media Not found')
@@ -168,6 +176,7 @@ async def add_projection_anilist_media(
 async def add_projection_external_media(
     id: UUID, body: ProjoAddExternalMediaBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Add an external media to a projection."""
     resp = await projo_add_external_media(edgedb, id=id, **body.model_dump())
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -182,6 +191,7 @@ async def add_projection_external_media(
 async def remove_projection_media(
     id: UUID, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Remove an AniList media from a projection."""
     resp = await projo_remove_media(edgedb, id=id, id_al=id_al)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -196,6 +206,7 @@ async def remove_projection_media(
 async def remove_projection_external_media(
     id: UUID, external_media_id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Remove an external media from a projection."""
     resp = await projo_remove_external_media(edgedb, id=id, external_media_id=external_media_id)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -213,6 +224,7 @@ async def add_projection_participant(
     body: ParticipantAddBody,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
+    """Add a participant to a projection."""
     resp = await projo_participant_add(
         edgedb,
         id=id,
@@ -234,6 +246,7 @@ async def remove_projection_participant(
     participant_id: int,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
+    """Remove a participant from a projection."""
     resp = await projo_participant_remove(edgedb, id=id, participant_id=participant_id)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -249,6 +262,7 @@ async def remove_projection_participant(
 async def add_projection_guild_event(
     id: UUID, discord_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Add a guild event to a projection."""
     resp = await projo_add_event(edgedb, id=id, event_discord_id=discord_id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -262,4 +276,5 @@ async def add_projection_guild_event(
 async def delete_upcoming_projection_events(
     id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Delete upcoming guild events from a projection."""
     return await projo_delete_upcoming_events(edgedb, id=id)

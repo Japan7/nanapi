@@ -21,6 +21,7 @@ router = NanAPIRouter(prefix='/presences', tags=['presence'])
 
 @router.oauth2_client.get('/', response_model=list[PresenceSelectAllResult])
 async def get_presences(edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Get all presences."""
     return await presence_select_all(edgedb)
 
 
@@ -31,6 +32,7 @@ async def get_presences(edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     responses={status.HTTP_409_CONFLICT: dict(model=HTTPExceptionModel)},
 )
 async def new_presence(body: NewPresenceBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Create a new presence."""
     try:
         return await presence_insert(edgedb, **body.model_dump())
     except ConstraintViolationError as e:
@@ -41,6 +43,7 @@ async def new_presence(body: NewPresenceBody, edgedb: AsyncIOClient = Depends(ge
     '/{id}', response_model=PresenceDeleteByIdResult, responses={status.HTTP_204_NO_CONTENT: {}}
 )
 async def delete_presence(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Delete a presence by ID."""
     resp = await presence_delete_by_id(edgedb, id=id)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)

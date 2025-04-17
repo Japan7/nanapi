@@ -36,6 +36,7 @@ router = NanAPIRouter(prefix='/quizz', tags=['quizz'])
     '/quizzes', response_model=QuizzInsertResult, status_code=status.HTTP_201_CREATED
 )
 async def new_quizz(body: NewQuizzBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Create a new quizz."""
     return await quizz_insert(edgedb, **body.model_dump())
 
 
@@ -45,6 +46,7 @@ async def new_quizz(body: NewQuizzBody, edgedb: AsyncIOClient = Depends(get_clie
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_oldest_quizz(channel_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Get the oldest quizz for a channel."""
     resp = await quizz_get_oldest(edgedb, channel_id=channel_id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -57,6 +59,7 @@ async def get_oldest_quizz(channel_id: int, edgedb: AsyncIOClient = Depends(get_
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_quizz(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Get a quizz by ID."""
     resp = await quizz_get_by_id(edgedb, id=id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -69,6 +72,7 @@ async def get_quizz(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
     responses={status.HTTP_204_NO_CONTENT: {}},
 )
 async def delete_quizz(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Delete a quizz by ID."""
     resp = await quizz_delete_by_id(edgedb, id=id)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -83,6 +87,7 @@ async def delete_quizz(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edge
 async def set_quizz_answer(
     id: UUID, body: SetQuizzAnswerBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Set the answer for a quizz."""
     resp = await quizz_set_answer(edgedb, id=id, **body.model_dump())
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -93,6 +98,7 @@ async def set_quizz_answer(
 async def get_games(
     status: GAME_SELECT_STATUS, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Get games by status."""
     return await game_select(edgedb, status=status)
 
 
@@ -103,6 +109,7 @@ async def get_games(
     responses={status.HTTP_409_CONFLICT: dict(model=HTTPExceptionModel)},
 )
 async def new_game(body: NewGameBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Create a new game."""
     try:
         return await game_new(edgedb, **body.model_dump())
     except ConstraintViolationError as e:
@@ -115,6 +122,7 @@ async def new_game(body: NewGameBody, edgedb: AsyncIOClient = Depends(get_client
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_current_game(channel_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Get the current game for a channel."""
     resp = await game_get_current(edgedb, channel_id=channel_id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -127,6 +135,7 @@ async def get_current_game(channel_id: int, edgedb: AsyncIOClient = Depends(get_
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_last_game(channel_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Get the last game for a channel."""
     resp = await game_get_last(edgedb, channel_id=channel_id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -139,6 +148,7 @@ async def get_last_game(channel_id: int, edgedb: AsyncIOClient = Depends(get_cli
     responses={status.HTTP_204_NO_CONTENT: {}},
 )
 async def delete_game(message_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Delete a game by message ID."""
     resp = await game_delete_by_message_id(edgedb, message_id=message_id)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -151,6 +161,7 @@ async def delete_game(message_id: int, edgedb: AsyncIOClient = Depends(get_clien
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_game(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Get a game by ID."""
     resp = await game_get_by_id(edgedb, id=id)
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -165,6 +176,7 @@ async def get_game(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb))
 async def set_game_bananed_answer(
     id: UUID, body: SetGameBananedAnswerBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """Set the bananed answer for a game."""
     resp = await game_update_bananed(edgedb, id=id, **body.model_dump())
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -179,6 +191,7 @@ async def set_game_bananed_answer(
 async def end_game(
     id: UUID, body: EndGameBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
+    """End a game by ID."""
     resp = await game_end(edgedb, id=id, **body.model_dump())
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)

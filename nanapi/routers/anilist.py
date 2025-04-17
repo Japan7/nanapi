@@ -48,6 +48,7 @@ router = NanAPIRouter(prefix='/anilist', tags=['anilist'])
 ############
 @router.oauth2.get('/accounts', response_model=list[AccountSelectAllResult])
 async def get_accounts():
+    """Get all AniList accounts."""
     return await account_select_all(get_edgedb())
 
 
@@ -57,6 +58,7 @@ async def get_accounts():
     responses={status.HTTP_409_CONFLICT: dict(model=HTTPExceptionModel)},
 )
 async def upsert_account(discord_id: int, body: UpsertAnilistAccountBody):
+    """Upsert AniList account for a Discord user."""
     try:
         return await account_merge(get_edgedb(), discord_id=discord_id, **body.model_dump())
     except ConstraintViolationError as e:
@@ -65,6 +67,7 @@ async def upsert_account(discord_id: int, body: UpsertAnilistAccountBody):
 
 @router.oauth2.get('/accounts/all/entries', response_model=list[EntrySelectAllResult])
 async def get_all_entries(type: ENTRY_SELECT_ALL_MEDIA_TYPE | None = None):
+    """Get all AniList entries for all accounts."""
     resp = await entry_select_all(get_edgedb(), media_type=type)
     if resp is None:
         resp = []
@@ -73,6 +76,7 @@ async def get_all_entries(type: ENTRY_SELECT_ALL_MEDIA_TYPE | None = None):
 
 @router.oauth2.get('/accounts/{discord_id}/entries', response_model=list[EntrySelectAllResult])
 async def get_account_entries(discord_id: int, type: ENTRY_SELECT_ALL_MEDIA_TYPE | None = None):
+    """Get AniList entries for a specific Discord user."""
     resp = await entry_select_all(get_edgedb(), media_type=type, discord_id=discord_id)
     if resp is None:
         resp = []
@@ -84,6 +88,7 @@ async def get_account_entries(discord_id: int, type: ENTRY_SELECT_ALL_MEDIA_TYPE
 ##########
 @router.oauth2.get('/medias', response_model=list[MediaSelectResult])
 async def get_medias(ids_al: str):
+    """Get AniList media objects by IDs."""
     try:
         ids_al_parsed = [int(id_al) for id_al in ids_al.split(',')] if len(ids_al) > 0 else []
     except ValueError:
@@ -95,6 +100,7 @@ async def get_medias(ids_al: str):
 
 @router.oauth2.get('/medias/search', response_model=list[MediaSelectResult])
 async def media_search(type: MEDIA_TYPES, search: str):
+    """Search for AniList media by title."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_medias')
         resp = await index.search(
@@ -108,6 +114,7 @@ async def media_search(type: MEDIA_TYPES, search: str):
 
 @router.oauth2.get('/medias/autocomplete', response_model=list[MediaTitleAutocompleteResult])
 async def media_title_autocomplete(search: str, type: MEDIA_TYPES | None = None):
+    """Autocomplete AniList media titles."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_medias')
         resp = await index.search(
@@ -122,6 +129,7 @@ async def media_title_autocomplete(search: str, type: MEDIA_TYPES | None = None)
     responses={status.HTTP_400_BAD_REQUEST: dict(model=HTTPExceptionModel)},
 )
 async def get_medias_collage(ids_al: str):
+    """Get a collage image of AniList media covers."""
     try:
         ids_al_parsed = [int(id_al) for id_al in ids_al.split(',')] if len(ids_al) > 0 else []
     except ValueError:
@@ -133,6 +141,7 @@ async def get_medias_collage(ids_al: str):
 
 @router.oauth2.get('/medias/{id_al}/entries', response_model=list[EntrySelectFilterMediaResult])
 async def get_media_list_entries(id_al: int):
+    """Get AniList entries for a specific media."""
     return await entry_select_filter_media(get_edgedb(), id_al=id_al)
 
 
@@ -140,6 +149,7 @@ async def get_media_list_entries(id_al: int):
     '/medias/{id_al}/edges/charas', response_model=list[CEdgeSelectFilterMediaResult]
 )
 async def get_media_chara_edges(id_al: int):
+    """Get character edges for a specific media."""
     return await c_edge_select_filter_media(get_edgedb(), id_al=id_al)
 
 
@@ -148,6 +158,7 @@ async def get_media_chara_edges(id_al: int):
 ##########
 @router.oauth2.get('/charas', response_model=list[CharaSelectResult])
 async def get_charas(ids_al: str):
+    """Get AniList characters by IDs."""
     try:
         ids_al_parsed = [int(id_al) for id_al in ids_al.split(',')] if len(ids_al) > 0 else []
     except ValueError:
@@ -159,6 +170,7 @@ async def get_charas(ids_al: str):
 
 @router.oauth2.get('/charas/search', response_model=list[CharaSelectResult])
 async def chara_search(search: str):
+    """Search for AniList characters by name."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_charas')
         resp = await index.search(search, limit=25)
@@ -170,6 +182,7 @@ async def chara_search(search: str):
 
 @router.oauth2.get('/charas/autocomplete', response_model=list[CharaNameAutocompleteResult])
 async def chara_name_autocomplete(search: str):
+    """Autocomplete AniList character names."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_charas')
         resp = await index.search(search, limit=25)
@@ -182,6 +195,7 @@ async def chara_name_autocomplete(search: str):
     responses={status.HTTP_400_BAD_REQUEST: dict(model=HTTPExceptionModel)},
 )
 async def get_chara_collage(ids_al: str, hide_no_images: int = 0, blooded: int = 0):
+    """Get a collage image of AniList character images."""
     try:
         ids_al_parsed = [int(id_al) for id_al in ids_al.split(',')] if len(ids_al) > 0 else []
     except ValueError:
@@ -200,6 +214,7 @@ async def get_chara_collage(ids_al: str, hide_no_images: int = 0, blooded: int =
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_chara_chara_edges(id_al: int):
+    """Get character edges for a specific character."""
     resp = await c_edge_select_filter_chara(get_edgedb(), id_al=id_al)
     return resp
 
@@ -209,6 +224,7 @@ async def get_chara_chara_edges(id_al: int):
 ##########
 @router.oauth2.get('/staffs', response_model=list[StaffSelectResult])
 async def get_staffs(ids_al: str):
+    """Get AniList staff by IDs."""
     try:
         ids_al_parsed = [int(id_al) for id_al in ids_al.split(',')] if len(ids_al) > 0 else []
     except ValueError:
@@ -220,6 +236,7 @@ async def get_staffs(ids_al: str):
 
 @router.oauth2.get('/staffs/search', response_model=list[StaffSelectResult])
 async def staff_search(search: str):
+    """Search for AniList staff by name."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_staffs')
         resp = await index.search(search, limit=25)
@@ -231,6 +248,7 @@ async def staff_search(search: str):
 
 @router.oauth2.get('/staffs/autocomplete', response_model=list[StaffNameAutocompleteResult])
 async def staff_name_autocomplete(search: str):
+    """Autocomplete AniList staff names."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_staffs')
         resp = await index.search(search, limit=25)
@@ -243,4 +261,5 @@ async def staff_name_autocomplete(search: str):
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def get_staff_chara_edges(id_al: int):
+    """Get character edges for a specific staff."""
     return await c_edge_select_filter_staff(get_edgedb(), id_al=id_al)
