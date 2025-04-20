@@ -119,8 +119,8 @@ def blood_enhancer(img: Image.Image) -> Image.Image:
         Image.open(bloody_path) as bloody,
     ):
         for _ in range(5):
-            bloody_x = RNG.integers(0, bloody.width - img.width)
-            bloody_y = RNG.integers(0, bloody.height - img.height)
+            bloody_x = RNG.integers(0, bloody.width - img.width, dtype=int)
+            bloody_y = RNG.integers(0, bloody.height - img.height, dtype=int)
 
             bloody_i = bloody.crop(
                 (bloody_x, bloody_y, bloody_x + img.width, bloody_y + img.height)

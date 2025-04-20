@@ -886,7 +886,7 @@ async def reroll(body: RerollBody, edgedb: AsyncIOClient = Depends(get_client_ed
             REROLL_PRICE = 3
             nb_indices = len(rerolled)
             if nb_indices % REROLL_PRICE:
-                nb_indices += RNG.integers(0, REROLL_PRICE)
+                nb_indices += RNG.integers(0, REROLL_PRICE, dtype=int)
             nb_to_roll = nb_indices // REROLL_PRICE
 
             roll = UserRoll(nb_to_roll, min_rank=min_rank, max_rank=REROLLS_MAX_RANKS[min_rank])
