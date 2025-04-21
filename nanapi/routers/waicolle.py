@@ -167,7 +167,7 @@ router = NanAPIRouter(prefix='/waicolle', tags=['waicolle'])
 async def get_players(
     chara_id_al: int | None = None, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Get all players or filter by character ID."""
+    """Get all players or only the ones who track a specific character."""
     if chara_id_al is not None:
         return await player_select_by_chara(edgedb, id_al=chara_id_al)
     else:
@@ -178,7 +178,7 @@ async def get_players(
 async def upsert_player(
     discord_id: int, body: UpsertPlayerBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Upsert (merge) a player by Discord ID."""
+    """Upsert a player by Discord ID."""
     return await player_merge(edgedb, discord_id=discord_id, **body.model_dump())
 
 
@@ -300,7 +300,13 @@ async def player_roll(
     reason: str | None = None,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
-    """Perform a waifu roll for a player."""
+    """
+    Perform a waifu roll for a player.
+    roll_id, coupon_code, and nb are mutually exclusive.
+    By default, waifus are chosen from the player's pool. You can select another user's pool by
+    setting pool_discord_id.
+    reason is optional and will only be used for logging.
+    """
     async for tx in edgedb.transaction():
         async with tx:
             # Check if the player exists
@@ -381,7 +387,7 @@ async def player_roll(
 async def get_player_tracked_items(
     discord_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Get tracked items for a player."""
+    """Get tracked items (medias, staffs, collections) for a player."""
     try:
         return await player_tracked_items(edgedb, discord_id=discord_id)
     except CardinalityViolationError as e:
@@ -396,7 +402,10 @@ async def get_player_tracked_items(
 async def get_player_track_unlocked(
     discord_id: int, hide_singles: int = 0, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Get unlocked waifus for a player."""
+    """
+    Retrieve unlocked waifus owned by other players tracked by the player.
+    Set hide_singles to 1 to exclude waifus the player already owns at least one copy of.
+    """
     try:
         return await waifu_track_unlocked(
             edgedb, discord_id=discord_id, hide_singles=bool(hide_singles)
@@ -413,7 +422,10 @@ async def get_player_track_unlocked(
 async def get_player_track_reversed(
     discord_id: int, hide_singles: int = 0, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Get reversed track information for a player."""
+    """
+    Retrieve unlocked waifus owned by the player that are tracked by other players.
+    Set hide_singles to 1 to exclude waifus that other players already own at least one copy of.
+    """
     try:
         unlocked = await waifu_select_by_user(
             edgedb, discord_id=discord_id, locked=False, trade_locked=False, blooded=False
@@ -473,7 +485,7 @@ async def get_player_track_reversed(
 async def get_player_media_stats(
     discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Get media stats for a player."""
+    """Get ownership statistics (number owned / total) for a player on a specific media."""
     try:
         return await player_media_stats(edgedb, discord_id=discord_id, id_al=id_al)
     except CardinalityViolationError as e:
@@ -488,7 +500,7 @@ async def get_player_media_stats(
 async def player_track_media(
     discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Track a media for a player."""
+    """Add a media to a player tracking list."""
     try:
         return await player_add_media(edgedb, discord_id=discord_id, id_al=id_al)
     except CardinalityViolationError as e:
@@ -503,7 +515,7 @@ async def player_track_media(
 async def player_untrack_media(
     discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Untrack a media for a player."""
+    """Remove a media from a player tracking list."""
     resp = await player_remove_media(edgedb, discord_id=discord_id, id_al=id_al)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -518,7 +530,7 @@ async def player_untrack_media(
 async def get_player_staff_stats(
     discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Get staff stats for a player."""
+    """Get ownership statistics (number owned / total) for a player on a specific staff."""
     try:
         return await player_staff_stats(edgedb, discord_id=discord_id, id_al=id_al)
     except CardinalityViolationError as e:
@@ -533,7 +545,7 @@ async def get_player_staff_stats(
 async def player_track_staff(
     discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Track a staff for a player."""
+    """Add a staff to a player tracking list."""
     try:
         return await player_add_staff(edgedb, discord_id=discord_id, id_al=id_al)
     except CardinalityViolationError as e:
@@ -548,7 +560,7 @@ async def player_track_staff(
 async def player_untrack_staff(
     discord_id: int, id_al: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Untrack a staff for a player."""
+    """Remove a staff from a player tracking list."""
     resp = await player_remove_staff(edgedb, discord_id=discord_id, id_al=id_al)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -563,7 +575,7 @@ async def player_untrack_staff(
 async def get_player_collection_stats(
     discord_id: int, id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Get collection stats for a player."""
+    """Get ownership statistics (number owned / total) for a player on a specific collection."""
     try:
         return await player_collection_stats(edgedb, discord_id=discord_id, id=id)
     except CardinalityViolationError as e:
@@ -578,7 +590,7 @@ async def get_player_collection_stats(
 async def player_track_collection(
     discord_id: int, id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Track a collection for a player."""
+    """Add a collection to a player tracking list."""
     try:
         return await player_add_collection(edgedb, discord_id=discord_id, id=id)
     except CardinalityViolationError as e:
@@ -593,7 +605,7 @@ async def player_track_collection(
 async def player_untrack_collection(
     discord_id: int, id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
-    """Untrack a collection for a player."""
+    """Remove a collection from a player tracking list."""
     resp = await player_remove_collection(edgedb, discord_id=discord_id, id=id)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
@@ -806,7 +818,23 @@ async def get_waifus(
     chara_id_al: int | None = None,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
-    """Get waifus with various filters."""
+    """
+    Get waifus with various filters:
+    ids: List of waifu IDs
+    discord_id: Owner or original owner (if as_og)
+    level: Waifu level
+    locked: Whether waifu is currently locked (0: no, 1: yes, None: ignore filter)
+    trade_locked: Whether waifu is currently in trade (0: no, 1: yes, None: ignore filter)
+    blooded: Whether waifu is blooded (0: no, 1: yes, None: ignore filter)
+    nanaed: Whether waifu can be retrieved with blood (0: no, 1: yes, None: ignore filter)
+    custom_collage: Whether waifu is part of a custom collage (0: no, 1: yes, None: ignore filter)
+    as_og: Use discord_id as original owner (0 or None: no, 1: yes)
+    ascended: Filter waifus with level >= 1 (0 or None: ignore filter, 1: yes)
+    edged: Whether waifu is close to a level upgrade (0 or None: ignore filter, 1: yes)
+    ascendable: Whether waifu can level up (0 or None: ignore filter, 1: yes)
+    chara_id_al: Waifus matching a specific character ID.
+    chara_id_al is exclusive and cannot be used with other filters.
+    """
     if ids is not None:
         try:
             parsed_ids = [UUID(id) for id in ids.split(',')] if len(ids) > 0 else []
