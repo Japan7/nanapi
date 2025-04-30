@@ -519,23 +519,23 @@ wheels = [
 
 [[package]]
 name = "gel"
-version = "3.0.1"
+version = "3.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "certifi", marker = "sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8d/70/fc0742a98ffb6b3af50d4a3de6cad8a5e62b0b6d7e6c1dc96f5ea1db8e5f/gel-3.0.1.tar.gz", hash = "sha256:3f97aced58040f51b3c766e4065745f3bfa435aed5c9db2e30908701b64244b7", size = 1316312, upload-time = "2025-02-28T05:42:16.395Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9c/70/84cee8eb48a2760893e60e8267502bc16ddef2197dd41f20c103a3f04e01/gel-3.1.0.tar.gz", hash = "sha256:3bb0b21167e00c976675a7d5dd73c21002e659651bf9de7fa46cd418bfa3eb85", size = 1331332, upload-time = "2025-04-29T20:44:49.659Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/78/32/0a148654c3b2085c1d4f461a5f68236f34078e63b2a40aba0349630518ff/gel-3.0.1-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:58eba38dd3f5704e79ebb01b253a1b731ca31126b38ff11cf8bb09e41898ac8b", size = 2128682, upload-time = "2025-02-28T05:41:31.288Z" },
-    { url = "https://files.pythonhosted.org/packages/8b/f3/cd409643e01f08610a95f897c9a7e1baa2a080d5e0d099f9e48b9da244f3/gel-3.0.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:ab7e9dbee941272368a4d9558954659e131cbbe3895087468b19ab0d9c2c3374", size = 2085139, upload-time = "2025-02-28T05:41:32.903Z" },
-    { url = "https://files.pythonhosted.org/packages/b8/01/d4e3ed5d2e83502d62daeecf80afd140218103480e7d602fb1ebe28f00b8/gel-3.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8d03a3b0f52c4af589d4583ee34fb0f41c5141c25e1d3db96d81a1327e04bb19", size = 5793989, upload-time = "2025-02-28T05:41:35.606Z" },
-    { url = "https://files.pythonhosted.org/packages/64/39/e33882d1743c58a490c6adabe1e2ea2c3da129c5be161e2cbd2d85324ee5/gel-3.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:fcdef80dc6b463ee1654bf74eba9640aaaf6cad621e555400f0dd372afc96a95", size = 5906881, upload-time = "2025-02-28T05:41:38.315Z" },
-    { url = "https://files.pythonhosted.org/packages/99/71/ec425687a0baec03036070adb274a66285d1100432ed5cd33bb557942c61/gel-3.0.1-cp312-cp312-win_amd64.whl", hash = "sha256:d835ed6a2dd8e0fe1d48d331463ad08739cc7a3b5b15e899c9a46d77c1c4d0c7", size = 2049842, upload-time = "2025-02-28T05:41:40.922Z" },
-    { url = "https://files.pythonhosted.org/packages/02/22/429598c9f9c200eeeadaa710b5aff574d8d13f207626dad1a16b1587146e/gel-3.0.1-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:cad334a1ad20c4d0d2a1340e2d874584106d80eb73029d0d3b89a5f694d826c2", size = 2121997, upload-time = "2025-02-28T05:41:44.339Z" },
-    { url = "https://files.pythonhosted.org/packages/6d/07/db639cc6f2e2e8adefe3393159f2a3a36f5ccb1d9ccb9706092f19fd4c29/gel-3.0.1-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:551577592c16a69954ebc7635a491b832831c5960ed69ceef55cf6c444e219c6", size = 2078536, upload-time = "2025-02-28T05:41:46.825Z" },
-    { url = "https://files.pythonhosted.org/packages/29/eb/6cd222e99781a5e7cd52c9505c7bcb4dab490f2349058a5bc4a6322bbfb7/gel-3.0.1-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7573ff7ad692776b73067df9d0a95baf13e15f970d2689695a73b2f65342fc5c", size = 5780338, upload-time = "2025-02-28T05:41:48.708Z" },
-    { url = "https://files.pythonhosted.org/packages/f9/7f/aab1b4c1edb0e1204a874f94a6ad47285e663bfe0067c6ec94acc708c914/gel-3.0.1-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:2a5118a29773ad85ad288347463fc303b6dbefaaf48ca90f6f7e26c5bfff8c01", size = 5886642, upload-time = "2025-02-28T05:41:50.821Z" },
-    { url = "https://files.pythonhosted.org/packages/14/59/e9d56be3a6a373ec6c27159b87da02ef90efdf9824d20936eef0acdc027d/gel-3.0.1-cp313-cp313-win_amd64.whl", hash = "sha256:201259baf231a4d9610dd2fdb558ed7f35a6b9d9afe467f3628d93498504b8f2", size = 2048479, upload-time = "2025-02-28T05:41:52.586Z" },
+    { url = "https://files.pythonhosted.org/packages/b2/b2/f696bdc168325e55189fe2b4d453cd0e999028ea7579c1a8d76072c7b63c/gel-3.1.0-cp312-cp312-macosx_10_13_x86_64.whl", hash = "sha256:42dedd9f691e2e6c82539dc04ff05d6a6dc6e0c13b07192442e142a87f1c37b1", size = 914566, upload-time = "2025-04-29T20:44:16.787Z" },
+    { url = "https://files.pythonhosted.org/packages/21/76/6936c544c62eb686db0f51d5f6f892c874272ed803321f1179e8bfd14b32/gel-3.1.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:b2d7497fe30ae9794f6f24df59071bf9da2d7accd67d4216ebe126c7ef3c173d", size = 869387, upload-time = "2025-04-29T20:44:19.149Z" },
+    { url = "https://files.pythonhosted.org/packages/0d/6a/0bbd98e077d435edfe242e946f46f7c61fe93fd3e8e9144d9e59c9702e65/gel-3.1.0-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8421976750c4e8bac052797e8ffee2f082b1268bfc2f1d5a265eedfcf8c4f116", size = 4632391, upload-time = "2025-04-29T20:44:20.802Z" },
+    { url = "https://files.pythonhosted.org/packages/de/1d/3100e52c76664479bef1191554bbcb987a102a6af0c8e657738c4fa35527/gel-3.1.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b059b4d2aac27a1ee95c3bd18add1090a899e7bfd4668f1c99aa3d1f57b7714a", size = 4744996, upload-time = "2025-04-29T20:44:23.85Z" },
+    { url = "https://files.pythonhosted.org/packages/0e/6a/77f50b3f97ef75c6a54e95adf16e39b98b563105ba9c1185c1d772381a4a/gel-3.1.0-cp312-cp312-win_amd64.whl", hash = "sha256:3927e15c98867c71bdfd13d887efc0268c30e657d46d1a7bf916787b445f3d76", size = 833184, upload-time = "2025-04-29T20:44:26.118Z" },
+    { url = "https://files.pythonhosted.org/packages/d1/f4/69cf0d0753e93526659d4810d7816d33a6c72f2934b26d14da283602d175/gel-3.1.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:f5e41f4ddc86e054256e81302905e671647577c1aed7249e1781aee1e0cb2f7c", size = 907956, upload-time = "2025-04-29T20:44:28.285Z" },
+    { url = "https://files.pythonhosted.org/packages/4f/1b/88cc28e5c58e912b9d74f5b27bb41203af88cac9ea6cf329ccb9f4a23fab/gel-3.1.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:cd20c45beec358197293ad5c1fcf7fd383153e0d8d7038322085cf27436dc975", size = 863463, upload-time = "2025-04-29T20:44:29.906Z" },
+    { url = "https://files.pythonhosted.org/packages/e2/52/57ce33203a606dac51abf16aaa2388d31a4efac434bb3730dc22494cea13/gel-3.1.0-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8a526e11ba696d1cf6c876c08afe6ab5f762a227faaa3b78523ebc2511567609", size = 4619168, upload-time = "2025-04-29T20:44:32.895Z" },
+    { url = "https://files.pythonhosted.org/packages/eb/ad/eb7958f8197ba763054a706892c4948753f210c6f82ce46f7de9d13d4f94/gel-3.1.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:c06f11fcde231d6264dbe0b19d7b2942767a196e9c6f2cabf22fbb04094134af", size = 4729625, upload-time = "2025-04-29T20:44:34.747Z" },
+    { url = "https://files.pythonhosted.org/packages/cd/62/7b89eb81430f5714bf56f257679998a9a09f327f60d3c061dece5b5b2797/gel-3.1.0-cp313-cp313-win_amd64.whl", hash = "sha256:48235a5082f03d7eccbcaa4255260c8a3cdb2cfd123f121dd6b0d3ebc51421ac", size = 831743, upload-time = "2025-04-29T20:44:36.992Z" },
 ]
 
 [[package]]
@@ -883,7 +883,7 @@ requires-dist = [
     { name = "discord-webhook", extras = ["async"], specifier = "==1.4.1" },
     { name = "fastapi", specifier = "==0.115.12" },
     { name = "faust-cchardet", specifier = "==2.1.19" },
-    { name = "gel", specifier = "==3.0.1" },
+    { name = "gel", specifier = "==3.1.0" },
     { name = "hypercorn", specifier = "==0.17.3" },
     { name = "ics", specifier = "==0.7.2" },
     { name = "meilisearch-python-sdk", specifier = "==4.5.0" },
