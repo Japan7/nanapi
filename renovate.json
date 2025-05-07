@@ -7,16 +7,24 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["geldata/gel"],
-      "matchUpdateTypes": ["minor"],
+      "matchPackageNames": [
+        "geldata/gel"
+      ],
+      "matchUpdateTypes": [
+        "minor"
+      ],
       "automerge": false
     }
   ],
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["edgedb.toml"],
-      "matchStrings": ["server-version = \"=(?<currentValue>\\S+)\""],
+      "managerFilePatterns": [
+        "/edgedb.toml/"
+      ],
+      "matchStrings": [
+        "server-version = \"=(?<currentValue>\\S+)\""
+      ],
       "datasourceTemplate": "docker",
       "depNameTemplate": "geldata/gel"
     }
