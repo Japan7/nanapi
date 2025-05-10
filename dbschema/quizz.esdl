@@ -2,20 +2,16 @@ module quizz {
   type Quizz extending default::ClientObject {
     required property channel_id -> int64;
     required property channel_id_str := <str>.channel_id;
-    property description -> str;
-    property url -> str;
-    required property is_image -> bool {
-      default := false;
-    }
+    property question -> str;
+    property attachment_url -> str;
     property answer -> str;
-    property answer_source -> str;
+    property hints -> array<str>;
     required property submitted_at -> datetime {
       default := datetime_current();
     }
     required link author -> user::User {
       on target delete delete source;
     }
-    property hikaried := .url ilike 'https://hikari.butaishoujo.moe%';
     link game := .<quizz[is Game];
     index on (.channel_id);
   }
@@ -30,7 +26,6 @@ module quizz {
       constraint exclusive;
     }
     required property message_id_str := <str>.message_id;
-    property answer_bananed -> str;
     required property started_at -> datetime {
       default := datetime_current();
     }

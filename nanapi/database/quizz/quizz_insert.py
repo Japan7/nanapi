@@ -6,9 +6,10 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 with
   channel_id := <int64>$channel_id,
-  description := <str>$description,
-  url := <optional str>$url,
-  is_image := <bool>$is_image,
+  question := <optional str>$question,
+  attachment_url := <optional str>$attachment_url,
+  answer := <optional str>$answer,
+  hints := <optional array<str>>$hints,
   author_discord_id := <int64>$author_discord_id,
   author_discord_username := <str>$author_discord_username,
   author := (
@@ -26,9 +27,10 @@ with
 insert quizz::Quizz {
   client := global client,
   channel_id := channel_id,
-  description := description,
-  url := url,
-  is_image := is_image,
+  question := question,
+  attachment_url := attachment_url,
+  answer := answer,
+  hints := hints,
   author := author,
 }
 """
@@ -45,19 +47,21 @@ async def quizz_insert(
     executor: AsyncIOExecutor,
     *,
     channel_id: int,
-    description: str,
-    is_image: bool,
     author_discord_id: int,
     author_discord_username: str,
-    url: str | None = None,
+    question: str | None = None,
+    attachment_url: str | None = None,
+    answer: str | None = None,
+    hints: list[str] | None = None,
 ) -> QuizzInsertResult:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,
         channel_id=channel_id,
-        description=description,
-        is_image=is_image,
         author_discord_id=author_discord_id,
         author_discord_username=author_discord_username,
-        url=url,
+        question=question,
+        attachment_url=attachment_url,
+        answer=answer,
+        hints=hints,
     )
     return adapter.validate_json(resp, strict=False)

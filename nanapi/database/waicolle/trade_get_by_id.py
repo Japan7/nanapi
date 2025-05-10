@@ -60,9 +60,9 @@ class TradeGetByIdResult(BaseModel):
     offeree: TradeGetByIdResultOfferee
     offered: list[TradeGetByIdResultOffered]
     id: UUID
-    blood_shards: int
-    completed_at: datetime | None
     created_at: datetime
+    completed_at: datetime | None
+    blood_shards: int
 
 
 adapter = TypeAdapter(TradeGetByIdResult | None)

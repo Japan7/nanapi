@@ -88,8 +88,6 @@ class WaifuEdgedResultElements(BaseModel):
     owner: WaifuEdgedResultElementsOwner
     original_owner: WaifuEdgedResultElementsOriginalOwner | None
     custom_position_waifu: WaifuEdgedResultElementsCustomPositionWaifu | None
-    frozen: bool
-    disabled: bool
     trade_locked: bool
     timestamp: datetime
     nanaed: bool
@@ -100,6 +98,8 @@ class WaifuEdgedResultElements(BaseModel):
     custom_image: str | None
     custom_collage: bool
     blooded: bool
+    disabled: bool
+    frozen: bool
     id: UUID
 
 

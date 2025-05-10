@@ -27,6 +27,16 @@ class GuildEventDeleteResultClient(BaseModel):
     username: str
 
 
+class GuildEventDeleteResultProjection(BaseModel):
+    id: UUID
+    channel_id: int
+    channel_id_str: str
+    message_id: int | None
+    message_id_str: str | None
+    name: str
+    status: ProjectionStatus
+
+
 class GuildEventDeleteResultParticipants(BaseModel):
     id: UUID
     discord_id: int
@@ -41,16 +51,6 @@ class GuildEventDeleteResultOrganizer(BaseModel):
     discord_username: str
 
 
-class GuildEventDeleteResultProjection(BaseModel):
-    id: UUID
-    channel_id: int
-    message_id: int | None
-    name: str
-    status: ProjectionStatus
-    channel_id_str: str
-    message_id_str: str | None
-
-
 class GuildEventDeleteResult(BaseModel):
     url: str | None
     start_time: datetime
@@ -62,9 +62,9 @@ class GuildEventDeleteResult(BaseModel):
     description: str | None
     discord_id: int
     id: UUID
-    projection: GuildEventDeleteResultProjection | None
     organizer: GuildEventDeleteResultOrganizer
     participants: list[GuildEventDeleteResultParticipants]
+    projection: GuildEventDeleteResultProjection | None
     client: GuildEventDeleteResultClient
 
 

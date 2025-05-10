@@ -35,10 +35,10 @@ class PlayerSelectByCharaResultUser(BaseModel):
 class PlayerSelectByCharaResult(BaseModel):
     user: PlayerSelectByCharaResultUser
     id: UUID
+    frozen_at: datetime | None
     blood_shards: int
     game_mode: WaicolleGameMode
     moecoins: int
-    frozen_at: datetime | None
 
 
 adapter = TypeAdapter(list[PlayerSelectByCharaResult])

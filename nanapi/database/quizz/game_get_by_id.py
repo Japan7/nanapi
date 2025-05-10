@@ -9,28 +9,13 @@ EDGEQL_QUERY = r"""
 with
   id := <uuid>$id,
 select quizz::Game {
-  id,
-  status,
-  message_id,
-  message_id_str,
-  answer_bananed,
-  started_at,
-  ended_at,
+  *,
   winner: {
     discord_id,
     discord_id_str,
   },
   quizz: {
-    id,
-    channel_id,
-    channel_id_str,
-    description,
-    url,
-    is_image,
-    answer,
-    answer_source,
-    submitted_at,
-    hikaried,
+    *,
     author: {
       discord_id,
       discord_id_str,
@@ -52,17 +37,15 @@ class GameGetByIdResultQuizzAuthor(BaseModel):
 
 
 class GameGetByIdResultQuizz(BaseModel):
+    author: GameGetByIdResultQuizzAuthor
     id: UUID
     channel_id: int
-    channel_id_str: str
-    description: str | None
-    url: str | None
-    is_image: bool
     answer: str | None
-    answer_source: str | None
+    channel_id_str: str
+    question: str | None
+    attachment_url: str | None
     submitted_at: datetime
-    hikaried: bool | None
-    author: GameGetByIdResultQuizzAuthor
+    hints: list[str] | None
 
 
 class GameGetByIdResultWinner(BaseModel):
@@ -71,15 +54,14 @@ class GameGetByIdResultWinner(BaseModel):
 
 
 class GameGetByIdResult(BaseModel):
-    id: UUID
-    status: QuizzStatus
-    message_id: int
-    message_id_str: str
-    answer_bananed: str | None
-    started_at: datetime
-    ended_at: datetime | None
     winner: GameGetByIdResultWinner | None
     quizz: GameGetByIdResultQuizz
+    id: UUID
+    message_id: int
+    ended_at: datetime | None
+    message_id_str: str
+    started_at: datetime
+    status: QuizzStatus
 
 
 adapter = TypeAdapter(GameGetByIdResult | None)

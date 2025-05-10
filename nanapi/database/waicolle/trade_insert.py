@@ -114,6 +114,8 @@ class TradeInsertResultOffered(BaseModel):
     original_owner: TradeInsertResultOfferedOriginalOwner | None
     custom_position_waifu: TradeInsertResultOfferedCustomPositionWaifu | None
     id: UUID
+    frozen: bool
+    disabled: bool
     blooded: bool
     custom_collage: bool
     custom_image: str | None
@@ -124,8 +126,6 @@ class TradeInsertResultOffered(BaseModel):
     nanaed: bool
     timestamp: datetime
     trade_locked: bool
-    disabled: bool
-    frozen: bool
 
 
 class TradeInsertResultOffereeUser(BaseModel):
@@ -169,6 +169,8 @@ class TradeInsertResultReceived(BaseModel):
     original_owner: TradeInsertResultReceivedOriginalOwner | None
     custom_position_waifu: TradeInsertResultReceivedCustomPositionWaifu | None
     id: UUID
+    frozen: bool
+    disabled: bool
     blooded: bool
     custom_collage: bool
     custom_image: str | None
@@ -179,8 +181,6 @@ class TradeInsertResultReceived(BaseModel):
     nanaed: bool
     timestamp: datetime
     trade_locked: bool
-    disabled: bool
-    frozen: bool
 
 
 class TradeInsertResultAuthorUser(BaseModel):
@@ -197,9 +197,9 @@ class TradeInsertResult(BaseModel):
     received: list[TradeInsertResultReceived]
     offeree: TradeInsertResultOfferee
     offered: list[TradeInsertResultOffered]
-    created_at: datetime
-    completed_at: datetime | None
     blood_shards: int
+    completed_at: datetime | None
+    created_at: datetime
     id: UUID
 
 

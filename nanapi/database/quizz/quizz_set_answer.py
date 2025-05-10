@@ -7,12 +7,12 @@ EDGEQL_QUERY = r"""
 with
   id := <uuid>$id,
   answer := <optional str>$answer,
-  answer_source := <optional str>$answer_source,
+  hints := <optional array<str>>$hints,
 update quizz::Quizz
 filter .id = id
 set {
   answer := answer,
-  answer_source := answer_source,
+  hints := hints,
 }
 """
 
@@ -29,12 +29,12 @@ async def quizz_set_answer(
     *,
     id: UUID,
     answer: str | None = None,
-    answer_source: str | None = None,
+    hints: list[str] | None = None,
 ) -> QuizzSetAnswerResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,
         id=id,
         answer=answer,
-        answer_source=answer_source,
+        hints=hints,
     )
     return adapter.validate_json(resp, strict=False)

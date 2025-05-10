@@ -88,8 +88,6 @@ class WaifuAscendableResultElements(BaseModel):
     owner: WaifuAscendableResultElementsOwner
     original_owner: WaifuAscendableResultElementsOriginalOwner | None
     custom_position_waifu: WaifuAscendableResultElementsCustomPositionWaifu | None
-    frozen: bool
-    disabled: bool
     trade_locked: bool
     timestamp: datetime
     nanaed: bool
@@ -100,6 +98,8 @@ class WaifuAscendableResultElements(BaseModel):
     custom_image: str | None
     custom_collage: bool
     blooded: bool
+    disabled: bool
+    frozen: bool
     id: UUID
 
 

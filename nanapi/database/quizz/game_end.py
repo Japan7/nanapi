@@ -32,28 +32,13 @@ with
     }
   )
 select updated {
-  id,
-  status,
-  message_id,
-  message_id_str,
-  answer_bananed,
-  started_at,
-  ended_at,
+  *,
   winner: {
     discord_id,
     discord_id_str,
   },
   quizz: {
-    id,
-    channel_id,
-    channel_id_str,
-    description,
-    url,
-    is_image,
-    answer,
-    answer_source,
-    submitted_at,
-    hikaried,
+    *,
     author: {
       discord_id,
       discord_id_str,
@@ -74,17 +59,15 @@ class GameEndResultQuizzAuthor(BaseModel):
 
 
 class GameEndResultQuizz(BaseModel):
+    author: GameEndResultQuizzAuthor
     id: UUID
     channel_id: int
-    channel_id_str: str
-    description: str | None
-    url: str | None
-    is_image: bool
     answer: str | None
-    answer_source: str | None
+    channel_id_str: str
+    question: str | None
+    attachment_url: str | None
     submitted_at: datetime
-    hikaried: bool | None
-    author: GameEndResultQuizzAuthor
+    hints: list[str] | None
 
 
 class GameEndResultWinner(BaseModel):
@@ -93,15 +76,14 @@ class GameEndResultWinner(BaseModel):
 
 
 class GameEndResult(BaseModel):
-    id: UUID
-    status: QuizzStatus
-    message_id: int
-    message_id_str: str
-    answer_bananed: str | None
-    started_at: datetime
-    ended_at: datetime | None
     winner: GameEndResultWinner | None
     quizz: GameEndResultQuizz
+    status: QuizzStatus
+    started_at: datetime
+    message_id_str: str
+    ended_at: datetime | None
+    message_id: int
+    id: UUID
 
 
 adapter = TypeAdapter(GameEndResult | None)

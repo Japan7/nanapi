@@ -117,9 +117,9 @@ class WaifuTrackUnlockedResult(BaseModel):
     custom_image: str | None
     custom_collage: bool
     blooded: bool
-    frozen: bool
-    disabled: bool
     trade_locked: bool
+    disabled: bool
+    frozen: bool
 
 
 adapter = TypeAdapter(list[WaifuTrackUnlockedResult])

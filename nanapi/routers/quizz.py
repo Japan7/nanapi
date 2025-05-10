@@ -14,19 +14,12 @@ from nanapi.database.quizz.game_get_current import GameGetCurrentResult, game_ge
 from nanapi.database.quizz.game_get_last import GameGetLastResult, game_get_last
 from nanapi.database.quizz.game_new import GameNewResult, game_new
 from nanapi.database.quizz.game_select import GAME_SELECT_STATUS, GameSelectResult, game_select
-from nanapi.database.quizz.game_update_bananed import GameUpdateBananedResult, game_update_bananed
 from nanapi.database.quizz.quizz_delete_by_id import QuizzDeleteByIdResult, quizz_delete_by_id
 from nanapi.database.quizz.quizz_get_by_id import QuizzGetByIdResult, quizz_get_by_id
 from nanapi.database.quizz.quizz_get_oldest import QuizzGetOldestResult, quizz_get_oldest
 from nanapi.database.quizz.quizz_insert import QuizzInsertResult, quizz_insert
 from nanapi.database.quizz.quizz_set_answer import QuizzSetAnswerResult, quizz_set_answer
-from nanapi.models.quizz import (
-    EndGameBody,
-    NewGameBody,
-    NewQuizzBody,
-    SetGameBananedAnswerBody,
-    SetQuizzAnswerBody,
-)
+from nanapi.models.quizz import EndGameBody, NewGameBody, NewQuizzBody, SetQuizzAnswerBody
 from nanapi.utils.fastapi import HTTPExceptionModel, NanAPIRouter, get_client_edgedb
 
 router = NanAPIRouter(prefix='/quizz', tags=['quizz'])
@@ -163,21 +156,6 @@ async def delete_game(message_id: int, edgedb: AsyncIOClient = Depends(get_clien
 async def get_game(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     """Get a game by ID."""
     resp = await game_get_by_id(edgedb, id=id)
-    if resp is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return resp
-
-
-@router.oauth2_client_restricted.put(
-    '/games/{id}/bananed',
-    response_model=GameUpdateBananedResult,
-    responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
-)
-async def set_game_bananed_answer(
-    id: UUID, body: SetGameBananedAnswerBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
-):
-    """Set the bananed answer for a game."""
-    resp = await game_update_bananed(edgedb, id=id, **body.model_dump())
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return resp

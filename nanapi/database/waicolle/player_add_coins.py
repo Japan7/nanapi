@@ -41,10 +41,10 @@ class PlayerAddCoinsResultUser(BaseModel):
 
 class PlayerAddCoinsResult(BaseModel):
     user: PlayerAddCoinsResultUser
-    frozen_at: datetime | None
     moecoins: int
     game_mode: WaicolleGameMode
     blood_shards: int
+    frozen_at: datetime | None
     id: UUID
 
 

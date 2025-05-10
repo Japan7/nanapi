@@ -70,6 +70,8 @@ class WaifuSelectByCharaResult(BaseModel):
     original_owner: WaifuSelectByCharaResultOriginalOwner | None
     custom_position_waifu: WaifuSelectByCharaResultCustomPositionWaifu | None
     id: UUID
+    frozen: bool
+    disabled: bool
     blooded: bool
     custom_collage: bool
     custom_image: str | None
@@ -80,8 +82,6 @@ class WaifuSelectByCharaResult(BaseModel):
     nanaed: bool
     timestamp: datetime
     trade_locked: bool
-    disabled: bool
-    frozen: bool
 
 
 adapter = TypeAdapter(list[WaifuSelectByCharaResult])

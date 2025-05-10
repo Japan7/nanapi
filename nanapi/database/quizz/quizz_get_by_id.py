@@ -8,16 +8,7 @@ EDGEQL_QUERY = r"""
 with
   id := <uuid>$id
 select quizz::Quizz {
-  id,
-  channel_id,
-  channel_id_str,
-  description,
-  url,
-  is_image,
-  answer,
-  answer_source,
-  submitted_at,
-  hikaried,
+  *,
   author: {
     discord_id,
     discord_id_str,
@@ -33,17 +24,15 @@ class QuizzGetByIdResultAuthor(BaseModel):
 
 
 class QuizzGetByIdResult(BaseModel):
+    author: QuizzGetByIdResultAuthor
     id: UUID
     channel_id: int
-    channel_id_str: str
-    description: str | None
-    url: str | None
-    is_image: bool
     answer: str | None
-    answer_source: str | None
+    channel_id_str: str
+    question: str | None
+    attachment_url: str | None
     submitted_at: datetime
-    hikaried: bool | None
-    author: QuizzGetByIdResultAuthor
+    hints: list[str] | None
 
 
 adapter = TypeAdapter(QuizzGetByIdResult | None)
