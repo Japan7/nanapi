@@ -167,7 +167,7 @@ class CharaImage(ALImage):
         img = self.normalize(img, self.properties.zoom)
 
         for enhancer in self.enhancers:
-            img = enhancer(img)  # type: ignore
+            img = enhancer(img)
 
         self.image = img
 

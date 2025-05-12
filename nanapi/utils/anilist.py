@@ -327,7 +327,7 @@ class MALMapper(dict[MediaType, dict[int, int]]):
 
     def load(self, media_ids: list[MediaSelectAllIdsResult]):
         for m in media_ids:
-            if m.type is not None and m.id_mal is not None:
+            if m.id_mal is not None:
                 self[MediaType(m.type)][m.id_mal] = m.id_al
 
 

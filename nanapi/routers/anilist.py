@@ -68,19 +68,13 @@ async def upsert_account(discord_id: str, body: UpsertAnilistAccountBody):
 @router.oauth2.get('/accounts/all/entries', response_model=list[EntrySelectAllResult])
 async def get_all_entries(type: ENTRY_SELECT_ALL_MEDIA_TYPE | None = None):
     """Get all AniList entries for all accounts."""
-    resp = await entry_select_all(get_edgedb(), media_type=type)
-    if resp is None:
-        resp = []
-    return resp
+    return await entry_select_all(get_edgedb(), media_type=type)
 
 
 @router.oauth2.get('/accounts/{discord_id}/entries', response_model=list[EntrySelectAllResult])
 async def get_account_entries(discord_id: str, type: ENTRY_SELECT_ALL_MEDIA_TYPE | None = None):
     """Get AniList entries for a specific Discord user."""
-    resp = await entry_select_all(get_edgedb(), media_type=type, discord_id=discord_id)
-    if resp is None:
-        resp = []
-    return resp
+    return await entry_select_all(get_edgedb(), media_type=type, discord_id=discord_id)
 
 
 ##########
@@ -99,7 +93,7 @@ async def get_medias(ids_al: str):
 
 
 @router.oauth2.get('/medias/search', response_model=list[MediaSelectResult])
-async def media_search(type: MEDIA_TYPES, search: str):
+async def media_search(search: str, type: MEDIA_TYPES | None = None):
     """Search for AniList media by title."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_medias')

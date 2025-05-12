@@ -129,7 +129,7 @@ async def get_current_client(token: str = Depends(OAUTH2_SCHEME)) -> ClientGetBy
     )
     try:
         payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
-        username: str = payload.get('sub', None)
+        username: str | None = payload.get('sub', None)
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)

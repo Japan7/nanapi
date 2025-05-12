@@ -52,6 +52,11 @@ homepage = "https://github.com/Japan7/mahou.py"
 [tool.pyright]
 pythonVersion = "3.12"
 reportDeprecated = true
+reportUnnecessaryCast = true
+reportUnnecessaryComparison = true
+reportUnnecessaryContains = true
+reportUnnecessaryIsInstance = true
+reportUnnecessaryTypeIgnoreComment = true
 ignore = ["nanapi/nanachan_v2_migrate.py"]
 
 [tool.ruff]
