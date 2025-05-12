@@ -5,12 +5,12 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  channel_id := <int64>$channel_id,
+  channel_id := <str>$channel_id,
   question := <optional str>$question,
   attachment_url := <optional str>$attachment_url,
   answer := <optional str>$answer,
   hints := <optional array<str>>$hints,
-  author_discord_id := <int64>$author_discord_id,
+  author_discord_id := <str>$author_discord_id,
   author_discord_username := <str>$author_discord_username,
   author := (
     insert user::User {
@@ -46,8 +46,8 @@ adapter = TypeAdapter(QuizzInsertResult)
 async def quizz_insert(
     executor: AsyncIOExecutor,
     *,
-    channel_id: int,
-    author_discord_id: int,
+    channel_id: str,
+    author_discord_id: str,
     author_discord_username: str,
     question: str | None = None,
     attachment_url: str | None = None,

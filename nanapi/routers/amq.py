@@ -19,7 +19,7 @@ async def get_accounts(username: str | None = None):
 
 
 @router.oauth2.patch('/accounts/{discord_id}', response_model=AccountMergeResult)
-async def upsert_account(discord_id: int, body: UpsertAMQAccountBody):
+async def upsert_account(discord_id: str, body: UpsertAMQAccountBody):
     """Create or update an AMQ account by Discord ID."""
     return await account_merge(get_edgedb(), discord_id=discord_id, **body.model_dump())
 

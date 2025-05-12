@@ -3,6 +3,5 @@ select anilist::Account {
   username,
   user: {
     discord_id,
-    discord_id_str,
   },
 }

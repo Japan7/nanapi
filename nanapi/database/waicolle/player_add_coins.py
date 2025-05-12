@@ -7,7 +7,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   moecoins := <optional int32>$moecoins,
   blood_shards := <optional int32>$blood_shards,
   updated := (
@@ -22,7 +22,6 @@ select updated {
   *,
   user: {
     discord_id,
-    discord_id_str,
   },
 }
 """
@@ -35,8 +34,7 @@ class WaicolleGameMode(StrEnum):
 
 
 class PlayerAddCoinsResultUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class PlayerAddCoinsResult(BaseModel):
@@ -54,7 +52,7 @@ adapter = TypeAdapter(PlayerAddCoinsResult | None)
 async def player_add_coins(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     moecoins: int | None = None,
     blood_shards: int | None = None,
 ) -> PlayerAddCoinsResult | None:

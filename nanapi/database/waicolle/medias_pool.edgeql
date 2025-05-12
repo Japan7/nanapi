@@ -1,6 +1,6 @@
 with
   ids_al := <array<int32>>$ids_al,
-  discord_id := <optional int64>$discord_id,
+  discord_id := <optional str>$discord_id,
   genred := <optional bool>$genred ?? false,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
   medias := (select anilist::Media filter .id_al in array_unpack(ids_al)),

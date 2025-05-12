@@ -6,7 +6,7 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 with
   id := <uuid>$id,
-  participant_id := <int64>$participant_id,
+  participant_id := <str>$participant_id,
   participant_username := <str>$participant_username,
   participant := (
     insert user::User {
@@ -39,7 +39,7 @@ async def projo_participant_add(
     executor: AsyncIOExecutor,
     *,
     id: UUID,
-    participant_id: int,
+    participant_id: str,
     participant_username: str,
 ) -> ProjoParticipantAddResult | None:
     resp = await executor.query_single_json(

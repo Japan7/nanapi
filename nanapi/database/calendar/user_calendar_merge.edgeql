@@ -1,5 +1,5 @@
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   discord_username := <str>$discord_username,
   ics := <str>$ics,
   user := (

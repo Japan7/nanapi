@@ -78,13 +78,13 @@ class BaseRoll(abc.ABC):
         self.max_rank = S if max_rank is None else max_rank
         self.loaded = asyncio.Event()
 
-    async def get_name(self, executor: AsyncIOExecutor, discord_id: int) -> str:
+    async def get_name(self, executor: AsyncIOExecutor, discord_id: str) -> str:
         name = f'{self.nb} {self.max_rank.wc_rank}'
         if self.max_rank.wc_rank != self.min_rank.wc_rank:
             name += f'-{self.min_rank.wc_rank}'
         return name
 
-    async def get_price(self, executor: AsyncIOExecutor, discord_id: int) -> int:
+    async def get_price(self, executor: AsyncIOExecutor, discord_id: str) -> int:
         return self.price
 
     @abc.abstractmethod
@@ -92,7 +92,7 @@ class BaseRoll(abc.ABC):
         if force or not self.loaded.is_set():
             self.loaded.set()
 
-    async def roll(self, executor: AsyncIOExecutor, pool_discord_id: int) -> list[int]:
+    async def roll(self, executor: AsyncIOExecutor, pool_discord_id: str) -> list[int]:
         await self.loaded.wait()
         charas, probas = await self._roll(executor, pool_discord_id)
         chousen = RNG.choice(charas, size=self.nb, p=probas)
@@ -100,7 +100,7 @@ class BaseRoll(abc.ABC):
 
     @abc.abstractmethod
     async def _roll(
-        self, executor: AsyncIOExecutor, pool_discord_id: int
+        self, executor: AsyncIOExecutor, pool_discord_id: str
     ) -> tuple[npt.NDArray[np.int_], npt.NDArray[np.float64]]:
         pass
 
@@ -128,7 +128,7 @@ class BaseRoll(abc.ABC):
         return chara_pool[:i], probas[:i]
 
     @abc.abstractmethod
-    async def after(self, executor: AsyncIOExecutor, discord_id: int):
+    async def after(self, executor: AsyncIOExecutor, discord_id: str):
         pass
 
     def __call__(self, *args: Any, **kwds: Any) -> Any:
@@ -140,7 +140,7 @@ class UserRoll(BaseRoll):
         await super().load(executor, force=force)
 
     async def _roll(
-        self, executor: AsyncIOExecutor, pool_discord_id: int
+        self, executor: AsyncIOExecutor, pool_discord_id: str
     ) -> tuple[npt.NDArray[np.int_], npt.NDArray[np.float64]]:
         pool = await self._cached_user_pool(executor, discord_id=pool_discord_id)
         charas, probas = await self._charas_probas_from_pool(pool)
@@ -173,10 +173,10 @@ class UserRoll(BaseRoll):
         cache=TTLCache(1024, ttl=timedelta(hours=6).seconds),
         key=lambda *args, **kwargs: hashkey(kwargs.get('discord_id', None)),
     )
-    async def _cached_user_pool(cls, executor: AsyncIOExecutor, *, discord_id: int | None = None):
+    async def _cached_user_pool(cls, executor: AsyncIOExecutor, *, discord_id: str | None = None):
         return await user_pool(executor, discord_id=discord_id)
 
-    async def after(self, executor: AsyncIOExecutor, discord_id: int):
+    async def after(self, executor: AsyncIOExecutor, discord_id: str):
         pass
 
 
@@ -194,12 +194,14 @@ class BaseMediaRoll(BaseRoll, metaclass=abc.ABCMeta):
         self.ids_al: list[int] | None = None
 
     async def _roll(
-        self, executor: AsyncIOExecutor, pool_discord_id: int
+        self, executor: AsyncIOExecutor, pool_discord_id: str | None = None
     ) -> tuple[npt.NDArray[np.int_], npt.NDArray[np.float64]]:
         pool = await self.get_pool(executor, pool_discord_id)
         return await self._charas_probas_from_pool(pool)
 
-    async def get_pool(self, executor: AsyncIOExecutor, discord_id: int) -> list[MediasPoolResult]:
+    async def get_pool(
+        self, executor: AsyncIOExecutor, discord_id: str | None = None
+    ) -> list[MediasPoolResult]:
         assert self.ids_al is not None
         ids_al = tuple(sorted(self.ids_al))
         pool = await self._cached_medias_pool(
@@ -219,7 +221,7 @@ class BaseMediaRoll(BaseRoll, metaclass=abc.ABCMeta):
         executor: AsyncIOExecutor,
         *,
         ids_al: tuple[int, ...],
-        discord_id: int | None = None,
+        discord_id: str | None = None,
         genred: bool | None = None,
     ):
         return await medias_pool(
@@ -228,7 +230,7 @@ class BaseMediaRoll(BaseRoll, metaclass=abc.ABCMeta):
 
 
 class UpcomingRoll(BaseMediaRoll):
-    async def get_name(self, executor: AsyncIOExecutor, discord_id: int) -> str:
+    async def get_name(self, executor: AsyncIOExecutor, discord_id: str) -> str:
         return f'{await super().get_name(executor, discord_id)}, Upcoming anime'
 
     async def load(self, executor: AsyncIOExecutor, force: bool = False):
@@ -237,7 +239,7 @@ class UpcomingRoll(BaseMediaRoll):
             self.ids_al = [media.id_al for media in resp]
             self.loaded.set()
 
-    async def after(self, executor: AsyncIOExecutor, discord_id: int):
+    async def after(self, executor: AsyncIOExecutor, discord_id: str):
         pass
 
 
@@ -247,7 +249,7 @@ class HRoll(BaseMediaRoll):
     ):
         super().__init__(nb, price, min_rank, max_rank, genred=False)
 
-    async def get_name(self, executor: AsyncIOExecutor, discord_id: int) -> str:
+    async def get_name(self, executor: AsyncIOExecutor, discord_id: str) -> str:
         return f'{await super().get_name(executor, discord_id)} (all), Top 1000 favourites H'
 
     async def load(self, executor: AsyncIOExecutor, force: bool = False):
@@ -256,7 +258,7 @@ class HRoll(BaseMediaRoll):
             self.ids_al = [media.id_al for media in resp]
             self.loaded.set()
 
-    async def after(self, executor: AsyncIOExecutor, discord_id: int):
+    async def after(self, executor: AsyncIOExecutor, discord_id: str):
         pass
 
 
@@ -285,7 +287,7 @@ class TagRoll(BaseMediaRoll):
         self.tag = forced_tag
         self.discount_first = discount_first
 
-    async def get_name(self, executor: AsyncIOExecutor, discord_id: int) -> str:
+    async def get_name(self, executor: AsyncIOExecutor, discord_id: str) -> str:
         pool = await self.get_pool(executor, discord_id)
 
         min_rank = S
@@ -300,7 +302,7 @@ class TagRoll(BaseMediaRoll):
 
         return f'{self.nb} {max_rank}-{min_rank} (all), Daily tag — {self.tag}'
 
-    async def get_price(self, executor: AsyncIOExecutor, discord_id: int) -> int:
+    async def get_price(self, executor: AsyncIOExecutor, discord_id: str) -> int:
         price = await super().get_price(executor, discord_id)
         if self.discount_first:
             redis_player_key = f'{discord_id}_{get_current_date()}'
@@ -319,7 +321,7 @@ class TagRoll(BaseMediaRoll):
             self.ids_al = [media.id_al for media in resp]
             self.loaded.set()
 
-    async def after(self, executor: AsyncIOExecutor, discord_id: int):
+    async def after(self, executor: AsyncIOExecutor, discord_id: str):
         if self.discount_first:
             redis_player_key = f'{discord_id}_{get_current_date()}'
             await user_daily_roll.set(True, sub_key=redis_player_key)
@@ -359,7 +361,7 @@ class TagRoll(BaseMediaRoll):
         for tag in tags:
             roll = TagRoll(1, forced_tag=tag)
             await roll.load(executor, force=True)
-            _, rates = await roll._roll(executor, 0)  # I'm sorry
+            _, rates = await roll._roll(executor)
             if len(rates) > 400 and (1 / float(np.max(rates))) > 50:
                 await daily_tag.set(tag, sub_key=str(tag_date))
                 return tag
@@ -389,7 +391,7 @@ class SeasonalRoll(BaseMediaRoll):
         self.season: MEDIA_SELECT_IDS_BY_SEASON_SEASON | None = season
         self.discount_first = discount_first
 
-    async def get_name(self, executor: AsyncIOExecutor, discord_id: int) -> str:
+    async def get_name(self, executor: AsyncIOExecutor, discord_id: str) -> str:
         assert self.season_year
         assert self.season
 
@@ -410,7 +412,7 @@ class SeasonalRoll(BaseMediaRoll):
             f'Weekly Seasonal — {self.season.capitalize()} {self.season_year}'
         )
 
-    async def get_price(self, executor: AsyncIOExecutor, discord_id: int) -> int:
+    async def get_price(self, executor: AsyncIOExecutor, discord_id: str) -> int:
         price = await super().get_price(executor, discord_id)
         if self.discount_first:
             curr_date = get_current_date().isocalendar()
@@ -436,7 +438,7 @@ class SeasonalRoll(BaseMediaRoll):
             self.ids_al = [media.id_al for media in resp]
             self.loaded.set()
 
-    async def after(self, executor: AsyncIOExecutor, discord_id: int):
+    async def after(self, executor: AsyncIOExecutor, discord_id: str):
         if self.discount_first:
             curr_date = get_current_date().isocalendar()
             redis_player_key = f'{discord_id}_{(curr_date.year, curr_date.week)}'
@@ -503,7 +505,7 @@ class SeasonalRoll(BaseMediaRoll):
         for year, season in seasons:
             roll = SeasonalRoll(1, season_year=year, season=season)
             await roll.load(executor, force=True)
-            _, rates = await roll._roll(executor, 0)  # I'm sorry
+            _, rates = await roll._roll(executor)
             if len(rates) > 400 and (1 / float(np.max(rates))) > 50:
                 await weekly_season.set(f'{year}_{season}', sub_key=str(week_key))
                 return year, season

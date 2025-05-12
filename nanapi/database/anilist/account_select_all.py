@@ -9,7 +9,6 @@ select anilist::Account {
   username,
   user: {
     discord_id,
-    discord_id_str,
   },
 }
 """
@@ -21,8 +20,7 @@ class AnilistService(StrEnum):
 
 
 class AccountSelectAllResultUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class AccountSelectAllResult(BaseModel):

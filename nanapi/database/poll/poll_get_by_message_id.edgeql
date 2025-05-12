@@ -1,10 +1,8 @@
 with
-  message_id := <int64>$message_id,
+  message_id := <str>$message_id,
 select poll::Poll {
   message_id,
-  message_id_str,
   channel_id,
-  channel_id_str,
   question,
   options: {
     rank,
@@ -12,7 +10,6 @@ select poll::Poll {
     votes: {
       user: {
         discord_id,
-        discord_id_str,
       }
     }
   }

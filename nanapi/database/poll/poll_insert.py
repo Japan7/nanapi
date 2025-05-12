@@ -7,8 +7,8 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  message_id := <int64>$message_id,
-  channel_id := <int64>$channel_id,
+  message_id := <str>$message_id,
+  channel_id := <str>$channel_id,
   question := <str>$question,
   options := <json>$options,
   _poll := (
@@ -46,8 +46,8 @@ adapter = TypeAdapter(list[PollInsertResult])
 async def poll_insert(
     executor: AsyncIOExecutor,
     *,
-    message_id: int,
-    channel_id: int,
+    message_id: str,
+    channel_id: str,
     question: str,
     options: Any,
 ) -> list[PollInsertResult]:

@@ -6,7 +6,7 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 with
   id := <uuid>$id,
-  participant_id := <int64>$participant_id,
+  participant_id := <str>$participant_id,
 update projection::Projection
 filter .id = id
 set {
@@ -26,7 +26,7 @@ async def projo_participant_remove(
     executor: AsyncIOExecutor,
     *,
     id: UUID,
-    participant_id: int,
+    participant_id: str,
 ) -> ProjoParticipantRemoveResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

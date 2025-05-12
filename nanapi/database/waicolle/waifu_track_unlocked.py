@@ -7,7 +7,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   hide_singles := <bool>$hide_singles,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
   player := assert_exists(player),
@@ -55,13 +55,11 @@ select distinct (tracked union duplicated) {
   owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   original_owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   custom_position_waifu: { id },
@@ -81,8 +79,7 @@ class WaifuTrackUnlockedResultCustomPositionWaifu(BaseModel):
 
 
 class WaifuTrackUnlockedResultOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuTrackUnlockedResultOriginalOwner(BaseModel):
@@ -90,8 +87,7 @@ class WaifuTrackUnlockedResultOriginalOwner(BaseModel):
 
 
 class WaifuTrackUnlockedResultOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuTrackUnlockedResultOwner(BaseModel):
@@ -128,7 +124,7 @@ adapter = TypeAdapter(list[WaifuTrackUnlockedResult])
 async def waifu_track_unlocked(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     hide_singles: bool,
 ) -> list[WaifuTrackUnlockedResult]:
     resp = await executor.query_json(

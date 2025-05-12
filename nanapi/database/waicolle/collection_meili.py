@@ -18,7 +18,7 @@ by .client
 
 
 class CollectionMeiliResultElementsAuthorUser(BaseModel):
-    discord_id: int
+    discord_id: str
 
 
 class CollectionMeiliResultElementsAuthor(BaseModel):

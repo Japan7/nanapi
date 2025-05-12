@@ -4,7 +4,6 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 select role::Role {
   role_id,
-  role_id_str,
   emoji
 }
 filter .client = global client
@@ -12,8 +11,7 @@ filter .client = global client
 
 
 class RoleSelectAllResult(BaseModel):
-    role_id: int
-    role_id_str: str
+    role_id: str
     emoji: str
 
 

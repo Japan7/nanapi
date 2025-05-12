@@ -4,15 +4,13 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 select user::User {
   discord_id,
-  discord_id_str,
   discord_username,
 }
 """
 
 
 class UserSelectResult(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
     discord_username: str
 
 

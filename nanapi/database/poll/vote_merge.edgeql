@@ -1,7 +1,7 @@
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   discord_username := <str>$discord_username,
-  message_id := <int64>$message_id,
+  message_id := <str>$message_id,
   rank := <int32>$rank,
   user := (
     insert user::User {

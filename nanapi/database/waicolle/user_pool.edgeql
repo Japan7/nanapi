@@ -1,5 +1,5 @@
 with
-  discord_id := <optional int64>$discord_id,
+  discord_id := <optional str>$discord_id,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
   anilist := (select anilist::Account filter .user.discord_id = discord_id),
   pool := (

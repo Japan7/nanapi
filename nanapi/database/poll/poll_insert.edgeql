@@ -1,6 +1,6 @@
 with
-  message_id := <int64>$message_id,
-  channel_id := <int64>$channel_id,
+  message_id := <str>$message_id,
+  channel_id := <str>$channel_id,
   question := <str>$question,
   options := <json>$options,
   _poll := (

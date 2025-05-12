@@ -1,8 +1,8 @@
 with
   id := <optional uuid>$id,
   status := <optional projection::Status>$status,
-  message_id := <optional int64>$message_id,
-  channel_id := <optional int64>$channel_id,
+  message_id := <optional str>$message_id,
+  channel_id := <optional str>$channel_id,
   all_projos := (select projection::Projection filter .client = global client),
   filtered := (
     (select all_projos filter .id = id)

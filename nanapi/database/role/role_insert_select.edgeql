@@ -1,5 +1,5 @@
 with
-  role_id := <int64>$role_id,
+  role_id := <str>$role_id,
   emoji := <str>$emoji,
   role := (
     insert role::Role {
@@ -10,6 +10,5 @@ with
   )
 select role {
   role_id,
-  role_id_str,
   emoji,
 }

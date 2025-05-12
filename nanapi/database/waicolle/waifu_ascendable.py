@@ -7,7 +7,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
   waifus := (
     select waicolle::Waifu
@@ -35,13 +35,11 @@ select counted {
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },
@@ -62,8 +60,7 @@ class WaifuAscendableResultElementsCustomPositionWaifu(BaseModel):
 
 
 class WaifuAscendableResultElementsOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuAscendableResultElementsOriginalOwner(BaseModel):
@@ -71,8 +68,7 @@ class WaifuAscendableResultElementsOriginalOwner(BaseModel):
 
 
 class WaifuAscendableResultElementsOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuAscendableResultElementsOwner(BaseModel):
@@ -120,7 +116,7 @@ adapter = TypeAdapter(list[WaifuAscendableResult])
 async def waifu_ascendable(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
 ) -> list[WaifuAscendableResult]:
     resp = await executor.query_json(
         EDGEQL_QUERY,

@@ -1,5 +1,5 @@
 with
-  discord_id := <optional int64>$discord_id,
+  discord_id := <optional str>$discord_id,
   start_after := <optional datetime>$start_after,
 select calendar::GuildEvent { ** }
 filter .client = global client

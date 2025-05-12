@@ -13,7 +13,6 @@ select waicolle::Player {
   *,
   user: {
     discord_id,
-    discord_id_str,
   },
 }
 filter .client = global client
@@ -28,8 +27,7 @@ class WaicolleGameMode(StrEnum):
 
 
 class PlayerSelectByCharaResultUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class PlayerSelectByCharaResult(BaseModel):

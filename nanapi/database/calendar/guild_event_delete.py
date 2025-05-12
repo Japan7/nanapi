@@ -7,7 +7,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   event := (
     delete calendar::GuildEvent
     filter .client = global client and .discord_id = discord_id
@@ -29,25 +29,21 @@ class GuildEventDeleteResultClient(BaseModel):
 
 class GuildEventDeleteResultProjection(BaseModel):
     id: UUID
-    channel_id: int
-    channel_id_str: str
-    message_id: int | None
-    message_id_str: str | None
+    channel_id: str
+    message_id: str | None
     name: str
     status: ProjectionStatus
 
 
 class GuildEventDeleteResultParticipants(BaseModel):
     id: UUID
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
     discord_username: str
 
 
 class GuildEventDeleteResultOrganizer(BaseModel):
     id: UUID
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
     discord_username: str
 
 
@@ -58,9 +54,8 @@ class GuildEventDeleteResult(BaseModel):
     location: str | None
     image: str | None
     end_time: datetime
-    discord_id_str: str
     description: str | None
-    discord_id: int
+    discord_id: str
     id: UUID
     organizer: GuildEventDeleteResultOrganizer
     participants: list[GuildEventDeleteResultParticipants]
@@ -74,7 +69,7 @@ adapter = TypeAdapter(GuildEventDeleteResult | None)
 async def guild_event_delete(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
 ) -> GuildEventDeleteResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

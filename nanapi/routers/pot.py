@@ -14,7 +14,7 @@ router = NanAPIRouter(prefix='/pots', tags=['pot'])
     response_model=PotGetByUserResult,
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
-async def get_pot(discord_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+async def get_pot(discord_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     """Get pot information for a user by Discord ID."""
     resp = await pot_get_by_user(edgedb, discord_id=discord_id)
     if not resp:
@@ -24,7 +24,7 @@ async def get_pot(discord_id: int, edgedb: AsyncIOClient = Depends(get_client_ed
 
 @router.oauth2_client_restricted.post('/{discord_id}', response_model=PotAddResult)
 async def collect_pot(
-    discord_id: int, body: CollectPotBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    discord_id: str, body: CollectPotBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     """Collect pot for a user by Discord ID."""
     return await pot_add(edgedb, discord_id=discord_id, **body.model_dump())

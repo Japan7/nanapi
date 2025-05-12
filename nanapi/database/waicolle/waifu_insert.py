@@ -7,7 +7,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   charas_ids := <array<int32>>$charas_ids,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
 for id_al in array_unpack(charas_ids) union (
@@ -27,13 +27,11 @@ for id_al in array_unpack(charas_ids) union (
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },
@@ -53,8 +51,7 @@ class WaifuInsertResultCustomPositionWaifu(BaseModel):
 
 
 class WaifuInsertResultOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuInsertResultOriginalOwner(BaseModel):
@@ -62,8 +59,7 @@ class WaifuInsertResultOriginalOwner(BaseModel):
 
 
 class WaifuInsertResultOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuInsertResultOwner(BaseModel):
@@ -100,7 +96,7 @@ adapter = TypeAdapter(list[WaifuInsertResult])
 async def waifu_insert(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     charas_ids: list[int],
 ) -> list[WaifuInsertResult]:
     resp = await executor.query_json(

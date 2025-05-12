@@ -1,5 +1,5 @@
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   id := <uuid>$id,
   collection := (select waicolle::Collection filter .id = id),
 update waicolle::Player

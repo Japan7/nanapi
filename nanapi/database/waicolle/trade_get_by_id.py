@@ -12,14 +12,12 @@ select waicolle::TradeOperation {
   author: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   received,
   offeree: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   offered,
@@ -33,8 +31,7 @@ class TradeGetByIdResultOffered(BaseModel):
 
 
 class TradeGetByIdResultOffereeUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeGetByIdResultOfferee(BaseModel):
@@ -46,8 +43,7 @@ class TradeGetByIdResultReceived(BaseModel):
 
 
 class TradeGetByIdResultAuthorUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeGetByIdResultAuthor(BaseModel):

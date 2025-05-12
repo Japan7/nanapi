@@ -7,7 +7,6 @@ select waicolle::Coupon {
   claimed_by: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
 }
@@ -16,8 +15,7 @@ filter .client = global client
 
 
 class CouponSelectAllResultClaimedByUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class CouponSelectAllResultClaimedBy(BaseModel):

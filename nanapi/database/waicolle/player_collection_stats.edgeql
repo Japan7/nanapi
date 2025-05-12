@@ -1,5 +1,5 @@
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
   id := <uuid>$id,
   collec := (select waicolle::Collection filter .id = id),
@@ -24,7 +24,6 @@ select {
     author: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     medias := .items[is anilist::Media] {

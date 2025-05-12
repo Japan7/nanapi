@@ -3,7 +3,6 @@ select waicolle::TradeOperation {
   author: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   received: {
@@ -12,13 +11,11 @@ select waicolle::TradeOperation {
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },
@@ -26,7 +23,6 @@ select waicolle::TradeOperation {
   offeree: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   offered: {
@@ -35,13 +31,11 @@ select waicolle::TradeOperation {
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },

@@ -51,7 +51,7 @@ async def get_user_calendars():
     response_model=UserCalendarSelectResult,
     responses={status.HTTP_404_NOT_FOUND: {}},
 )
-async def get_user_calendar(discord_id: int):
+async def get_user_calendar(discord_id: str):
     """Get a user calendar by Discord ID."""
     resp = await user_calendar_select(get_edgedb(), discord_id=discord_id)
     if not resp:
@@ -60,7 +60,7 @@ async def get_user_calendar(discord_id: int):
 
 
 @router.oauth2.patch('/user_calendars/{discord_id}', response_model=UserCalendarMergeResult)
-async def upsert_user_calendar(discord_id: int, body: UpsertUserCalendarBody):
+async def upsert_user_calendar(discord_id: str, body: UpsertUserCalendarBody):
     """Upsert (update or insert) a user calendar."""
     return await user_calendar_merge(get_edgedb(), discord_id=discord_id, **body.model_dump())
 
@@ -70,7 +70,7 @@ async def upsert_user_calendar(discord_id: int, body: UpsertUserCalendarBody):
     response_model=UserCalendarDeleteResult,
     responses={status.HTTP_404_NOT_FOUND: {}},
 )
-async def delete_user_calendar(discord_id: int):
+async def delete_user_calendar(discord_id: str):
     """Delete a user calendar by Discord ID."""
     resp = await user_calendar_delete(get_edgedb(), discord_id=discord_id)
     if resp is None:
@@ -95,7 +95,7 @@ async def get_guild_events(
     response_model=GuildEventMergeResult,
 )
 async def upsert_guild_event(
-    discord_id: int,
+    discord_id: str,
     body: UpsertGuildEventBody,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
@@ -108,7 +108,7 @@ async def upsert_guild_event(
     response_model=GuildEventDeleteResult,
     responses={status.HTTP_404_NOT_FOUND: {}},
 )
-async def delete_guild_event(discord_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+async def delete_guild_event(discord_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     """Delete a guild event by Discord ID."""
     resp = await guild_event_delete(edgedb, discord_id=discord_id)
     if resp is None:
@@ -122,8 +122,8 @@ async def delete_guild_event(discord_id: int, edgedb: AsyncIOClient = Depends(ge
     responses={status.HTTP_404_NOT_FOUND: {}},
 )
 async def add_guild_event_participant(
-    discord_id: int,
-    participant_id: int,
+    discord_id: str,
+    participant_id: str,
     body: ParticipantAddBody,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
@@ -145,8 +145,8 @@ async def add_guild_event_participant(
     responses={status.HTTP_404_NOT_FOUND: {}},
 )
 async def remove_guild_event_participant(
-    discord_id: int,
-    participant_id: int,
+    discord_id: str,
+    participant_id: str,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
     """Remove a participant from a guild event."""
@@ -161,7 +161,7 @@ async def remove_guild_event_participant(
 
 
 @router.public.get('/ics', responses={status.HTTP_404_NOT_FOUND: {}})
-async def get_ics(client: str, user: int | None = None, aggregate: bool = False):
+async def get_ics(client: str, user: str | None = None, aggregate: bool = False):
     """Get an iCalendar (ICS) file for a client and optionally a user."""
     _client = await client_get_by_username(get_edgedb(), username=client)
     if _client is None:

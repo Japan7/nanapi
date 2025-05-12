@@ -4,15 +4,15 @@ with
   charas := (select anilist::Character filter .id_al in waifus.character.id_al),
 select {
   players := players {
-    discord_id := .user.discord_id_str,
+    discord_id := .user.discord_id,
     discord_username := .user.discord_username,
     tracked := .tracked_characters.id_al
   },
   waifus := waifus {
     id,
     character_id := .character.id_al,
-    owner_discord_id := .owner.user.discord_id_str,
-    original_owner_discord_id := .original_owner.user.discord_id_str,
+    owner_discord_id := .owner.user.discord_id,
+    original_owner_discord_id := .original_owner.user.discord_id,
     timestamp,
     level,
     locked,
