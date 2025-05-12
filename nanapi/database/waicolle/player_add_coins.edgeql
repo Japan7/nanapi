@@ -1,5 +1,5 @@
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   moecoins := <optional int32>$moecoins,
   blood_shards := <optional int32>$blood_shards,
   updated := (
@@ -14,6 +14,5 @@ select updated {
   *,
   user: {
     discord_id,
-    discord_id_str,
   },
 }

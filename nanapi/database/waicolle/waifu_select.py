@@ -14,13 +14,11 @@ select waicolle::Waifu {
   owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   original_owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   custom_position_waifu: { id },
@@ -40,8 +38,7 @@ class WaifuSelectResultCustomPositionWaifu(BaseModel):
 
 
 class WaifuSelectResultOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuSelectResultOriginalOwner(BaseModel):
@@ -49,8 +46,7 @@ class WaifuSelectResultOriginalOwner(BaseModel):
 
 
 class WaifuSelectResultOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuSelectResultOwner(BaseModel):

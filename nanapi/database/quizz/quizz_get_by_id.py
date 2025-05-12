@@ -11,7 +11,6 @@ select quizz::Quizz {
   *,
   author: {
     discord_id,
-    discord_id_str,
   },
 }
 filter .id = id;
@@ -19,20 +18,18 @@ filter .id = id;
 
 
 class QuizzGetByIdResultAuthor(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class QuizzGetByIdResult(BaseModel):
     author: QuizzGetByIdResultAuthor
     id: UUID
-    channel_id: int
+    channel_id: str
     answer: str | None
-    channel_id_str: str
-    question: str | None
-    attachment_url: str | None
     submitted_at: datetime
+    question: str | None
     hints: list[str] | None
+    attachment_url: str | None
 
 
 adapter = TypeAdapter(QuizzGetByIdResult | None)

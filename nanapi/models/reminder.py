@@ -4,8 +4,8 @@ from pydantic import BaseModel
 
 
 class NewReminderBody(BaseModel):
-    discord_id: int
+    discord_id: str
     discord_username: str
-    channel_id: int
+    channel_id: str
     message: str
     timestamp: datetime

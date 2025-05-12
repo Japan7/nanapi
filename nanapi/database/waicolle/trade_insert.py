@@ -7,10 +7,10 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  author_discord_id := <int64>$author_discord_id,
+  author_discord_id := <str>$author_discord_id,
   received_ids := <array<uuid>>$received_ids,
   blood_shards := <optional int32>$blood_shards ?? 0,
-  offeree_discord_id := <int64>$offeree_discord_id,
+  offeree_discord_id := <str>$offeree_discord_id,
   offered_ids := <array<uuid>>$offered_ids,
   author := (select waicolle::Player filter .client = global client and .user.discord_id = author_discord_id),
   offeree := (select waicolle::Player filter .client = global client and .user.discord_id = offeree_discord_id),
@@ -29,7 +29,6 @@ select inserted {
   author: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   received: {
@@ -38,13 +37,11 @@ select inserted {
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },
@@ -52,7 +49,6 @@ select inserted {
   offeree: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   offered: {
@@ -61,13 +57,11 @@ select inserted {
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },
@@ -87,8 +81,7 @@ class TradeInsertResultOfferedCustomPositionWaifu(BaseModel):
 
 
 class TradeInsertResultOfferedOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeInsertResultOfferedOriginalOwner(BaseModel):
@@ -96,8 +89,7 @@ class TradeInsertResultOfferedOriginalOwner(BaseModel):
 
 
 class TradeInsertResultOfferedOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeInsertResultOfferedOwner(BaseModel):
@@ -129,8 +121,7 @@ class TradeInsertResultOffered(BaseModel):
 
 
 class TradeInsertResultOffereeUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeInsertResultOfferee(BaseModel):
@@ -142,8 +133,7 @@ class TradeInsertResultReceivedCustomPositionWaifu(BaseModel):
 
 
 class TradeInsertResultReceivedOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeInsertResultReceivedOriginalOwner(BaseModel):
@@ -151,8 +141,7 @@ class TradeInsertResultReceivedOriginalOwner(BaseModel):
 
 
 class TradeInsertResultReceivedOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeInsertResultReceivedOwner(BaseModel):
@@ -184,8 +173,7 @@ class TradeInsertResultReceived(BaseModel):
 
 
 class TradeInsertResultAuthorUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeInsertResultAuthor(BaseModel):
@@ -209,9 +197,9 @@ adapter = TypeAdapter(TradeInsertResult)
 async def trade_insert(
     executor: AsyncIOExecutor,
     *,
-    author_discord_id: int,
+    author_discord_id: str,
     received_ids: list[UUID],
-    offeree_discord_id: int,
+    offeree_discord_id: str,
     offered_ids: list[UUID],
     blood_shards: int | None = None,
 ) -> TradeInsertResult:

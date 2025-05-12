@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   discord_username := <str>$discord_username,
   ics := <str>$ics,
   user := (
@@ -43,7 +43,7 @@ adapter = TypeAdapter(UserCalendarMergeResult)
 async def user_calendar_merge(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     discord_username: str,
     ics: str,
 ) -> UserCalendarMergeResult:

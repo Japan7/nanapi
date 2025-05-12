@@ -135,7 +135,7 @@ class DonatePlayerCoinsBody(BaseModel):
 
 
 class NewCollectionBody(BaseModel):
-    discord_id: int
+    discord_id: str
     name: str
 
 
@@ -190,9 +190,9 @@ class BulkUpdateWaifusBody(BaseModel):
 
 
 class NewTradeBody(BaseModel):
-    author_discord_id: int
+    author_discord_id: str
     received_ids: list[UUID]
-    offeree_discord_id: int
+    offeree_discord_id: str
     offered_ids: list[UUID]
     blood_shards: int | None = None
 
@@ -203,9 +203,9 @@ class CommitTradeResponse(BaseModel):
 
 
 class RerollBody(BaseModel):
-    player_discord_id: int
+    player_discord_id: str
     waifus_ids: list[UUID]
-    bot_discord_id: int
+    bot_discord_id: str
 
 
 class RerollResponse(BaseModel):
@@ -216,17 +216,17 @@ class RerollResponse(BaseModel):
 class CollectionNameAutocompleteResult(BaseModel):
     id: UUID
     name: str
-    author_discord_id: int
+    author_discord_id: str
 
 
 class NewOfferingBody(BaseModel):
-    player_discord_id: int
+    player_discord_id: str
     chara_id_al: int
-    bot_discord_id: int
+    bot_discord_id: str
 
 
 class NewLootBody(BaseModel):
-    player_discord_id: int
+    player_discord_id: str
     chara_id_al: int
 
 

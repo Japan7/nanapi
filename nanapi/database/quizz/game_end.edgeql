@@ -1,6 +1,6 @@
 with
   id := <uuid>$id,
-  winner_discord_id := <int64>$winner_discord_id,
+  winner_discord_id := <str>$winner_discord_id,
   winner_discord_username := <str>$winner_discord_username,
   winner := (
     insert user::User {
@@ -27,13 +27,11 @@ select updated {
   *,
   winner: {
     discord_id,
-    discord_id_str,
   },
   quizz: {
     *,
     author: {
       discord_id,
-      discord_id_str,
     },
   }
 }

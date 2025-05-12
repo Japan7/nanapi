@@ -3,12 +3,10 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  message_id := <int64>$message_id,
+  message_id := <str>$message_id,
 select poll::Poll {
   message_id,
-  message_id_str,
   channel_id,
-  channel_id_str,
   question,
   options: {
     rank,
@@ -16,7 +14,6 @@ select poll::Poll {
     votes: {
       user: {
         discord_id,
-        discord_id_str,
       }
     }
   }
@@ -26,8 +23,7 @@ filter .message_id = message_id
 
 
 class PollGetByMessageIdResultOptionsVotesUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class PollGetByMessageIdResultOptionsVotes(BaseModel):
@@ -41,10 +37,8 @@ class PollGetByMessageIdResultOptions(BaseModel):
 
 
 class PollGetByMessageIdResult(BaseModel):
-    message_id: int
-    message_id_str: str
-    channel_id: int
-    channel_id_str: str
+    message_id: str
+    channel_id: str
     question: str
     options: list[PollGetByMessageIdResultOptions]
 
@@ -55,7 +49,7 @@ adapter = TypeAdapter(PollGetByMessageIdResult | None)
 async def poll_get_by_message_id(
     executor: AsyncIOExecutor,
     *,
-    message_id: int,
+    message_id: str,
 ) -> PollGetByMessageIdResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

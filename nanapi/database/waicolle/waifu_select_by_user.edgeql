@@ -1,5 +1,5 @@
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   characters_ids_al := <optional array<int32>>$characters_ids_al,
   level := <optional int32>$level,
   locked := <optional bool>$locked,
@@ -17,13 +17,11 @@ select waicolle::Waifu {
   owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   original_owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   custom_position_waifu: { id },

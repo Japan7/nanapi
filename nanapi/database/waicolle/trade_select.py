@@ -11,7 +11,6 @@ select waicolle::TradeOperation {
   author: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   received: {
@@ -20,13 +19,11 @@ select waicolle::TradeOperation {
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },
@@ -34,7 +31,6 @@ select waicolle::TradeOperation {
   offeree: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   offered: {
@@ -43,13 +39,11 @@ select waicolle::TradeOperation {
     owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     original_owner: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     custom_position_waifu: { id },
@@ -71,8 +65,7 @@ class TradeSelectResultOfferedCustomPositionWaifu(BaseModel):
 
 
 class TradeSelectResultOfferedOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultOfferedOriginalOwner(BaseModel):
@@ -80,8 +73,7 @@ class TradeSelectResultOfferedOriginalOwner(BaseModel):
 
 
 class TradeSelectResultOfferedOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultOfferedOwner(BaseModel):
@@ -113,8 +105,7 @@ class TradeSelectResultOffered(BaseModel):
 
 
 class TradeSelectResultOffereeUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultOfferee(BaseModel):
@@ -126,8 +117,7 @@ class TradeSelectResultReceivedCustomPositionWaifu(BaseModel):
 
 
 class TradeSelectResultReceivedOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultReceivedOriginalOwner(BaseModel):
@@ -135,8 +125,7 @@ class TradeSelectResultReceivedOriginalOwner(BaseModel):
 
 
 class TradeSelectResultReceivedOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultReceivedOwner(BaseModel):
@@ -168,8 +157,7 @@ class TradeSelectResultReceived(BaseModel):
 
 
 class TradeSelectResultAuthorUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class TradeSelectResultAuthor(BaseModel):

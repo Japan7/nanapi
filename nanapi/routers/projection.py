@@ -62,8 +62,8 @@ router = NanAPIRouter(prefix='/projections', tags=['projection'])
 @router.oauth2_client.get('/', response_model=list[ProjoSelectResult])
 async def get_projections(
     status: PROJO_SELECT_STATUS | None = None,
-    message_id: int | None = None,
-    channel_id: int | None = None,
+    message_id: str | None = None,
+    channel_id: str | None = None,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
     """Get a list of projections."""
@@ -220,7 +220,7 @@ async def remove_projection_external_media(
 )
 async def add_projection_participant(
     id: UUID,
-    participant_id: int,
+    participant_id: str,
     body: ParticipantAddBody,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
@@ -243,7 +243,7 @@ async def add_projection_participant(
 )
 async def remove_projection_participant(
     id: UUID,
-    participant_id: int,
+    participant_id: str,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
     """Remove a participant from a projection."""
@@ -260,7 +260,7 @@ async def remove_projection_participant(
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
 async def add_projection_guild_event(
-    id: UUID, discord_id: int, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    id: UUID, discord_id: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     """Add a guild event to a projection."""
     resp = await projo_add_event(edgedb, id=id, event_discord_id=discord_id)

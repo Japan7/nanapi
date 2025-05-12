@@ -1,7 +1,6 @@
 module quizz {
   type Quizz extending default::ClientObject {
-    required property channel_id -> int64;
-    required property channel_id_str := <str>.channel_id;
+    required property channel_id -> str;
     property question -> str;
     property attachment_url -> str;
     property answer -> str;
@@ -22,10 +21,9 @@ module quizz {
     required property status -> Status {
       default := Status.STARTED;
     }
-    required property message_id -> int64 {
+    required property message_id -> str {
       constraint exclusive;
     }
-    required property message_id_str := <str>.message_id;
     required property started_at -> datetime {
       default := datetime_current();
     }

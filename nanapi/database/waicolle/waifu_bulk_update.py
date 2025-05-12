@@ -32,13 +32,11 @@ select updated {
   owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   original_owner: {
     user: {
       discord_id,
-      discord_id_str,
     },
   },
   custom_position_waifu: { id },
@@ -57,8 +55,7 @@ class WaifuBulkUpdateResultCustomPositionWaifu(BaseModel):
 
 
 class WaifuBulkUpdateResultOriginalOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuBulkUpdateResultOriginalOwner(BaseModel):
@@ -66,8 +63,7 @@ class WaifuBulkUpdateResultOriginalOwner(BaseModel):
 
 
 class WaifuBulkUpdateResultOwnerUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class WaifuBulkUpdateResultOwner(BaseModel):

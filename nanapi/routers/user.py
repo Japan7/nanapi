@@ -29,10 +29,7 @@ async def upsert_discord_accounts(body: list[UpsertDiscordAccountBodyItem]):
 async def profile_search(discord_ids: str | None = None, pattern: str | None = None):
     """Search user profiles by Discord IDs or pattern."""
     if discord_ids is not None:
-        try:
-            parsed = [int(d_id) for d_id in discord_ids.split(',')] if len(discord_ids) > 0 else []
-        except ValueError:
-            raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+        parsed = discord_ids.split(',')
         return await profile_select_filter_discord_id(get_edgedb(), discord_ids=parsed)
     if pattern is not None:
         return await profile_select_ilike(get_edgedb(), pattern=pattern)
@@ -43,7 +40,7 @@ async def profile_search(discord_ids: str | None = None, pattern: str | None = N
     response_model=ProfileSearchResult,
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
-async def get_profile(discord_id: int):
+async def get_profile(discord_id: str):
     """Get a user profile by Discord ID."""
     resp = await profile_get_by_discord_id(get_edgedb(), discord_id=discord_id)
     if resp is None:
@@ -52,6 +49,6 @@ async def get_profile(discord_id: int):
 
 
 @router.oauth2.patch('/profiles/{discord_id}', response_model=ProfileSearchResult)
-async def upsert_profile(discord_id: int, body: UpsertProfileBody):
+async def upsert_profile(discord_id: str, body: UpsertProfileBody):
     """Upsert a user profile by Discord ID."""
     return await profile_merge_select(get_edgedb(), discord_id=discord_id, **body.model_dump())

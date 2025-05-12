@@ -6,7 +6,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
   id := <uuid>$id,
   collec := (select waicolle::Collection filter .id = id),
@@ -31,7 +31,6 @@ select {
     author: {
       user: {
         discord_id,
-        discord_id_str,
       },
     },
     medias := .items[is anilist::Media] {
@@ -69,8 +68,7 @@ class PlayerCollectionStatsResultCollectionMedias(BaseModel):
 
 
 class PlayerCollectionStatsResultCollectionAuthorUser(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class PlayerCollectionStatsResultCollectionAuthor(BaseModel):
@@ -97,7 +95,7 @@ adapter = TypeAdapter(PlayerCollectionStatsResult)
 async def player_collection_stats(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
     id: UUID,
 ) -> PlayerCollectionStatsResult:
     resp = await executor.query_single_json(

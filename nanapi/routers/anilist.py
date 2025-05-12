@@ -57,7 +57,7 @@ async def get_accounts():
     response_model=AccountMergeResult,
     responses={status.HTTP_409_CONFLICT: dict(model=HTTPExceptionModel)},
 )
-async def upsert_account(discord_id: int, body: UpsertAnilistAccountBody):
+async def upsert_account(discord_id: str, body: UpsertAnilistAccountBody):
     """Upsert AniList account for a Discord user."""
     try:
         return await account_merge(get_edgedb(), discord_id=discord_id, **body.model_dump())
@@ -75,7 +75,7 @@ async def get_all_entries(type: ENTRY_SELECT_ALL_MEDIA_TYPE | None = None):
 
 
 @router.oauth2.get('/accounts/{discord_id}/entries', response_model=list[EntrySelectAllResult])
-async def get_account_entries(discord_id: int, type: ENTRY_SELECT_ALL_MEDIA_TYPE | None = None):
+async def get_account_entries(discord_id: str, type: ENTRY_SELECT_ALL_MEDIA_TYPE | None = None):
     """Get AniList entries for a specific Discord user."""
     resp = await entry_select_all(get_edgedb(), media_type=type, discord_id=discord_id)
     if resp is None:

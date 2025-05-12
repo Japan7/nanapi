@@ -13,13 +13,11 @@ select quizz::Game {
   *,
   winner: {
     discord_id,
-    discord_id_str,
   },
   quizz: {
     *,
     author: {
       discord_id,
-      discord_id_str,
     },
   }
 }
@@ -39,34 +37,30 @@ class QuizzStatus(StrEnum):
 
 
 class GameSelectResultQuizzAuthor(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class GameSelectResultQuizz(BaseModel):
     author: GameSelectResultQuizzAuthor
     id: UUID
-    channel_id: int
+    channel_id: str
     answer: str | None
-    channel_id_str: str
-    question: str | None
-    attachment_url: str | None
     submitted_at: datetime
+    question: str | None
     hints: list[str] | None
+    attachment_url: str | None
 
 
 class GameSelectResultWinner(BaseModel):
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
 
 
 class GameSelectResult(BaseModel):
     winner: GameSelectResultWinner | None
     quizz: GameSelectResultQuizz
     id: UUID
-    message_id: int
+    message_id: str
     ended_at: datetime | None
-    message_id_str: str
     started_at: datetime
     status: QuizzStatus
 

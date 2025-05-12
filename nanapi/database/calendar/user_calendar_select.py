@@ -5,7 +5,7 @@ from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
 with
-  discord_id := <int64>$discord_id,
+  discord_id := <str>$discord_id,
   calendar := (select calendar::UserCalendar filter .user.discord_id = discord_id),
 select assert_single(calendar) { ** }
 """
@@ -13,8 +13,7 @@ select assert_single(calendar) { ** }
 
 class UserCalendarSelectResultUser(BaseModel):
     id: UUID
-    discord_id: int
-    discord_id_str: str
+    discord_id: str
     discord_username: str
 
 
@@ -30,7 +29,7 @@ adapter = TypeAdapter(UserCalendarSelectResult | None)
 async def user_calendar_select(
     executor: AsyncIOExecutor,
     *,
-    discord_id: int,
+    discord_id: str,
 ) -> UserCalendarSelectResult | None:
     resp = await executor.query_single_json(
         EDGEQL_QUERY,

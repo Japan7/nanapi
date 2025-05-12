@@ -6,12 +6,10 @@ module projection {
     required property status -> Status {
       default := Status.ONGOING
     }
-    required property channel_id -> int64;
-    required property channel_id_str := <str>.channel_id;
-    property message_id -> int64 {
+    required property channel_id -> str;
+    property message_id -> str {
       constraint exclusive;
     }
-    property message_id_str := <str>.message_id;
     multi link medias -> anilist::Media {
       added: datetime {
         default   := datetime_of_statement();
