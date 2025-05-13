@@ -2,11 +2,13 @@ import asyncio
 import re
 from collections import defaultdict
 from datetime import datetime, timedelta
+from typing import Any, cast
 from uuid import UUID
 
 from fastapi import Depends, HTTPException, Response, status
 from gel import AsyncIOClient, AsyncIOExecutor
 from gel.errors import CardinalityViolationError, ConstraintViolationError
+from meilisearch_python_sdk.models.search import SearchResults
 
 from nanapi.database.anilist.c_edge_select_filter_media import (
     c_edge_select_filter_media,
@@ -462,7 +464,7 @@ async def get_player_track_reversed(
             locked_map = {k: v for k, v in locked_map.items() if len(v) != 1}
         resp_map[id_al] = (trackers_map, locked_map)
 
-    resp = []
+    resp: list[dict[str, Any]] = []
     for uwaifu in unlocked:
         trackers_map, locked_map = resp_map[uwaifu.character.id_al]
         if len(trackers_map) > 0 or len(locked_map) > 0:
@@ -470,7 +472,7 @@ async def get_player_track_reversed(
                 dict(
                     waifu=uwaifu,
                     trackers_not_owners=trackers_map.values(),
-                    locked=sum(locked_map.values(), []),
+                    locked=sum(locked_map.values(), list[WaifuSelectByCharaResult]()),
                 )
             )
 
@@ -933,12 +935,12 @@ async def reroll(body: RerollBody, edgedb: AsyncIOClient = Depends(get_client_ed
             return dict(obtained=resp, nanascends=nanascends)
 
 
-async def ascend_all(tx: AsyncIOExecutor, discord_id: str) -> list[WaifuSelectResult]:
+async def ascend_all(tx: AsyncIOExecutor, discord_id: str):
     """Ascend all eligible waifus for a player."""
-    ascended = []
+    ascended: list[WaifuBulkUpdateResult] = []
     while True:
         ascendables = await waifu_ascendable(tx, discord_id=discord_id)
-        _ascended = []
+        _ascended: list[WaifuBulkUpdateResult] = []
         for ascendable in ascendables:
             elements = sorted(ascendable.elements, key=lambda e: e.timestamp)
             while len(elements) >= 4:
@@ -1265,7 +1267,7 @@ async def collection_name_autocomplete(search: str, client_id: UUID = Depends(cl
     """Autocomplete collection names."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_collections_{client_id}')
-        resp = await index.search(search, limit=25)
+        resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))  # pyright: ignore[reportUnknownMemberType]
         return resp.hits
 
 

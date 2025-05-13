@@ -17,7 +17,12 @@ conn_backoff = backoff.on_exception(
     (aiohttp.ClientConnectorError, aiohttp.ClientConnectionError, aiohttp.ContentTypeError),
     max_time=600,
 )
-giveup = lambda exception: 400 <= exception.status < 500
+
+
+def giveup(exception: Exception) -> bool:
+    assert isinstance(exception, aiohttp.ClientResponseError)
+    return 400 <= exception.status < 500
+
 
 response_backoff = backoff.on_exception(
     backoff.expo, aiohttp.ClientResponseError, max_time=600, giveup=giveup
@@ -83,14 +88,7 @@ P = ParamSpec('P')
 T = TypeVar('T')
 
 
-async def run_coro(coro):
-    if asyncio.iscoroutine(coro):
-        return await coro
-    else:
-        return coro
-
-
-def log_time(func: Callable[P, T]) -> Callable[P, T]:
+def log_time(func: Callable[P, T]):
     logger = logging.getLogger(func.__module__)
 
     @wraps(func)
@@ -103,4 +101,4 @@ def log_time(func: Callable[P, T]) -> Callable[P, T]:
         logger.debug(f'{func.__name__} took {end - begin:.2f}s')
         return ret
 
-    return decorated  # type: ignore
+    return decorated

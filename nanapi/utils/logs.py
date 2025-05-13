@@ -21,10 +21,9 @@ def get_traceback(e: BaseException | None = None) -> traceback.Traceback:
 
 
 def get_traceback_exc() -> traceback.Traceback:
-    return traceback.Traceback.from_exception(
-        *sys.exc_info(),  # type: ignore
-        **TRACEBACK_KWARGS,
-    )
+    infos = sys.exc_info()
+    assert infos[0] is not None
+    return traceback.Traceback.from_exception(*infos, **TRACEBACK_KWARGS)
 
 
 @cache

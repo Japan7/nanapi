@@ -134,7 +134,7 @@ class BooleanValue(_IntegerValueMixin, BaseRedis[bool]):
 
 
 class JSONValue(BaseRedis[Any]):
-    def __init__(self, key: str, global_key: bool = False, **orjson_kwargs):
+    def __init__(self, key: str, global_key: bool = False, **orjson_kwargs: Any):
         super().__init__(key, global_key)
         self.orjson_kwargs = orjson_kwargs
 

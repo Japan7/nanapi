@@ -1,3 +1,4 @@
+# pyright: reportConstantRedefinition=false
 from typing import Any
 from zoneinfo import ZoneInfo
 

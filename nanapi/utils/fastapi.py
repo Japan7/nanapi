@@ -1,5 +1,5 @@
 from functools import cache, cached_property
-from typing import Self, cast, override
+from typing import Any, Self, cast, override
 from uuid import UUID
 
 import gel
@@ -26,94 +26,109 @@ class HTTPExceptionModel(BaseModel):
 class NanAPIRouter(APIRouter):
     @cached_property
     def public(self) -> Self:
-        return APIRouterProxy(self)  # type: ignore
+        return cast(Self, APIRouterProxy(self))
 
     @cached_property
     def basic_auth(self) -> Self:
-        return APIRouterProxy(
-            self,
-            dependencies=[Depends(japan7_basic_auth)],
-            responses={
-                status.HTTP_401_UNAUTHORIZED: dict(model=HTTPExceptionModel),
-            },
-        )  # type: ignore
+        return cast(
+            Self,
+            APIRouterProxy(
+                self,
+                dependencies=[Depends(japan7_basic_auth)],
+                responses={
+                    status.HTTP_401_UNAUTHORIZED: dict(model=HTTPExceptionModel),
+                },
+            ),
+        )
 
     @cached_property
     def oauth2(self) -> Self:
-        return APIRouterProxy(
-            self,
-            dependencies=[
-                Depends(get_current_client),
-            ],
-            responses={
-                status.HTTP_401_UNAUTHORIZED: dict(model=HTTPExceptionModel),
-            },
-        )  # type: ignore
+        return cast(
+            Self,
+            APIRouterProxy(
+                self,
+                dependencies=[
+                    Depends(get_current_client),
+                ],
+                responses={
+                    status.HTTP_401_UNAUTHORIZED: dict(model=HTTPExceptionModel),
+                },
+            ),
+        )
 
     @cached_property
     def oauth2_client(self) -> Self:
-        return APIRouterProxy(
-            self,
-            dependencies=[
-                Depends(client_id_param),
-                Depends(get_current_client),
-            ],
-            responses={
-                status.HTTP_401_UNAUTHORIZED: dict(model=HTTPExceptionModel),
-            },
-        )  # type: ignore
+        return cast(
+            Self,
+            APIRouterProxy(
+                self,
+                dependencies=[
+                    Depends(client_id_param),
+                    Depends(get_current_client),
+                ],
+                responses={
+                    status.HTTP_401_UNAUTHORIZED: dict(model=HTTPExceptionModel),
+                },
+            ),
+        )
 
     @cached_property
     def oauth2_client_restricted(self) -> Self:
-        return APIRouterProxy(
-            self,
-            dependencies=[
-                Depends(client_id_param),
-                Depends(get_current_client),
-                Depends(check_restricted_access),
-            ],
-            responses={
-                status.HTTP_401_UNAUTHORIZED: dict(model=HTTPExceptionModel),
-                status.HTTP_403_FORBIDDEN: dict(model=HTTPExceptionModel),
-            },
-        )  # type: ignore
+        return cast(
+            Self,
+            APIRouterProxy(
+                self,
+                dependencies=[
+                    Depends(client_id_param),
+                    Depends(get_current_client),
+                    Depends(check_restricted_access),
+                ],
+                responses={
+                    status.HTTP_401_UNAUTHORIZED: dict(model=HTTPExceptionModel),
+                    status.HTTP_403_FORBIDDEN: dict(model=HTTPExceptionModel),
+                },
+            ),
+        )
 
 
 class APIRouterProxy:
     def __init__(
-        self, router: APIRouter, dependencies: list | None = None, responses: dict | None = None
+        self,
+        router: APIRouter,
+        dependencies: list[Any] | None = None,
+        responses: dict[int, Any] | None = None,
     ) -> None:
         self.router = router
         self.dependencies = dependencies
         self.responses = responses
 
-    def _prepare_kwargs(self, kwargs: dict) -> None:
+    def _prepare_kwargs(self, kwargs: dict[str, Any]) -> None:
         if self.dependencies:
             kwargs.setdefault('dependencies', []).extend(self.dependencies)
         if self.responses:
             kwargs.setdefault('responses', {}).update(self.responses)
 
-    def get(self, *args, **kwargs):
+    def get(self, *args: Any, **kwargs: Any):
         self._prepare_kwargs(kwargs)
         return self.router.get(*args, **kwargs)
 
-    def post(self, *args, **kwargs):
+    def post(self, *args: Any, **kwargs: Any):
         self._prepare_kwargs(kwargs)
         return self.router.post(*args, **kwargs)
 
-    def put(self, *args, **kwargs):
+    def put(self, *args: Any, **kwargs: Any):
         self._prepare_kwargs(kwargs)
         return self.router.put(*args, **kwargs)
 
-    def patch(self, *args, **kwargs):
+    def patch(self, *args: Any, **kwargs: Any):
         self._prepare_kwargs(kwargs)
         return self.router.patch(*args, **kwargs)
 
-    def delete(self, *args, **kwargs):
+    def delete(self, *args: Any, **kwargs: Any):
         self._prepare_kwargs(kwargs)
         return self.router.delete(*args, **kwargs)
 
-    def __getattr__(self, key):
+    def __getattr__(self, key: str):
         return getattr(self.router, key)
 
 
@@ -128,7 +143,7 @@ async def get_current_client(token: str = Depends(OAUTH2_SCHEME)) -> ClientGetBy
         headers={'WWW-Authenticate': 'Bearer'},
     )
     try:
-        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])  # pyright: ignore[reportUnknownMemberType]
         username: str | None = payload.get('sub', None)
         if username is None:
             raise credentials_exception
@@ -161,7 +176,7 @@ async def check_restricted_access(
 
 @cache
 def get_client_edgedb(client_id: UUID = Depends(client_id_param)) -> gel.AsyncIOClient:
-    client = get_edgedb().with_globals(client_id=client_id)
+    client = get_edgedb().with_globals(client_id=client_id)  # pyright: ignore[reportUnknownMemberType]
     return cast(gel.AsyncIOClient, client)
 
 
@@ -171,7 +186,7 @@ if PROFILING:
     class ProfilerMiddleware(BaseHTTPMiddleware):
         """https://pyinstrument.readthedocs.io/en/latest/guide.html#profile-a-web-request-in-fastapi"""
 
-        def __init__(self, *args, fastapi_app: FastAPI | None = None, **kwargs):
+        def __init__(self, *args: Any, fastapi_app: FastAPI | None = None, **kwargs: Any):
             super().__init__(*args, **kwargs)
             self.results: list[tuple[str, str, str]] = []
             if fastapi_app is not None:
@@ -190,9 +205,10 @@ if PROFILING:
             return resp
 
         async def list_results(self):
-            li = []
-            for i, (method, url, _) in enumerate(self.results):
-                li.append(f'<li><a href="/profiler/{i}">{method} {url}</a></li>')
+            li = [
+                f'<li><a href="/profiler/{i}">{method} {url}</a></li>'
+                for i, (method, url, _) in enumerate(self.results)
+            ]
             resp = f'<ul>\n{"\n".join(reversed(li))}\n</ul>'
             return resp
 

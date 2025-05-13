@@ -8,8 +8,8 @@ from collections import defaultdict
 from dataclasses import dataclass
 from dataclasses import field as dc_field
 from importlib import resources
-from typing import Any, Callable, ClassVar, Self, Sequence, override
-from uuid import uuid4
+from typing import Any, Callable, ClassVar, Self, Sequence, cast, override
+from uuid import UUID, uuid4
 
 import aiohttp
 import backoff
@@ -90,7 +90,7 @@ class ALImage(ABC):
         img = img.resize((cls.WIDTH * zoom, cls.HEIGHT * zoom))
         return img
 
-    def __getattr__(self, key):
+    def __getattr__(self, key: str):
         return getattr(self.image, key)
 
 
@@ -109,7 +109,7 @@ class CharaImageProps:
         return props
 
 
-ImageEnhancer = Callable[[Image.Image], Image.Image]
+type ImageEnhancer = Callable[[Image.Image], Image.Image]
 
 
 def blood_enhancer(img: Image.Image) -> Image.Image:
@@ -131,16 +131,16 @@ def blood_enhancer(img: Image.Image) -> Image.Image:
 
 
 class CharaImageEnhancer:
-    DARKEN = lambda img: ImageEnhance.Brightness(img).enhance(0.5)
-    BLUR = lambda img: img.filter(ImageFilter.BoxBlur(10))
-    BLOOD = staticmethod(blood_enhancer)
+    DARKEN: ImageEnhancer = lambda img: ImageEnhance.Brightness(img).enhance(0.5)
+    BLUR: ImageEnhancer = lambda img: img.filter(ImageFilter.BoxBlur(10))
+    BLOOD: ImageEnhancer = staticmethod(blood_enhancer)
 
 
 @dataclass
 class CharaImage(ALImage):
     chara: CHARA_TYPES
     properties: CharaImageProps = dc_field(default_factory=CharaImageProps)
-    enhancers: list[ImageEnhancer] = dc_field(default_factory=list)
+    enhancers: list[ImageEnhancer] = dc_field(default_factory=list[ImageEnhancer])
 
     def set_hidden(self):
         self.enhancers = [CharaImageEnhancer.DARKEN, CharaImageEnhancer.BLUR]
@@ -187,10 +187,10 @@ class CharaImage(ALImage):
 
 def sorted_custom_positions(waifus_charas: list[WAIFU_TYPES | Any]) -> list[WAIFU_TYPES | Any]:
     waifus_ids = set(w.id if isinstance(w, WAIFU_TYPES) else 0 for w in waifus_charas)
-    rev_left_of_waifus = defaultdict(list)
-    rev_right_of_waifus = defaultdict(list)
+    rev_left_of_waifus = defaultdict[UUID, list[WAIFU_TYPES]](list)
+    rev_right_of_waifus = defaultdict[UUID, list[WAIFU_TYPES]](list)
     sorted_waifus: list[WAIFU_TYPES | Any] = []
-    sorted_waifus_ids = set()
+    sorted_waifus_ids = set[UUID]()
 
     for waifu_chara in waifus_charas:
         if (
@@ -211,7 +211,7 @@ def sorted_custom_positions(waifus_charas: list[WAIFU_TYPES | Any]) -> list[WAIF
     )
 
     def _get_custom_positions_group(waifu: WAIFU_TYPES) -> list[WAIFU_TYPES]:
-        group = []
+        group: list[WAIFU_TYPES] = []
         left_of_waifus = rev_left_of_waifus.pop(waifu.id, [])
         right_of_waifus = rev_right_of_waifus.pop(waifu.id, [])
         for left_of_waifu in left_of_waifus:
@@ -240,11 +240,11 @@ def sorted_custom_positions(waifus_charas: list[WAIFU_TYPES | Any]) -> list[WAIF
 def _make_collage(image_binary: io.BytesIO, chara_images: list[list[CharaImage]]):
     n_imgs = 0
     max_group_width = 0
-    sizes = []
+    sizes: list[tuple[int, int, int, list[int]]] = []
     for i, img_group in enumerate(chara_images):
         group_height = 0
         group_width = 0
-        individual_sizes = []
+        individual_sizes: list[int] = []
         for img in img_group:
             n_imgs += img.properties.zoom**2
             group_width += img.properties.zoom
@@ -273,7 +273,10 @@ def _make_collage(image_binary: io.BytesIO, chara_images: list[list[CharaImage]]
         i, j = positions[ind_group]
         curr_width = 0
         for img in img_group:
-            collage.paste(img, ((j + curr_width) * ALImage.WIDTH, i * ALImage.HEIGHT))  # type: ignore
+            collage.paste(
+                cast(Image.Image, img),
+                ((j + curr_width) * ALImage.WIDTH, i * ALImage.HEIGHT),
+            )
             curr_width += img.properties.zoom
 
     collage.save(image_binary, 'WEBP', method=6, quality=80)
@@ -580,7 +583,7 @@ def _make_dumb_collage(image_binary: io.BytesIO, images: Sequence[ALImage]):
     )
     curr_width = 0
     for img in images:
-        collage.paste(img, (curr_width, 0))  # type: ignore
+        collage.paste(cast(Image.Image, img), (curr_width, 0))
         curr_width += img.width
     collage.save(image_binary, 'WEBP', method=6, quality=80)
     image_binary.seek(0)
