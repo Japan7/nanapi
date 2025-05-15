@@ -31,4 +31,5 @@ select filtered {
   } order by @added,
   participants: { * },
   guild_events: { * },
+  legacy_events: { * },
 }
