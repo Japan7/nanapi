@@ -66,6 +66,7 @@ class ProjoSelectResultLegacyEvents(BaseModel):
 
 class ProjoSelectResultGuildEvents(BaseModel):
     id: UUID
+    discord_id: str
     description: str | None
     end_time: datetime
     image: str | None
@@ -73,13 +74,12 @@ class ProjoSelectResultGuildEvents(BaseModel):
     name: str
     start_time: datetime
     url: str | None
-    discord_id: str
 
 
 class ProjoSelectResultParticipants(BaseModel):
     id: UUID
-    discord_username: str
     discord_id: str
+    discord_username: str
 
 
 class ProjoSelectResultExternalMedias(BaseModel):
@@ -102,10 +102,10 @@ class ProjoSelectResult(BaseModel):
     participants: list[ProjoSelectResultParticipants]
     guild_events: list[ProjoSelectResultGuildEvents]
     legacy_events: list[ProjoSelectResultLegacyEvents]
-    message_id: str | None
-    channel_id: str
     status: ProjectionStatus
     name: str
+    message_id: str | None
+    channel_id: str
     id: UUID
 
 

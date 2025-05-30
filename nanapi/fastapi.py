@@ -15,6 +15,7 @@ from nanapi.routers import (
     anilist,
     calendar,
     client,
+    discord,
     histoire,
     pot,
     presence,
@@ -65,6 +66,7 @@ app.include_router(amq.router)
 app.include_router(anilist.router)
 app.include_router(calendar.router)
 app.include_router(client.router)
+app.include_router(discord.router)
 app.include_router(histoire.router)
 app.include_router(pot.router)
 app.include_router(presence.router)
