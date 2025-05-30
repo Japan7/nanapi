@@ -28,12 +28,12 @@ class QuizzGetOldestResultAuthor(BaseModel):
 class QuizzGetOldestResult(BaseModel):
     author: QuizzGetOldestResultAuthor
     id: UUID
-    channel_id: str
     answer: str | None
     attachment_url: str | None
     hints: list[str] | None
     question: str | None
     submitted_at: datetime
+    channel_id: str
 
 
 adapter = TypeAdapter[QuizzGetOldestResult | None](QuizzGetOldestResult | None)

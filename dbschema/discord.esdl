@@ -1,8 +1,6 @@
 module discord {
-  type Message {
-    required property message_id -> str {
-      constraint exclusive;
-    }
+  type Message extending default::ClientObject {
+    required property message_id -> str;
     required property data -> json;
     property guild_id := (select <str>json_get(.data, 'guild_id'));
     property channel_id := (select <str>json_get(.data, 'channel_id'));
@@ -12,6 +10,7 @@ module discord {
     property timestamp := (select <datetime>json_get(.data, 'timestamp'));
     property edited_timestamp := (select <datetime>json_get(.data, 'edited_timestamp'));
     property deleted_at -> datetime;
+    constraint exclusive on ((.client, .message_id));
     index on ((.message_id, .deleted_at));
   }
 }
