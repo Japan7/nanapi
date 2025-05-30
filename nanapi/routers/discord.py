@@ -1,5 +1,6 @@
 from typing import Annotated, Any
 
+import orjson
 from fastapi import Body, Depends
 from gel import AsyncIOClient
 from pydantic import Json
@@ -24,7 +25,10 @@ async def bulk_insert_messages(
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
     """Bulk create Discord messages."""
-    return await message_bulk_insert(edgedb, messages=messages)
+    return await message_bulk_insert(
+        edgedb,
+        messages=[orjson.dumps(data).decode() for data in messages],
+    )
 
 
 @router.oauth2_client_restricted.delete('/messages', response_model=list[MessageBulkDeleteResult])
