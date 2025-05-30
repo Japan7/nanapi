@@ -1,11 +1,14 @@
-from fastapi import Depends
+from typing import Annotated, Any
+
+from fastapi import Body, Depends
 from gel import AsyncIOClient
+from pydantic import Json
 
 from nanapi.database.amq.account_merge import AccountMergeResult, account_merge
 from nanapi.database.amq.account_select import AccountSelectResult, account_select
 from nanapi.database.amq.settings_merge import SettingsMergeResult, settings_merge
 from nanapi.database.amq.settings_select_all import SettingsSelectAllResult, settings_select_all
-from nanapi.models.amq import UpdateAMQSettingsBody, UpsertAMQAccountBody
+from nanapi.models.amq import UpsertAMQAccountBody
 from nanapi.utils.clients import get_edgedb
 from nanapi.utils.fastapi import NanAPIRouter, get_client_edgedb
 
@@ -32,7 +35,7 @@ async def get_settings(edgedb: AsyncIOClient = Depends(get_client_edgedb)):
 
 @router.oauth2_client_restricted.patch('/settings', response_model=list[SettingsMergeResult])
 async def update_settings(
-    body: UpdateAMQSettingsBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+    settings: Annotated[Json[Any], Body()], edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     """Update AMQ settings."""
-    return await settings_merge(edgedb, **body.model_dump())
+    return await settings_merge(edgedb, settings=settings)
