@@ -9,6 +9,7 @@ EDGEQL_QUERY = r"""
 with
   embeddings := <array<float32>>$embeddings
 select ext::ai::search(discord::MessagePage { messages: { data } }, embeddings)
+limit 25
 """
 
 
