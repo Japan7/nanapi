@@ -1,6 +1,7 @@
 from typing import Annotated, Any
 
 import gel.ai
+import orjson
 from fastapi import Body, Depends
 from gel import AsyncIOClient
 from pydantic import Json
@@ -9,12 +10,28 @@ from nanapi.database.discord.message_bulk_delete import (
     MessageBulkDeleteResult,
     message_bulk_delete,
 )
+from nanapi.database.discord.message_bulk_insert import (
+    MessageBulkInsertResult,
+    message_bulk_insert,
+)
 from nanapi.database.discord.message_merge import MessageMergeResult, message_merge
 from nanapi.database.discord.rag_query import RagQueryResultObjectMessages, rag_query
 from nanapi.settings import AI_EMBEDDING_MODEL_NAME
 from nanapi.utils.fastapi import NanAPIRouter, get_client_edgedb
 
 router = NanAPIRouter(prefix='/discord', tags=['discord'])
+
+
+@router.oauth2_client_restricted.post('/messages', response_model=list[MessageBulkInsertResult])
+async def bulk_insert_messages(
+    messages: Annotated[list[Json[Any]], Body()],
+    edgedb: AsyncIOClient = Depends(get_client_edgedb),
+):
+    """Bulk create Discord messages."""
+    return await message_bulk_insert(
+        edgedb,
+        messages=[orjson.dumps(data).decode() for data in messages],
+    )
 
 
 @router.oauth2_client_restricted.delete('/messages', response_model=list[MessageBulkDeleteResult])
