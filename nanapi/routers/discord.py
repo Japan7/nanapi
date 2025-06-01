@@ -15,7 +15,7 @@ from nanapi.database.discord.message_bulk_insert import (
     message_bulk_insert,
 )
 from nanapi.database.discord.message_merge import MessageMergeResult, message_merge
-from nanapi.database.discord.rag_query import RagQueryResultObjectMessages, rag_query
+from nanapi.database.discord.rag_query import RagQueryResultObject, rag_query
 from nanapi.settings import AI_EMBEDDING_MODEL_NAME
 from nanapi.utils.fastapi import NanAPIRouter, get_client_edgedb
 
@@ -40,13 +40,13 @@ async def delete_messages(message_ids: str, edgedb: AsyncIOClient = Depends(get_
     return await message_bulk_delete(edgedb, message_ids=message_ids.split(','))
 
 
-@router.oauth2_client.get('/messages/rag', response_model=list[list[RagQueryResultObjectMessages]])
+@router.oauth2_client.get('/messages/rag', response_model=list[RagQueryResultObject])
 async def rag(search_query: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     """Retrieve relevant chat sections based on a search query in French."""
     rag = await gel.ai.create_async_rag_client(edgedb, model='')  # pyright: ignore[reportUnknownMemberType]
     embeddings = await rag.generate_embeddings(search_query, model=AI_EMBEDDING_MODEL_NAME)
     resp = await rag_query(edgedb, embeddings=embeddings[:2000])
-    return [r.object.messages for r in resp]
+    return [r.object for r in resp]
 
 
 @router.oauth2_client_restricted.put('/messages/{message_id}', response_model=MessageMergeResult)
