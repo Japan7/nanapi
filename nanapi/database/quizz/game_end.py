@@ -60,12 +60,12 @@ class GameEndResultQuizzAuthor(BaseModel):
 class GameEndResultQuizz(BaseModel):
     author: GameEndResultQuizzAuthor
     id: UUID
+    channel_id: str
     answer: str | None
     attachment_url: str | None
     hints: list[str] | None
     question: str | None
     submitted_at: datetime
-    channel_id: str
 
 
 class GameEndResultWinner(BaseModel):
@@ -75,10 +75,10 @@ class GameEndResultWinner(BaseModel):
 class GameEndResult(BaseModel):
     winner: GameEndResultWinner | None
     quizz: GameEndResultQuizz
-    message_id: str
     status: QuizzStatus
     started_at: datetime
     ended_at: datetime | None
+    message_id: str
     id: UUID
 
 

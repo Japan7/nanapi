@@ -25,22 +25,22 @@ class ProjectionStatus(StrEnum):
 
 class GuildEventSelectResultOrganizer(BaseModel):
     id: UUID
-    discord_username: str
     discord_id: str
+    discord_username: str
 
 
 class GuildEventSelectResultParticipants(BaseModel):
     id: UUID
-    discord_username: str
     discord_id: str
+    discord_username: str
 
 
 class GuildEventSelectResultProjection(BaseModel):
     id: UUID
-    name: str
-    status: ProjectionStatus
     channel_id: str
     message_id: str | None
+    name: str
+    status: ProjectionStatus
 
 
 class GuildEventSelectResultClient(BaseModel):
@@ -51,6 +51,7 @@ class GuildEventSelectResultClient(BaseModel):
 
 class GuildEventSelectResult(BaseModel):
     id: UUID
+    discord_id: str
     description: str | None
     end_time: datetime
     image: str | None
@@ -58,7 +59,6 @@ class GuildEventSelectResult(BaseModel):
     name: str
     start_time: datetime
     url: str | None
-    discord_id: str
     client: GuildEventSelectResultClient
     projection: GuildEventSelectResultProjection | None
     participants: list[GuildEventSelectResultParticipants]

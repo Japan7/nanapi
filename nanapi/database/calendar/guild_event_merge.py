@@ -69,22 +69,22 @@ class ProjectionStatus(StrEnum):
 
 class GuildEventMergeResultOrganizer(BaseModel):
     id: UUID
-    discord_username: str
     discord_id: str
+    discord_username: str
 
 
 class GuildEventMergeResultParticipants(BaseModel):
     id: UUID
-    discord_username: str
     discord_id: str
+    discord_username: str
 
 
 class GuildEventMergeResultProjection(BaseModel):
     id: UUID
-    name: str
-    status: ProjectionStatus
     channel_id: str
     message_id: str | None
+    name: str
+    status: ProjectionStatus
 
 
 class GuildEventMergeResultClient(BaseModel):
@@ -95,6 +95,7 @@ class GuildEventMergeResultClient(BaseModel):
 
 class GuildEventMergeResult(BaseModel):
     id: UUID
+    discord_id: str
     description: str | None
     end_time: datetime
     image: str | None
@@ -102,7 +103,6 @@ class GuildEventMergeResult(BaseModel):
     name: str
     start_time: datetime
     url: str | None
-    discord_id: str
     client: GuildEventMergeResultClient
     projection: GuildEventMergeResultProjection | None
     participants: list[GuildEventMergeResultParticipants]

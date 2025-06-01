@@ -34,6 +34,9 @@ dependencies = [
     "ics==0.7.2",
     "yarl==1.20.0",
     "starlette==0.46.2",
+    "tiktoken==0.9.0",
+    "tqdm==4.67.1",
+    "httpx-sse==0.4.0",
 ]
 
 [dependency-groups]
@@ -53,11 +56,11 @@ homepage = "https://github.com/Japan7/mahou.py"
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
 reportMissingTypeStubs = false
-ignore = ["nanapi/nanachan_v2_migrate.py"]
+ignore = ["nanapi/nanachan_v2_migrate.py", "notebooks"]
 
 [tool.ruff]
 line-length = 99
-exclude = ["nanapi/nanachan_v2_migrate.py"]
+exclude = ["nanapi/nanachan_v2_migrate.py", "notebooks"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "B", "SIM", "I"]
@@ -86,6 +89,7 @@ ignore = [
 quote-style = "single"
 
 [tool.fawltydeps]
+exclude = ["notebooks"]
 ignore_unused = [
     # cchardet is used by aiohttp
     "faust-cchardet",
@@ -103,5 +107,7 @@ ignore_unused = [
     "fastapi",
     # fastapi needs it for multipart uploads
     "python-multipart",
+    # used by gel.ai
+    "httpx-sse",
 ]
 output_format = "human_detailed"

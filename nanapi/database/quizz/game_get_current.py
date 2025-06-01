@@ -41,12 +41,12 @@ class GameGetCurrentResultQuizzAuthor(BaseModel):
 class GameGetCurrentResultQuizz(BaseModel):
     author: GameGetCurrentResultQuizzAuthor
     id: UUID
+    channel_id: str
     answer: str | None
     attachment_url: str | None
     hints: list[str] | None
     question: str | None
     submitted_at: datetime
-    channel_id: str
 
 
 class GameGetCurrentResultWinner(BaseModel):
@@ -57,10 +57,10 @@ class GameGetCurrentResult(BaseModel):
     winner: GameGetCurrentResultWinner | None
     quizz: GameGetCurrentResultQuizz
     id: UUID
+    message_id: str
     ended_at: datetime | None
     started_at: datetime
     status: QuizzStatus
-    message_id: str
 
 
 adapter = TypeAdapter[GameGetCurrentResult | None](GameGetCurrentResult | None)

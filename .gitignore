@@ -163,3 +163,4 @@ cython_debug/
 local_settings.py
 dumps/
 meilisearch.out
+/notebooks/settings.py

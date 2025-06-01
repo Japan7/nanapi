@@ -1,3 +1,5 @@
+using extension ai;
+
 module default {
   global client_id -> uuid;
   global client := (select Client filter .id = global client_id);

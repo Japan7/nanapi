@@ -26,12 +26,12 @@ class QuizzGetByIdResultAuthor(BaseModel):
 class QuizzGetByIdResult(BaseModel):
     author: QuizzGetByIdResultAuthor
     id: UUID
+    channel_id: str
     answer: str | None
     attachment_url: str | None
     hints: list[str] | None
     question: str | None
     submitted_at: datetime
-    channel_id: str
 
 
 adapter = TypeAdapter[QuizzGetByIdResult | None](QuizzGetByIdResult | None)
