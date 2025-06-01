@@ -104,6 +104,7 @@ async def yield_messages(
         messages = await message_select_filter_no_page(
             edgedb,
             channel_id=channel_id,
+            after=last_page.to_timestamp if last_page else None,
             offset=offset,
             limit=YIELD_LIMIT,
         )

@@ -2,7 +2,8 @@ with
   channel_id := <str>$channel_id
 select discord::MessagePage {
   id,
-  messages: { data }
+  messages: { data },
+  to_timestamp,
 }
 filter .client = global client
 and .channel_id = channel_id
