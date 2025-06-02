@@ -3,4 +3,4 @@ select discord::MessagePage {
   messages: { data, deleted_at, noindex }
 }
 filter .client = global client
-and any(.messages.edited_timestamp > .updated_at or .messages.deleted_at > .updated_at)
+and any(.messages.edited_timestamp > .updated_at or .messages.deleted_at > .updated_at or exists .messages.noindex)
