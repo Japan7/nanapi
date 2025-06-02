@@ -44,12 +44,29 @@ class AuthorData(BaseModel):
     bot: bool | None = None
 
 
+class EmbedFooter(BaseModel):
+    text: str
+
+
+class EmbedField(BaseModel):
+    name: str
+    value: str
+
+
+class EmbedData(BaseModel):
+    title: str | None = None
+    url: str | None = None
+    description: str | None = None
+    fields: list[EmbedField] | None = None
+    footer: EmbedFooter | None = None
+
+
 class MessageData(BaseModel):
     id: str
-    channel_id: str
-    content: str
-    timestamp: datetime
     author: AuthorData
+    timestamp: datetime
+    content: str
+    embeds: list[EmbedData]
 
 
 @webhook_exceptions
@@ -123,8 +140,6 @@ async def yield_pages(messages_data: AsyncGenerator[MessageData]):
     page_tokens = 0
     async for message_data in messages_data:
         line = format_message(message_data)
-        if not line:
-            continue
         line_tokens = len(ENCODING.encode(line))
         if line_tokens > AI_EMBEDDING_MODEL_MAX_TOKENS:
             if page_lines:
@@ -145,18 +160,33 @@ async def yield_pages(messages_data: AsyncGenerator[MessageData]):
         yield page_messages, ''.join(page_lines)
 
 
-def format_message(message_data: MessageData) -> str | None:
-    if message_data.author.bot:
-        return
+def format_message(message_data: MessageData) -> str:
     username = message_data.author.username
     author = f'{gn} ({username})' if (gn := message_data.author.global_name) else username
-    content = SPACE_REG.sub(' ', message_data.content).strip()
-    if content:
-        return (
-            f'Author: {author}; '
-            f'Timestamp: {message_data.timestamp:%Y-%m-%d %H:%M:%S}; '
-            f'Content: {content}\n'
-        )
+    if message_data.author.bot:
+        author += ' (bot)'
+    line = f'Author: {author}; Timestamp: {message_data.timestamp:%Y-%m-%d %H:%M:%S};'
+    if content := message_data.content:
+        line += f' Content: {content};'
+    for i, embed in enumerate(message_data.embeds):
+        line += f' Embed#{i}: {stringify_embed(embed)};'
+    return SPACE_REG.sub(' ', line) + '\n'
+
+
+def stringify_embed(embed: EmbedData) -> str:
+    parts: list[str] = []
+    if title := embed.title:
+        parts.append(title)
+    if url := embed.url:
+        parts.append(f'({url})')
+    if description := embed.description:
+        parts.append(description)
+    if fields := embed.fields:
+        for field in fields:
+            parts.append(f'{field.name} {field.value}')
+    if footer := embed.footer:
+        parts.append(footer.text)
+    return ' '.join(parts)
 
 
 def overlap(lines_messages: list[MessageData], lines: list[str]):
