@@ -51,7 +51,11 @@ async def rag(search_query: str, edgedb: AsyncIOClient = Depends(get_client_edge
     rag = await gel.ai.create_async_rag_client(edgedb, model='')  # pyright: ignore[reportUnknownMemberType]
     embeddings = await rag.generate_embeddings(search_query, model=AI_EMBEDDING_MODEL_NAME)
     resp = await rag_query(edgedb, embeddings=embeddings[:2000])
-    return [r.object for r in resp]
+    objects: list[RagQueryResultObject] = []
+    for result in resp:
+        result.object.messages.sort(key=lambda m: m.timestamp)
+        objects.append(result.object)
+    return objects
 
 
 @router.oauth2_client_restricted.put(
