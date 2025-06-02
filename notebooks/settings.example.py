@@ -3,7 +3,7 @@ from pydantic_ai.providers.google import GoogleProvider
 
 NANAPI_CLIENT_ID = ''
 
-EMBEDDING_MODEL_NAME = 'text-embedding-3-small'
+EMBEDDING_MODEL_NAME = 'text-embedding-3-large'
 EMBEDDING_MODEL_MAX_TOKENS = 8192
 
 PYDANTIC_AI_MODEL_CLS = GoogleModel

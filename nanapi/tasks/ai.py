@@ -33,7 +33,7 @@ from nanapi.utils.logs import webhook_exceptions
 logger = logging.getLogger(__name__)
 
 YIELD_LIMIT = 100000
-MAX_PAGE_SIZE = 100
+MAX_PAGE_SIZE = 50
 SPACE_REG = re.compile(r'\s+')
 ENCODING = tiktoken.encoding_for_model(AI_EMBEDDING_MODEL_NAME)
 

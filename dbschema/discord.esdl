@@ -27,6 +27,6 @@ module discord {
     multi link messages -> Message {
       on target delete allow;
     }
-    deferred index ext::ai::index(embedding_model := 'text-embedding-3-small') on (.context);
+    deferred index ext::ai::index(embedding_model := 'text-embedding-3-large') on (.context);
   }
 }
