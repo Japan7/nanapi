@@ -50,7 +50,7 @@ PRODUCER_UPLOAD_ENDPOINT = 'https://producer.japan7.bde.enseeiht.fr'
 PRODUCER_TOKEN = ''
 
 ## AI
-AI_EMBEDDING_MODEL_NAME = 'text-embedding-3-large'
+AI_EMBEDDING_MODEL_NAME = 'text-embedding-3-small'
 AI_EMBEDDING_MODEL_MAX_TOKENS = 8192
 AI_MESSAGEPAGES_FOR_CLIENTS: list[str] = []
 
