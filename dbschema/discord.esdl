@@ -1,18 +1,18 @@
 module discord {
   type Message extending default::ClientObject {
-    required property message_id -> str;
     required property data -> json;
-    property guild_id := (select <str>json_get(.data, 'guild_id'));
-    property channel_id := (select <str>json_get(.data, 'channel_id'));
-    property author_id := (select <str>json_get(.data, 'author', 'id'));
+    property guild_id -> str;
+    required property channel_id -> str;
+    required property message_id -> str;
+    required property author_id -> str;
     link author := (with author_id := .author_id select detached user::User filter .discord_id = author_id);
-    property content := (select <str>json_get(.data, 'content'));
-    property timestamp := (select <datetime>json_get(.data, 'timestamp'));
-    property edited_timestamp := (select <datetime>json_get(.data, 'edited_timestamp'));
+    property content -> str;
+    required property timestamp -> datetime;
+    property edited_timestamp -> datetime;
     property deleted_at -> datetime;
     multi link pages := .<messages[is MessagePage];
     constraint exclusive on ((.client, .message_id));
-    index on ((.message_id, .deleted_at));
+    index on ((.guild_id, .channel_id, .message_id, .author_id, .timestamp, .edited_timestamp, .deleted_at));
   }
 
   type MessagePage extending default::ClientObject {

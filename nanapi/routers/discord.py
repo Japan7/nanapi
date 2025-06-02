@@ -2,7 +2,7 @@ from typing import Annotated, Any
 
 import gel.ai
 import orjson
-from fastapi import Body, Depends
+from fastapi import Body, Depends, HTTPException, status
 from gel import AsyncIOClient
 from pydantic import Json
 
@@ -17,7 +17,7 @@ from nanapi.database.discord.message_bulk_insert import (
 from nanapi.database.discord.message_merge import MessageMergeResult, message_merge
 from nanapi.database.discord.rag_query import RagQueryResultObject, rag_query
 from nanapi.settings import AI_EMBEDDING_MODEL_NAME
-from nanapi.utils.fastapi import NanAPIRouter, get_client_edgedb
+from nanapi.utils.fastapi import HTTPExceptionModel, NanAPIRouter, get_client_edgedb
 
 router = NanAPIRouter(prefix='/discord', tags=['discord'])
 
@@ -49,11 +49,17 @@ async def rag(search_query: str, edgedb: AsyncIOClient = Depends(get_client_edge
     return [r.object for r in resp]
 
 
-@router.oauth2_client_restricted.put('/messages/{message_id}', response_model=MessageMergeResult)
+@router.oauth2_client_restricted.put(
+    '/messages/{message_id}',
+    response_model=MessageMergeResult,
+    responses={status.HTTP_400_BAD_REQUEST: dict(model=HTTPExceptionModel)},
+)
 async def upsert_message(
     message_id: str,
     data: Annotated[Json[Any], Body()],
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
     """Create or update a Discord message."""
+    if data['id'] != message_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
     return await message_merge(edgedb, message_id=message_id, data=data)
