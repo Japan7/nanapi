@@ -165,11 +165,11 @@ def format_message(message_data: MessageData) -> str:
     author = f'{gn} ({username})' if (gn := message_data.author.global_name) else username
     if message_data.author.bot:
         author += ' (bot)'
-    line = f'Author: {author}; Timestamp: {message_data.timestamp:%Y-%m-%d %H:%M:%S};'
+    line = f'AUTHOR: {author}; TIMESTAMP: {message_data.timestamp:%Y-%m-%d %H:%M:%S};'
     if content := message_data.content:
-        line += f' Content: {content};'
+        line += f' CONTENT: {content.replace(";", " ")};'
     for i, embed in enumerate(message_data.embeds):
-        line += f' Embed#{i}: {stringify_embed(embed)};'
+        line += f' EMBED {i}: {stringify_embed(embed).replace(";", " ")};'
     return SPACE_REG.sub(' ', line) + '\n'
 
 
