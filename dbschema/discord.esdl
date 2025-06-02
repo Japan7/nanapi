@@ -10,9 +10,10 @@ module discord {
     required property timestamp -> datetime;
     property edited_timestamp -> datetime;
     property deleted_at -> datetime;
+    property noindex -> str;
     multi link pages := .<messages[is MessagePage];
     constraint exclusive on ((.client, .message_id));
-    index on ((.guild_id, .channel_id, .message_id, .author_id, .timestamp, .edited_timestamp, .deleted_at));
+    index on ((.guild_id, .channel_id, .message_id, .author_id, .timestamp, .edited_timestamp, .deleted_at, .noindex));
   }
 
   type MessagePage extending default::ClientObject {

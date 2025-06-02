@@ -10,7 +10,7 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 select discord::MessagePage {
   id,
-  messages: { data, deleted_at }
+  messages: { data, deleted_at, noindex }
 }
 filter .client = global client
 and any(.messages.edited_timestamp > .updated_at or .messages.deleted_at > .updated_at)
@@ -20,6 +20,7 @@ and any(.messages.edited_timestamp > .updated_at or .messages.deleted_at > .upda
 class PageSelectFilterUpdatedMessagesResultMessages(BaseModel):
     data: Any
     deleted_at: datetime | None
+    noindex: str | None
 
 
 class PageSelectFilterUpdatedMessagesResult(BaseModel):

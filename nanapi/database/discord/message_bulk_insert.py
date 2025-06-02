@@ -20,7 +20,6 @@ for data in array_unpack(messages) union (
     content := <str>json_get(data, 'content'),
     timestamp := <datetime>json_get(data, 'timestamp'),
     edited_timestamp := <datetime>json_get(data, 'edited_timestamp'),
-
   }
   unless conflict on ((.client, .message_id))
 )

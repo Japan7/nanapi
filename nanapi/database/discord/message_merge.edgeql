@@ -1,6 +1,7 @@
 with
   message_id := <str>$message_id,
   data := <json>$data,
+  noindex := <optional str>$noindex,
 insert discord::Message {
   client := global client,
   data := data,
@@ -11,6 +12,7 @@ insert discord::Message {
   content := <str>json_get(data, 'content'),
   timestamp := <datetime>json_get(data, 'timestamp'),
   edited_timestamp := <datetime>json_get(data, 'edited_timestamp'),
+  noindex := noindex,
 }
 unless conflict on ((.client, .message_id))
 else (
@@ -22,5 +24,6 @@ else (
     content := <str>json_get(data, 'content'),
     timestamp := <datetime>json_get(data, 'timestamp'),
     edited_timestamp := <datetime>json_get(data, 'edited_timestamp'),
+    noindex := (noindex if noindex != '' else {}) if exists noindex else .noindex,
   }
 )

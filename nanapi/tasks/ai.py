@@ -58,7 +58,9 @@ async def update_pages(edgedb: AsyncIOClient):
     logger.debug(f'updating {len(pages)} pages')
     for page in tqdm(pages):
         messages_data = [
-            MessageData.model_validate(m.data) for m in page.messages if not m.deleted_at
+            MessageData.model_validate(m.data)
+            for m in page.messages
+            if not m.deleted_at and not m.noindex
         ]
         messages_data.sort(key=lambda m: m.timestamp)
         context = ''.join(filter(None, map(format_message, messages_data)))

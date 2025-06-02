@@ -11,6 +11,7 @@ EDGEQL_QUERY = r"""
 with
   message_id := <str>$message_id,
   data := <json>$data,
+  noindex := <optional str>$noindex,
 insert discord::Message {
   client := global client,
   data := data,
@@ -21,6 +22,7 @@ insert discord::Message {
   content := <str>json_get(data, 'content'),
   timestamp := <datetime>json_get(data, 'timestamp'),
   edited_timestamp := <datetime>json_get(data, 'edited_timestamp'),
+  noindex := noindex,
 }
 unless conflict on ((.client, .message_id))
 else (
@@ -32,6 +34,7 @@ else (
     content := <str>json_get(data, 'content'),
     timestamp := <datetime>json_get(data, 'timestamp'),
     edited_timestamp := <datetime>json_get(data, 'edited_timestamp'),
+    noindex := (noindex if noindex != '' else {}) if exists noindex else .noindex,
   }
 )
 """
@@ -49,10 +52,12 @@ async def message_merge(
     *,
     message_id: str,
     data: Any,
+    noindex: str | None = None,
 ) -> MessageMergeResult | None:
     resp = await executor.query_single_json(  # pyright: ignore[reportUnknownMemberType]
         EDGEQL_QUERY,
         message_id=message_id,
         data=orjson.dumps(data).decode(),
+        noindex=noindex,
     )
     return adapter.validate_json(resp, strict=False)

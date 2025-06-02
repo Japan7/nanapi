@@ -15,7 +15,12 @@ from nanapi.database.discord.message_bulk_insert import (
     message_bulk_insert,
 )
 from nanapi.database.discord.message_merge import MessageMergeResult, message_merge
+from nanapi.database.discord.message_update_noindex import (
+    MessageUpdateNoindexResult,
+    message_update_noindex,
+)
 from nanapi.database.discord.rag_query import RagQueryResultObject, rag_query
+from nanapi.models.discord import UpdateMessageNoindexBody
 from nanapi.settings import AI_EMBEDDING_MODEL_NAME
 from nanapi.utils.fastapi import HTTPExceptionModel, NanAPIRouter, get_client_edgedb
 
@@ -57,9 +62,27 @@ async def rag(search_query: str, edgedb: AsyncIOClient = Depends(get_client_edge
 async def upsert_message(
     message_id: str,
     data: Annotated[Json[Any], Body()],
+    noindex: str | None = None,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
     """Create or update a Discord message."""
     if data['id'] != message_id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-    return await message_merge(edgedb, message_id=message_id, data=data)
+    return await message_merge(edgedb, message_id=message_id, data=data, noindex=noindex)
+
+
+@router.oauth2_client_restricted.put(
+    '/messages/{message_id}/noindex',
+    response_model=MessageUpdateNoindexResult,
+    responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
+)
+async def update_message_noindex(
+    message_id: str,
+    body: UpdateMessageNoindexBody,
+    edgedb: AsyncIOClient = Depends(get_client_edgedb),
+):
+    """Update indexation instructions of a Discord message."""
+    resp = await message_update_noindex(edgedb, message_id=message_id, **body.model_dump())
+    if resp is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    return resp
