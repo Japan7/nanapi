@@ -6,7 +6,7 @@ module discord {
     required property message_id -> str;
     required property author_id -> str;
     link author := (with author_id := .author_id select detached user::User filter .discord_id = author_id);
-    property content -> str;
+    required property content -> str;
     required property timestamp -> datetime;
     property edited_timestamp -> datetime;
     property deleted_at -> datetime;
