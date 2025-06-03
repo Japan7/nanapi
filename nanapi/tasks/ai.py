@@ -31,7 +31,6 @@ from nanapi.utils.logs import webhook_exceptions
 
 logger = logging.getLogger(__name__)
 
-YIELD_LIMIT = 100000
 MAX_PAGE_SIZE = 50
 SPACE_REG = re.compile(r'\s+')
 ENCODING = tiktoken.encoding_for_model(AI_EMBEDDING_MODEL_NAME)
@@ -115,19 +114,13 @@ async def yield_messages(
     if last_page:
         for m in last_page.messages:
             yield MessageData.model_validate(m.data)
-    while True:
-        logger.debug(f'fetching {YIELD_LIMIT} messages for {channel_id}')
-        messages = await message_select_filter_no_page(
-            edgedb,
-            channel_id=channel_id,
-            after=last_page.to_timestamp if last_page else None,
-            limit=YIELD_LIMIT,
-        )
-        logger.debug(f'fetched {len(messages)} messages for {channel_id}')
-        if len(messages) == 0:
-            break
-        for m in messages:
-            yield MessageData.model_validate(m.data)
+    messages = await message_select_filter_no_page(
+        edgedb,
+        channel_id=channel_id,
+        after=last_page.to_timestamp if last_page else None,
+    )
+    for m in tqdm(messages, leave=False):
+        yield MessageData.model_validate(m.data)
 
 
 async def yield_pages(messages_data: AsyncGenerator[MessageData]):
