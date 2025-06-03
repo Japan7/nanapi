@@ -33,7 +33,7 @@ from nanapi.utils.logs import webhook_exceptions
 logger = logging.getLogger(__name__)
 
 YIELD_LIMIT = 100000
-MAX_PAGE_SIZE = 100
+MAX_PAGE_SIZE = 50
 SPACE_REG = re.compile(r'\s+')
 ENCODING = tiktoken.encoding_for_model(AI_EMBEDDING_MODEL_NAME)
 
@@ -41,7 +41,6 @@ ENCODING = tiktoken.encoding_for_model(AI_EMBEDDING_MODEL_NAME)
 class AuthorData(BaseModel):
     username: str
     global_name: str | None
-    bot: bool | None = None
 
 
 class EmbedFooter(BaseModel):
@@ -55,7 +54,6 @@ class EmbedField(BaseModel):
 
 class EmbedData(BaseModel):
     title: str | None = None
-    url: str | None = None
     description: str | None = None
     fields: list[EmbedField] | None = None
     footer: EmbedFooter | None = None
@@ -163,29 +161,27 @@ async def yield_pages(messages_data: AsyncGenerator[MessageData]):
 def format_message(message_data: MessageData) -> str:
     username = message_data.author.username
     author = f'{gn} ({username})' if (gn := message_data.author.global_name) else username
-    if message_data.author.bot:
-        author += ' (bot)'
-    line = f'AUTHOR: {author}; TIMESTAMP: {message_data.timestamp:%Y-%m-%d %H:%M:%S};'
-    if content := message_data.content:
-        line += f' CONTENT: {content.replace(";", " ")};'
+    parts = [f'{author} at {message_data.timestamp:%Y-%m-%d %H:%M} said:']
+    if content := message_data.content.strip():
+        parts.append(content)
     for i, embed in enumerate(message_data.embeds):
-        line += f' EMBED {i}: {stringify_embed(embed).replace(";", " ")};'
-    return SPACE_REG.sub(' ', line) + '\n'
+        embed_str = stringify_embed(embed)
+        if embed_str:
+            parts.append(f'Embed {i}: {embed_str}')
+    return SPACE_REG.sub(' ', ' '.join(parts)).strip() + '\n'
 
 
 def stringify_embed(embed: EmbedData) -> str:
     parts: list[str] = []
-    if title := embed.title:
-        parts.append(title)
-    if url := embed.url:
-        parts.append(f'({url})')
-    if description := embed.description:
-        parts.append(description)
-    if fields := embed.fields:
-        for field in fields:
-            parts.append(f'{field.name} {field.value}')
-    if footer := embed.footer:
-        parts.append(footer.text)
+    if embed.title:
+        parts.append(f'Title: {embed.title}')
+    if embed.description:
+        parts.append(f'Description: {embed.description}')
+    if embed.fields:
+        for field in embed.fields:
+            parts.append(f'{field.name}: {field.value}')
+    if embed.footer:
+        parts.append(f'Footer: {embed.footer.text}')
     return ' '.join(parts)
 
 
