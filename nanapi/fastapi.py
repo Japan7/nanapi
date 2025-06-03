@@ -1,6 +1,6 @@
 import asyncio
 
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, Response, status
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.openapi.docs import (
     get_redoc_html,
@@ -76,6 +76,12 @@ app.include_router(reminder.router)
 app.include_router(role.router)
 app.include_router(user.router)
 app.include_router(waicolle.router)
+
+
+@app.get('/health', status_code=status.HTTP_204_NO_CONTENT)
+def ping():
+    return
+
 
 openapi_router = NanAPIRouter(include_in_schema=False)
 
