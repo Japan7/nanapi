@@ -36,7 +36,6 @@ dependencies = [
     "starlette==0.46.2",
     "tiktoken==0.9.0",
     "tqdm==4.67.1",
-    "httpx-sse==0.4.0",
 ]
 
 [dependency-groups]
@@ -107,7 +106,5 @@ ignore_unused = [
     "fastapi",
     # fastapi needs it for multipart uploads
     "python-multipart",
-    # used by gel.ai
-    "httpx-sse",
 ]
 output_format = "human_detailed"

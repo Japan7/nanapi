@@ -7,9 +7,7 @@ from gel import AsyncIOExecutor
 from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
-with
-  embeddings := <array<float32>>$embeddings
-select ext::ai::search(discord::MessagePage { messages: { data, timestamp } }, embeddings)
+select ext::ai::search(discord::MessagePage { messages: { data, timestamp } }, <str>$search_query)
 limit 25
 """
 
@@ -34,10 +32,10 @@ adapter = TypeAdapter[list[RagQueryResult]](list[RagQueryResult])
 async def rag_query(
     executor: AsyncIOExecutor,
     *,
-    embeddings: list[float],
+    search_query: str,
 ) -> list[RagQueryResult]:
     resp = await executor.query_json(  # pyright: ignore[reportUnknownMemberType]
         EDGEQL_QUERY,
-        embeddings=embeddings,
+        search_query=search_query,
     )
     return adapter.validate_json(resp, strict=False)

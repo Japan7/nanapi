@@ -1,6 +1,5 @@
 from typing import Annotated, Any
 
-import gel.ai
 import orjson
 from fastapi import Body, Depends, HTTPException, status
 from gel import AsyncIOClient
@@ -21,7 +20,6 @@ from nanapi.database.discord.message_update_noindex import (
 )
 from nanapi.database.discord.rag_query import RagQueryResultObject, rag_query
 from nanapi.models.discord import UpdateMessageNoindexBody
-from nanapi.settings import AI_EMBEDDING_MODEL_NAME
 from nanapi.utils.fastapi import HTTPExceptionModel, NanAPIRouter, get_client_edgedb
 
 router = NanAPIRouter(prefix='/discord', tags=['discord'])
@@ -48,9 +46,7 @@ async def delete_messages(message_ids: str, edgedb: AsyncIOClient = Depends(get_
 @router.oauth2_client.get('/messages/rag', response_model=list[RagQueryResultObject])
 async def rag(search_query: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
     """Retrieve relevant chat sections based on a search query in French."""
-    rag = await gel.ai.create_async_rag_client(edgedb, model='')  # pyright: ignore[reportUnknownMemberType]
-    embeddings = await rag.generate_embeddings(search_query, model=AI_EMBEDDING_MODEL_NAME)
-    resp = await rag_query(edgedb, embeddings=embeddings)
+    resp = await rag_query(edgedb, search_query=search_query)
     objects: list[RagQueryResultObject] = []
     for result in resp:
         result.object.messages.sort(key=lambda m: m.timestamp)

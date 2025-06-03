@@ -621,15 +621,6 @@ http2 = [
 ]
 
 [[package]]
-name = "httpx-sse"
-version = "0.4.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/4c/60/8f4281fa9bbf3c8034fd54c0e7412e66edbab6bc74c4996bd616f8d0406e/httpx-sse-0.4.0.tar.gz", hash = "sha256:1e81a3a3070ce322add1d3529ed42eb5f70817f45ed6ec915ab753f961139721", size = 12624, upload-time = "2023-12-22T08:01:21.083Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/e1/9b/a181f281f65d776426002f330c31849b86b31fc9d848db62e16f03ff739f/httpx_sse-0.4.0-py3-none-any.whl", hash = "sha256:f329af6eae57eaa2bdfd962b42524764af68075ea87370a2de920af5341e318f", size = 7819, upload-time = "2023-12-22T08:01:19.89Z" },
-]
-
-[[package]]
 name = "hypercorn"
 version = "0.17.3"
 source = { registry = "https://pypi.org/simple" }
@@ -859,7 +850,6 @@ dependencies = [
     { name = "fastapi" },
     { name = "faust-cchardet" },
     { name = "gel" },
-    { name = "httpx-sse" },
     { name = "hypercorn" },
     { name = "ics" },
     { name = "meilisearch-python-sdk" },
@@ -898,7 +888,6 @@ requires-dist = [
     { name = "fastapi", specifier = "==0.115.12" },
     { name = "faust-cchardet", specifier = "==2.1.19" },
     { name = "gel", specifier = "==3.1.0" },
-    { name = "httpx-sse", specifier = "==0.4.0" },
     { name = "hypercorn", specifier = "==0.17.3" },
     { name = "ics", specifier = "==0.7.2" },
     { name = "meilisearch-python-sdk", specifier = "==4.6.0" },
