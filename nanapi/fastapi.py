@@ -1,6 +1,6 @@
 import asyncio
 
-from fastapi import FastAPI, Request, Response, status
+from fastapi import FastAPI, Request, status
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.openapi.docs import (
     get_redoc_html,
