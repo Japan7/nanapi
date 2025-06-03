@@ -3,7 +3,6 @@ import logging
 import re
 from collections.abc import AsyncGenerator
 from datetime import datetime
-from itertools import count
 
 import tiktoken
 from gel import AsyncIOClient, AsyncIOExecutor
@@ -54,6 +53,7 @@ class EmbedField(BaseModel):
 
 class EmbedData(BaseModel):
     title: str | None = None
+    url: str | None = None
     description: str | None = None
     fields: list[EmbedField] | None = None
     footer: EmbedFooter | None = None
@@ -115,21 +115,19 @@ async def yield_messages(
     if last_page:
         for m in last_page.messages:
             yield MessageData.model_validate(m.data)
-    for i in count():
-        offset = i * YIELD_LIMIT
-        logger.debug(f'fetching {YIELD_LIMIT} messages for {channel_id} with {offset=}')
+    while True:
+        logger.debug(f'fetching {YIELD_LIMIT} messages for {channel_id}')
         messages = await message_select_filter_no_page(
             edgedb,
             channel_id=channel_id,
             after=last_page.to_timestamp if last_page else None,
-            offset=offset,
             limit=YIELD_LIMIT,
         )
         logger.debug(f'fetched {len(messages)} messages for {channel_id}')
+        if len(messages) == 0:
+            break
         for m in messages:
             yield MessageData.model_validate(m.data)
-        if len(messages) < YIELD_LIMIT:
-            break
 
 
 async def yield_pages(messages_data: AsyncGenerator[MessageData]):
@@ -175,6 +173,8 @@ def stringify_embed(embed: EmbedData) -> str:
     parts: list[str] = []
     if embed.title:
         parts.append(f'Title: {embed.title}')
+    if embed.url:
+        parts.append(f'URL: {embed.url}')
     if embed.description:
         parts.append(f'Description: {embed.description}')
     if embed.fields:
