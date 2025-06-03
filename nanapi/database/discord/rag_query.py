@@ -7,7 +7,7 @@ from gel import AsyncIOExecutor
 from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
-select ext::ai::search(discord::MessagePage { messages: { data, timestamp } }, <str>$search_query)
+select ext::ai::search(discord::MessagePage { context, messages: { data, timestamp } }, <str>$search_query)
 limit 25
 """
 
@@ -18,6 +18,7 @@ class RagQueryResultObjectMessages(BaseModel):
 
 
 class RagQueryResultObject(BaseModel):
+    context: str
     messages: list[RagQueryResultObjectMessages]
 
 
