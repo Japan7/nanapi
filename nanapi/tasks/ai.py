@@ -14,6 +14,7 @@ from nanapi.database.discord.message_index_channels_filter_no_page import (
 )
 from nanapi.database.discord.message_select_filter_no_page import message_select_filter_no_page
 from nanapi.database.discord.page_delete import page_delete
+from nanapi.database.discord.page_delete_empty import page_delete_empty
 from nanapi.database.discord.page_insert import page_insert
 from nanapi.database.discord.page_select_filter_updated_messages import (
     page_select_filter_updated_messages,
@@ -106,6 +107,12 @@ async def insert_pages(edgedb: AsyncIOClient):
                     await page_delete(tx, id=last_page.id)
 
 
+@webhook_exceptions
+async def delete_empty_pages(edgedb: AsyncIOClient):
+    resp = await page_delete_empty(edgedb)
+    logger.debug(f'deleted {len(resp)} empty pages')
+
+
 async def yield_messages(
     edgedb: AsyncIOExecutor,
     channel_id: str,
@@ -190,6 +197,7 @@ async def main():
         edgedb = get_client_edgedb(client_id)
         await update_pages(edgedb)
         await insert_pages(edgedb)
+        await delete_empty_pages(edgedb)
 
 
 if __name__ == '__main__':
