@@ -10,8 +10,8 @@ EDGEQL_QUERY = r"""
 with
   channel_id := <str>$channel_id,
   tafter := <optional datetime>$after,
-  n_offset := <optional int64>$offset,
-  n_limit := <optional int64>$limit,
+  n_offset := <optional int32>$offset,
+  n_limit := <optional int32>$limit,
 select discord::Message { data }
 filter .client = global client
 and not exists .pages
