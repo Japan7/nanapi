@@ -18,8 +18,8 @@ from nanapi.database.discord.message_update_noindex import (
     MessageUpdateNoindexResult,
     message_update_noindex,
 )
-from nanapi.database.discord.rag_query import RagQueryResultObject, rag_query
-from nanapi.models.discord import UpdateMessageNoindexBody
+from nanapi.database.discord.rag_query import rag_query
+from nanapi.models.discord import MessagesRagResult, UpdateMessageNoindexBody
 from nanapi.utils.fastapi import HTTPExceptionModel, NanAPIRouter, get_client_edgedb
 
 router = NanAPIRouter(prefix='/discord', tags=['discord'])
@@ -43,15 +43,15 @@ async def delete_messages(message_ids: str, edgedb: AsyncIOClient = Depends(get_
     return await message_bulk_delete(edgedb, message_ids=message_ids.split(','))
 
 
-@router.oauth2_client.get('/messages/rag', response_model=list[RagQueryResultObject])
-async def rag(search_query: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+@router.oauth2_client.get('/messages/rag', response_model=list[MessagesRagResult])
+async def messages_rag(
+    search_query: str,
+    limit: int = 50,
+    edgedb: AsyncIOClient = Depends(get_client_edgedb),
+):
     """Retrieve relevant chat sections based on a search query in French."""
-    resp = await rag_query(edgedb, search_query=search_query)
-    objects: list[RagQueryResultObject] = []
-    for result in resp:
-        result.object.messages.sort(key=lambda m: m.timestamp)
-        objects.append(result.object)
-    return objects
+    resp = await rag_query(edgedb, search_query=search_query, limit=limit)
+    return [MessagesRagResult(object=result.object, distance=result.distance) for result in resp]
 
 
 @router.oauth2_client_restricted.put(

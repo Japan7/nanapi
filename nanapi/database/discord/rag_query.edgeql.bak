@@ -1,2 +1,5 @@
-select ext::ai::search(discord::MessagePage { context, messages: { data, timestamp } }, <str>$search_query)
-limit 25
+select ext::ai::search(discord::MessagePage {
+  context,
+  messages: { data, timestamp } order by .timestamp asc
+}, <str>$search_query)
+limit <optional int32>$limit
