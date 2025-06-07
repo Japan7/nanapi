@@ -20,7 +20,7 @@ dependencies = [
     "orjson==3.10.18",
     "backoff==2.2.1",
     "meilisearch-python-sdk==4.6.0",
-    "numpy==2.2.6",
+    "numpy==2.3.0",
     "pillow==10.4.0",
     "rich==14.0.0",
     "discord-webhook[async]==1.4.1",
