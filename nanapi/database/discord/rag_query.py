@@ -9,7 +9,7 @@ from pydantic import BaseModel, TypeAdapter
 EDGEQL_QUERY = r"""
 select ext::ai::search(discord::MessagePage {
   context,
-  messages: { data, timestamp } order by .timestamp asc
+  messages: { data, channel_id, timestamp } order by .timestamp asc
 }, <str>$search_query)
 limit <optional int32>$limit
 """
@@ -17,6 +17,7 @@ limit <optional int32>$limit
 
 class RagQueryResultObjectMessages(BaseModel):
     data: Any
+    channel_id: str
     timestamp: datetime
 
 

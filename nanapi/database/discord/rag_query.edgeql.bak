@@ -1,5 +1,5 @@
 select ext::ai::search(discord::MessagePage {
   context,
-  messages: { data, timestamp } order by .timestamp asc
+  messages: { data, channel_id, timestamp } order by .timestamp asc
 }, <str>$search_query)
 limit <optional int32>$limit
