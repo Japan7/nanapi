@@ -113,5 +113,6 @@ ignore_unused = [
     "fastapi",
     # fastapi needs it for multipart uploads
     "python-multipart",
+    "nanapi-notebooks",
 ]
 output_format = "human_detailed"
