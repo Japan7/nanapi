@@ -46,10 +46,17 @@ dev = [
     "gel-pydantic-codegen==1.1.0",
     "pyinstrument==5.0.2",
     "fawltydeps==0.20.0",
+    "nanapi-notebooks",
 ]
 
+[tool.uv.sources]
+nanapi-notebooks = { workspace = true }
+
+[tool.uv.workspace]
+members = ["notebooks"]
+
 [project.urls]
-homepage = "https://github.com/Japan7/mahou.py"
+homepage = "https://github.com/Japan7/nanapi"
 
 [tool.pyright]
 pythonVersion = "3.12"
