@@ -20,6 +20,7 @@ from nanapi.database.anilist.c_edge_select_filter_staff import (
     c_edge_select_filter_staff,
 )
 from nanapi.database.anilist.chara_select import CharaSelectResult, chara_select
+from nanapi.database.anilist.chara_select_birthday import chara_select_birthday
 from nanapi.database.anilist.entry_select_all import (
     ENTRY_SELECT_ALL_MEDIA_TYPE,
     EntrySelectAllResult,
@@ -190,6 +191,12 @@ async def chara_name_autocomplete(search: str):
         index = client.index(f'{INSTANCE_NAME}_charas')
         resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))  # pyright: ignore[reportUnknownMemberType]
         return resp.hits
+
+
+@router.oauth2.get('/charas/birthdays', response_model=list[CharaSelectResult])
+async def chara_birthdays():
+    """Characters Birthdays"""
+    return await chara_select_birthday(get_edgedb())
 
 
 @router.public.get(
