@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
 
 from nanapi.routers import (
+    ai,
     amq,
     anilist,
     calendar,
@@ -62,6 +63,7 @@ if PROFILING:
     app.add_middleware(ProfilerMiddleware, fastapi_app=app)
 
 
+app.include_router(ai.router)
 app.include_router(amq.router)
 app.include_router(anilist.router)
 app.include_router(calendar.router)
