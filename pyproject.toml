@@ -41,7 +41,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "pyright==1.1.402",
-    "ruff==0.12.0",
+    "ruff==0.12.1",
     "uvicorn==0.34.3",
     "gel-pydantic-codegen==1.1.0",
     "pyinstrument==5.0.2",
