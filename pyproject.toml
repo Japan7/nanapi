@@ -44,7 +44,7 @@ dev = [
     "ruff==0.12.8",
     "uvicorn==0.35.0",
     "gel-pydantic-codegen==1.1.0",
-    "pyinstrument==5.0.3",
+    "pyinstrument==5.1.0",
     "fawltydeps==0.20.0",
     "nanapi-notebooks",
 ]
