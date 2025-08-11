@@ -27,7 +27,7 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/') != true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: astral-sh/setup-uv@v6
       - run: cp nanapi/example.local_settings.py nanapi/local_settings.py
       - run: uv run --frozen pyright
@@ -53,7 +53,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -134,7 +134,7 @@ jobs:
       actions: write
     steps:
       - name: Checkout nanak8s
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: Japan7/nanak8s
           token: ${{ secrets.NANAK8S_PAT }}
