@@ -17,7 +17,7 @@ dependencies = [
     "aiohttp[speedups]==3.12.15",
     # https://github.com/PyYoshi/cChardet/issues/81
     "faust-cchardet==2.1.19",
-    "orjson==3.11.2",
+    "orjson==3.11.3",
     "backoff==2.2.1",
     "meilisearch-python-sdk==4.9.0",
     "numpy==2.3.2",
