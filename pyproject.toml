@@ -42,7 +42,7 @@ dependencies = [
 dev = [
     "pyright==1.1.405",
     "ruff==0.13.1",
-    "uvicorn==0.36.0",
+    "uvicorn==0.37.0",
     "gel-pydantic-codegen==1.1.0",
     "pyinstrument==5.1.1",
     "fawltydeps==0.20.0",
