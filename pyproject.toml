@@ -115,5 +115,7 @@ ignore_unused = [
     # fastapi needs it for multipart uploads
     "python-multipart",
     "nanapi-notebooks",
+    # used by passlib[bcrypt]
+    "bcrypt",
 ]
 output_format = "human_detailed"
