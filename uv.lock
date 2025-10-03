@@ -1396,7 +1396,7 @@ wheels = [
 
 [[package]]
 name = "meilisearch-python-sdk"
-version = "4.10.1"
+version = "4.11.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1405,9 +1405,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "pyjwt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/f0/98/afd499ece7301039a7a4de56cab8bab0917d397e35780e23390353152604/meilisearch_python_sdk-4.10.1.tar.gz", hash = "sha256:bc52b06330e5442a7005f786db8fca2388eff9f03e02e84900585e717c44fcda", size = 243617, upload-time = "2025-09-19T12:26:53.241Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/7f/68/098f04b36ce4e3332f79cc68f7525e9a3f20d3fad935e6bee1024007bff8/meilisearch_python_sdk-4.11.0.tar.gz", hash = "sha256:2048d34bbdbadcfbe5329c1fd1de9735d6d582c1cfb0bf162f2b94e57e625373", size = 251731, upload-time = "2025-10-02T23:31:17.219Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d5/44/30977da1f9f25d1302f8aa3e41dad7309f275ca0e8e5b37611bdc3c6e091/meilisearch_python_sdk-4.10.1-py3-none-any.whl", hash = "sha256:1e4108225c0c0ead9980b63078e817b4735fa6930f990d2d93ee22c38339b6c9", size = 66615, upload-time = "2025-09-19T12:26:51.759Z" },
+    { url = "https://files.pythonhosted.org/packages/0f/a6/8bf1d35d6d595bf6d260c2615b46e550bd6c53b556e2c77aa2730b37492f/meilisearch_python_sdk-4.11.0-py3-none-any.whl", hash = "sha256:12257bdfcedcce70a7ee67845fdea74cabbe6e5d8b163459031a660dc46ffc15", size = 67928, upload-time = "2025-10-02T23:31:15.936Z" },
 ]
 
 [[package]]
@@ -1547,7 +1547,7 @@ requires-dist = [
     { name = "gel", specifier = "==3.1.0" },
     { name = "hypercorn", specifier = "==0.17.3" },
     { name = "ics", specifier = "==0.7.2" },
-    { name = "meilisearch-python-sdk", specifier = "==4.10.1" },
+    { name = "meilisearch-python-sdk", specifier = "==4.11.0" },
     { name = "numpy", specifier = "==2.3.3" },
     { name = "orjson", specifier = "==3.11.3" },
     { name = "passlib", extras = ["bcrypt"], specifier = "==1.7.4" },
