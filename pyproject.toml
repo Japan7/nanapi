@@ -34,7 +34,7 @@ dependencies = [
     "pyjwt==2.10.1",
     "ics==0.7.2",
     "yarl==1.21.0",
-    "starlette==0.47.3",
+    "starlette==0.48.0",
     "tiktoken==0.11.0",
     "tqdm==4.67.1",
 ]
