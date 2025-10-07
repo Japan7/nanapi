@@ -13,7 +13,7 @@ requires-python = ">=3.12"
 dependencies = [
     "gel==3.1.0",
     "fastapi==0.118.0",
-    "pydantic==2.11.10",
+    "pydantic==2.12.0",
     "aiohttp[speedups]==3.13.0",
     # https://github.com/PyYoshi/cChardet/issues/81
     "faust-cchardet==2.1.19",
