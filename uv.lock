@@ -1431,7 +1431,7 @@ wheels = [
 
 [[package]]
 name = "meilisearch-python-sdk"
-version = "4.11.0"
+version = "5.0.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1440,9 +1440,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "pyjwt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7f/68/098f04b36ce4e3332f79cc68f7525e9a3f20d3fad935e6bee1024007bff8/meilisearch_python_sdk-4.11.0.tar.gz", hash = "sha256:2048d34bbdbadcfbe5329c1fd1de9735d6d582c1cfb0bf162f2b94e57e625373", size = 251731, upload-time = "2025-10-02T23:31:17.219Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/09/a8/2453e48fdccc917b77e65afc34f88781588d4634404bcb9c68c139485c16/meilisearch_python_sdk-5.0.0.tar.gz", hash = "sha256:27045f767a594886c1c4ce37ba7f4cc2a45b0ddddb536c1bbe7a8aeac3f50f2e", size = 242407, upload-time = "2025-10-07T17:46:39.413Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/0f/a6/8bf1d35d6d595bf6d260c2615b46e550bd6c53b556e2c77aa2730b37492f/meilisearch_python_sdk-4.11.0-py3-none-any.whl", hash = "sha256:12257bdfcedcce70a7ee67845fdea74cabbe6e5d8b163459031a660dc46ffc15", size = 67928, upload-time = "2025-10-02T23:31:15.936Z" },
+    { url = "https://files.pythonhosted.org/packages/c6/da/ad2e7072f1aacdc715caa3f6a8937d9d9dc78005b27aba8ee3d0d39ee4da/meilisearch_python_sdk-5.0.0-py3-none-any.whl", hash = "sha256:4401882a026e8f97c52712f41e41b7aa305ef859f82ddb98ac33c0220564c396", size = 67786, upload-time = "2025-10-07T17:46:38.428Z" },
 ]
 
 [[package]]
@@ -1582,7 +1582,7 @@ requires-dist = [
     { name = "gel", specifier = "==3.1.0" },
     { name = "hypercorn", specifier = "==0.17.3" },
     { name = "ics", specifier = "==0.7.2" },
-    { name = "meilisearch-python-sdk", specifier = "==4.11.0" },
+    { name = "meilisearch-python-sdk", specifier = "==5.0.0" },
     { name = "numpy", specifier = "==2.3.3" },
     { name = "orjson", specifier = "==3.11.3" },
     { name = "passlib", extras = ["bcrypt"], specifier = "==1.7.4" },
