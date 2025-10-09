@@ -26,7 +26,7 @@ dependencies = [
     "discord-webhook[async]==1.4.1",
     "python-multipart==0.0.20",
     "passlib[bcrypt]==1.7.4",
-    "bcrypt==4.3.0",
+    "bcrypt==5.0.0",
     "cachetools==5.5.2",
     "asyncache==0.3.1",
     "hypercorn==0.17.3",
