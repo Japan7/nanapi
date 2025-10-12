@@ -27,7 +27,7 @@ dependencies = [
     "python-multipart==0.0.20",
     "passlib[bcrypt]==1.7.4",
     "bcrypt==4.3.0",
-    "cachetools==5.5.2",
+    "cachetools==6.2.1",
     "asyncache==0.3.1",
     "hypercorn==0.17.3",
     "tzdata==2025.2",
