@@ -1470,7 +1470,7 @@ wheels = [
 
 [[package]]
 name = "meilisearch-python-sdk"
-version = "5.0.2"
+version = "5.1.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1479,9 +1479,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "pyjwt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/27/0d/87230662a790bd906e9506f4015be027871d10737bfafb7d253ed37e644f/meilisearch_python_sdk-5.0.2.tar.gz", hash = "sha256:b9e3f67f25c817c8bda9aab572cf6960c46b9e5d6b6916b2f11322b3d0211f93", size = 242422, upload-time = "2025-10-08T21:15:36.402Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/29/e0/11303736d7bb7428dcd77f19aefbd8e7df41128bec6a6e47259973dfb595/meilisearch_python_sdk-5.1.0.tar.gz", hash = "sha256:8b7674a5c8b72f9fb804a67cb033b48fbf14d6cb9cdcc77e29104f2656f44666", size = 243385, upload-time = "2025-10-14T00:54:37.467Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f8/4c/0041aecdf5bb782867ac305bd1cc99c51d98ac45251439b12ffb1b767901/meilisearch_python_sdk-5.0.2-py3-none-any.whl", hash = "sha256:0f6312b29fcba16a82574cb7d3371306b0044d5e67b74883aa1c13dc538c32e6", size = 67787, upload-time = "2025-10-08T21:15:35.078Z" },
+    { url = "https://files.pythonhosted.org/packages/84/2d/c84995448103287a888cba7c61a40e0c989051716205fce3d7bc3bd4714f/meilisearch_python_sdk-5.1.0-py3-none-any.whl", hash = "sha256:b962c797ec4dc6b4c34e2df08ebe8bbba7271d3b4b2a6a0479ba7cf24857d420", size = 68029, upload-time = "2025-10-14T00:54:36.319Z" },
 ]
 
 [[package]]
@@ -1657,7 +1657,7 @@ requires-dist = [
     { name = "gel", specifier = "==3.1.0" },
     { name = "hypercorn", specifier = "==0.17.3" },
     { name = "ics", specifier = "==0.7.2" },
-    { name = "meilisearch-python-sdk", specifier = "==5.0.2" },
+    { name = "meilisearch-python-sdk", specifier = "==5.1.0" },
     { name = "numpy", specifier = "==2.3.3" },
     { name = "orjson", specifier = "==3.11.3" },
     { name = "passlib", extras = ["bcrypt"], specifier = "==1.7.4" },
