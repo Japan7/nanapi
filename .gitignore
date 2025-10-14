@@ -164,3 +164,4 @@ local_settings.py
 dumps/
 meilisearch.out
 /notebooks/settings.py
+/gel.local.toml
