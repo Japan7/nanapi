@@ -8,7 +8,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from dataclasses import field as dc_field
 from importlib import resources
-from typing import Any, Callable, ClassVar, Self, Sequence, cast, override
+from typing import Any, Callable, ClassVar, Self, Sequence, override
 from uuid import UUID, uuid4
 
 import aiohttp
