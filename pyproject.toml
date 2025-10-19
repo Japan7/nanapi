@@ -9,7 +9,7 @@ authors = [
     { name = "odrling", email = "florianbadie@odrling.xyz" },
     { name = "Pierre Jeanjean", email = "rhiobet@gmail.com" },
 ]
-requires-python = ">=3.14"
+requires-python = ">=3.12"
 dependencies = [
     "gel==3.1.0",
     "fastapi==0.119.0",
@@ -60,7 +60,7 @@ members = ["notebooks"]
 homepage = "https://github.com/Japan7/nanapi"
 
 [tool.pyright]
-pythonVersion = "3.14"
+pythonVersion = "3.12"
 typeCheckingMode = "strict"
 reportMissingTypeStubs = false
 ignore = ["nanapi/nanachan_v2_migrate.py", "notebooks"]
