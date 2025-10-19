@@ -273,10 +273,18 @@ def _make_collage(image_binary: io.BytesIO, chara_images: list[list[CharaImage]]
         i, j = positions[ind_group]
         curr_width = 0
         for img in img_group:
-            collage.paste(
-                cast(Image.Image, img),
-                ((j + curr_width) * ALImage.WIDTH, i * ALImage.HEIGHT),
-            )
+            img_cast = cast(Image.Image, img)
+            x = (j + curr_width) * ALImage.WIDTH
+            y = i * ALImage.HEIGHT
+            box = (x, y, x + img_cast.width, y + img_cast.height)
+            # Convert to RGBA if needed
+            if img_cast.mode != 'RGBA':
+                img_cast = img_cast.convert('RGBA')
+            # Get the target region from collage
+            temp = collage.crop(box)
+            temp = Image.alpha_composite(temp, img_cast)
+            # Paste the composited result back
+            collage.paste(temp, box)
             curr_width += img.properties.zoom
 
     collage.save(image_binary, 'WEBP', method=6, quality=80)
@@ -583,7 +591,16 @@ def _make_dumb_collage(image_binary: io.BytesIO, images: Sequence[ALImage]):
     )
     curr_width = 0
     for img in images:
-        collage.paste(cast(Image.Image, img), (curr_width, 0))
-        curr_width += img.width
+        img_cast = cast(Image.Image, img)
+        box = (curr_width, 0, curr_width + img_cast.width, img_cast.height)
+        # Convert to RGBA if needed
+        if img_cast.mode != 'RGBA':
+            img_cast = img_cast.convert('RGBA')
+        # Get the target region from collage
+        temp = collage.crop(box)
+        temp = Image.alpha_composite(temp, img_cast)
+        # Paste the composited result back
+        collage.paste(temp, box)
+        curr_width += img_cast.width
     collage.save(image_binary, 'WEBP', method=6, quality=80)
     image_binary.seek(0)
