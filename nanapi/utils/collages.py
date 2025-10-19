@@ -273,8 +273,9 @@ def _make_collage(image_binary: io.BytesIO, chara_images: list[list[CharaImage]]
         i, j = positions[ind_group]
         curr_width = 0
         for img in img_group:
+            assert img.image is not None
             collage.paste(
-                cast(Image.Image, img),
+                img.image,
                 ((j + curr_width) * ALImage.WIDTH, i * ALImage.HEIGHT),
             )
             curr_width += img.properties.zoom
@@ -583,7 +584,8 @@ def _make_dumb_collage(image_binary: io.BytesIO, images: Sequence[ALImage]):
     )
     curr_width = 0
     for img in images:
-        collage.paste(cast(Image.Image, img), (curr_width, 0))
+        assert img.image is not None
+        collage.paste(img.image, (curr_width, 0))
         curr_width += img.width
     collage.save(image_binary, 'WEBP', method=6, quality=80)
     image_binary.seek(0)
