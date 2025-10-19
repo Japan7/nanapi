@@ -60,7 +60,7 @@ async def refresh_medias() -> None:
     medias_info: dict[int, ALMedia] = {}
     media_characters: dict[int, set[int]] = defaultdict(set)
     while to_update:
-        batches = list(batched(to_update, 50, strict=False))
+        batches = list(batched(to_update, 50))
         logger.info(f'refreshing {len(to_update)} medias')
 
         to_merge: list[int] = []
@@ -122,7 +122,7 @@ async def refresh_charas() -> None:
     medias = set[int]()
     voice_actors = set[int]()
     while to_update:
-        batches = list(batched(to_update, 50, strict=False))
+        batches = list(batched(to_update, 50))
         logger.info(f'refreshing {len(to_update)} charas')
 
         for cbatch in batches:
@@ -170,7 +170,7 @@ async def refresh_staffs() -> None:
     staff_infos: dict[int, ALStaff] = {}
     page = 1
     while to_update:
-        batches = list(batched(to_update, 50, strict=False))
+        batches = list(batched(to_update, 50))
         logger.info(f'refreshing {len(to_update)} staffs')
 
         charas = set[int]()
