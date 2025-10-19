@@ -565,7 +565,7 @@ class MALUserlist(Userlist):
                 }
             }
             """ % (media_fields, page_info, chara_fields)
-            for sub_to_fetch in batched(to_fetch, 50):
+            for sub_to_fetch in batched(to_fetch, 50, strict=False):
                 variables = {
                     'idMal_in': sub_to_fetch,
                     'type': media_type,
@@ -647,7 +647,7 @@ async def fetch_media(*media_ids: int, page: int = 1) -> list[ALMedia]:
     """ % (media_fields if page == 1 else 'id', page_info)
     medias: list[ALMedia] = []
 
-    for mbatch in batched(media_ids, 50):
+    for mbatch in batched(media_ids, 50, strict=False):
         not_found = set(mbatch)
         try:
             variables = dict(idIn=mbatch, page=page)
@@ -711,7 +711,7 @@ async def fetch_chara(*charas_ids: int, page: int = 1) -> list[ALCharacter]:
 
     charas: list[ALCharacter] = []
 
-    for cbatch in batched(charas_ids, 50):
+    for cbatch in batched(charas_ids, 50, strict=False):
         not_found = set(cbatch)
 
         try:
@@ -768,7 +768,7 @@ async def fetch_staff(*staff_ids: int, page: int = 1) -> list[ALStaff]:
     """ % (staff_fields if page == 1 else 'id', page_info)
     staffs: list[ALStaff] = []
 
-    for sbatch in batched(staff_ids, 50):
+    for sbatch in batched(staff_ids, 50, strict=False):
         not_found = set(sbatch)
         try:
             variables = dict(idIn=sbatch, page=page)
@@ -799,7 +799,7 @@ async def update_missing_media(media_ids: set[int]) -> None:
     if len(ids) == 0:
         return
 
-    batches = list(batched(ids, 50))
+    batches = list(batched(ids, 50, strict=False))
     logger.info(f'updating {len(ids)} medias in {len(batches)} requests')
 
     for mbatch in batches:
@@ -816,7 +816,7 @@ async def update_missing_characters(charas_ids: set[int]) -> None:
     ids = charas_ids - ids_db
     if len(ids) == 0:
         return
-    batches = list(batched(ids, 50))
+    batches = list(batched(ids, 50, strict=False))
     logger.info(f'updating {len(ids)} charas in {len(batches)} requests')
 
     for cbatch in batches:
@@ -834,7 +834,7 @@ async def update_missing_staff(staff_ids: set[int]) -> None:
     if len(ids) == 0:
         return
 
-    batches = list(batched(ids, 50))
+    batches = list(batched(ids, 50, strict=False))
     logger.info(f'updating {len(ids)} staffs in {len(batches)} requests')
 
     for sbatch in batches:
