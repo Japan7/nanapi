@@ -2,10 +2,10 @@ import secrets
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+import bcrypt
 import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials, OAuth2PasswordBearer
-from passlib.context import CryptContext
 from pydantic import BaseModel
 
 from nanapi.database.default.client_get_by_username import (
@@ -15,15 +15,13 @@ from nanapi.database.default.client_get_by_username import (
 from nanapi.settings import BASIC_AUTH_PASSWORD, BASIC_AUTH_USERNAME, JWT_ALGORITHM, JWT_SECRET_KEY
 from nanapi.utils.clients import get_edgedb
 
-_pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
-
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return _pwd_context.verify(plain_password, hashed_password)
+    return bcrypt.checkpw(plain_password.encode(), hashed_password.encode())
 
 
 def get_password_hash(password: str) -> str:
-    return _pwd_context.hash(password)
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 
 _basic_auth = HTTPBasic()
