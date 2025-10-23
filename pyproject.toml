@@ -12,7 +12,7 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [
     "gel==3.1.0",
-    "fastapi==0.119.1",
+    "fastapi==0.120.0",
     "pydantic==2.12.3",
     "aiohttp[speedups]==3.13.1",
     # https://github.com/PyYoshi/cChardet/issues/81
