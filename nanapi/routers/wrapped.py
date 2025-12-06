@@ -1,10 +1,11 @@
 import asyncio
 from datetime import datetime
 
-from fastapi import Depends
+from fastapi import Depends, Query
 from gel import AsyncIOClient
 
 from nanapi.models.wrapped import WrappedEmbed, WrappedResponse
+from nanapi.settings import TZ
 from nanapi.utils.fastapi import NanAPIRouter, get_client_edgedb
 from nanapi.utils.wrapped.commands import get_command_stats_embeds
 from nanapi.utils.wrapped.common import COLOR_BLURPLE, get_wrapped_footer
@@ -22,7 +23,7 @@ router = NanAPIRouter(prefix='/wrapped', tags=['wrapped'])
 @router.oauth2_client.get('/{discord_id}', response_model=WrappedResponse)
 async def get_wrapped(
     discord_id: str,
-    year: int = datetime.now().year,
+    year: int = Query(default_factory=lambda: datetime.now(TZ).year),
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
     """Get wrapped statistics for a user for a given year.
