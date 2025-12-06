@@ -234,8 +234,8 @@ nanapi/
 
 ### Adding New Wrapped Stats
 
-1. Create EdgeQL query in `nanapi/database/discord/wrapped_*.edgeql`
-2. Run codegen: `uv run gel-pydantic-codegen nanapi/database/`
+1. Create EdgeQL query in `nanapi/database/wrapped/wrapped_*.edgeql`
+2. Run codegen: `uv run gel-pydantic-codegen nanapi/database/wrapped/`
 3. Create utility module in `nanapi/utils/wrapped/<stat_name>.py`:
    - Define templates and thresholds
    - Create `build_*_embeds()` function returning `list[WrappedEmbed]`

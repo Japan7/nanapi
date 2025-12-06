@@ -403,13 +403,13 @@ def build_trade_stats_embeds(
     # Comment on trade count
     # 2025 data: N=50, P10=1, P25=2, P50=24, P75=122, P90=385
     if stats.total_trades >= 385:
-        count_comment = 'Trade machine! \U0001f3ed'
+        count_comment = 'Trade machine! 🏭'
     elif stats.total_trades >= 122:
-        count_comment = 'Active trader! \U0001f91d'
+        count_comment = 'Active trader! 🤝'
     elif stats.total_trades >= 2:
         count_comment = ''
     else:
-        count_comment = 'Lonely trader. \U0001f622'
+        count_comment = 'Lonely trader. 😢'
 
     trade_line = format_with_comment(f'You made **{stats.total_trades}** trades!', count_comment)
 
@@ -423,9 +423,9 @@ def build_trade_stats_embeds(
 
     description = (
         f'{trade_line}\n'
-        f'\U0001f4e4 Offered **{stats.total_offered}** waifus\n'
-        f'\U0001f4e5 Received **{stats.total_received}** waifus\n'
-        f'\U0001f4b9 **Balance**: {balance:+d} {balance_comment}\n'
+        f'📤 Offered **{stats.total_offered}** waifus\n'
+        f'📥 Received **{stats.total_received}** waifus\n'
+        f'💹 **Balance**: {balance:+d} {balance_comment}\n'
     )
 
     # Top 5 BFFs
@@ -439,7 +439,7 @@ def build_trade_stats_embeds(
 
     return [
         WrappedEmbed(
-            title=f'\U0001f91d Trades in {year}',
+            title=f'🤝 Trades in {year}',
             description=description,
             color=COLOR_PURPLE,
             footer=get_wrapped_footer(year),
