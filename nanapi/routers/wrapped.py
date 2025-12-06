@@ -53,6 +53,7 @@ async def get_wrapped(
         ),
         color=COLOR_BLURPLE,
         footer=get_wrapped_footer(year),
+        image_url='https://hikari.butaishoujo.moe/wrapped/wrapped2025.png',
     )
     embeds.insert(0, welcome_embed)
 
