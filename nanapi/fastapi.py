@@ -26,6 +26,7 @@ from nanapi.routers import (
     role,
     user,
     waicolle,
+    wrapped,
 )
 from nanapi.settings import (
     DOCS_URL,
@@ -78,6 +79,7 @@ app.include_router(reminder.router)
 app.include_router(role.router)
 app.include_router(user.router)
 app.include_router(waicolle.router)
+app.include_router(wrapped.router)
 
 
 @app.get('/health', status_code=status.HTTP_204_NO_CONTENT)
