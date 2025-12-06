@@ -223,7 +223,7 @@ The "Wrapped" feature provides Spotify Wrapped-style yearly statistics for Disco
 
 ```
 nanapi/
-├── database/discord/wrapped_*.edgeql      # Stats queries
+├── database/wrapped/wrapped_*.edgeql      # Stats queries
 ├── models/wrapped.py                      # WrappedEmbed, WrappedResponse
 ├── routers/wrapped.py                     # GET /{discord_id} endpoint
 └── utils/wrapped/
