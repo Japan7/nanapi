@@ -398,7 +398,7 @@ def build_trade_stats_embeds(
         return []
 
     # Calculate balance
-    balance = stats.total_received - stats.total_offered
+    balance = stats.total_offered - stats.total_received
 
     # Comment on trade count
     # 2025 data: N=50, P10=1, P25=2, P50=24, P75=122, P90=385
