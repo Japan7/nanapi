@@ -1,0 +1,53 @@
+with
+  discord_id := <str>$discord_id,
+  year_start := <datetime>$year_start,
+  year_end := <datetime>$year_end,
+  # Find user
+  user := (select user::User filter .discord_id = discord_id),
+  # All events the user participated in during the year
+  attended_events := (
+    select calendar::GuildEvent
+    filter
+      user in .participants
+      and .start_time >= year_start
+      and .start_time < year_end
+  ),
+  # Events with projections (watched anime/media together)
+  projection_events := (
+    select attended_events filter exists .projection
+  ),
+  # Co-participants (other users who attended the same events)
+  co_participants := (
+    for event in attended_events
+    union (
+      select event.participants filter .id != user.id
+    )
+  )
+select {
+  # Total event count
+  total_events := count(attended_events),
+  # Projection stats
+  projection_count := count(projection_events),
+  # Total runtime of projection medias (in minutes)
+  projection_runtime := sum(
+    (
+      for event in projection_events
+      union (
+        sum(event.projection.medias.duration ?? 0)
+      )
+    )
+  ),
+  # Top 5 co-participants (people you attended events with most often)
+  top_bffs := (
+    select (
+      group co_participants by .discord_id
+    ) {
+      discord_id := .key.discord_id,
+      count := count(.elements),
+    }
+    order by .count desc
+    limit 5
+  ),
+  # Event names for fun stats
+  event_names := array_agg(attended_events.name),
+}

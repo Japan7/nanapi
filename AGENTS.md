@@ -40,6 +40,8 @@ async def my_endpoint(db: gel.AsyncIOClient = Depends(get_client_edgedb)):
 **EdgeQL conventions:**
 - Use `<optional type>$param` for optional parameters: `<optional str>$discord_id`
 - Use `str` type for Discord snowflake IDs (avoids JavaScript parseInt overflow issues)
+- Use `json_get(obj, 'key1', 'key2', ...)` for safe JSON path access (returns empty set if path doesn't exist)
+- For EdgeQL syntax and stdlib functions, consult **Context7**: https://context7.com/websites/geldata
 
 ### Multi-Tenant Access Control
 
@@ -212,3 +214,30 @@ Tasks in `nanapi/tasks/` are **run separately** (not part of the main FastAPI ap
 - **Routers must be manually registered** in `nanapi/fastapi.py` - no auto-discovery
 - Use `async` functions wherever possible for better performance
 - Discord snowflake IDs must be `str` type to avoid JavaScript parseInt overflow
+
+## Wrapped Feature
+
+The "Wrapped" feature provides Spotify Wrapped-style yearly statistics for Discord users. It's a good example of a **utility-based module** where complex logic lives in `nanapi/utils/` rather than in routers.
+
+### Structure
+
+```
+nanapi/
+├── database/discord/wrapped_*.edgeql      # Stats queries
+├── models/wrapped.py                      # WrappedEmbed, WrappedResponse
+├── routers/wrapped.py                     # GET /{discord_id} endpoint
+└── utils/wrapped/
+    ├── common.py                          # Shared utilities
+    ├── messages.py                        # Message stats → embeds
+    └── emotes.py                          # Emote stats → embeds
+```
+
+### Adding New Wrapped Stats
+
+1. Create EdgeQL query in `nanapi/database/discord/wrapped_*.edgeql`
+2. Run codegen: `uv run gel-pydantic-codegen nanapi/database/`
+3. Create utility module in `nanapi/utils/wrapped/<stat_name>.py`:
+   - Define templates and thresholds
+   - Create `build_*_embeds()` function returning `list[WrappedEmbed]`
+   - Create `get_*_embeds()` async function that queries and builds embeds
+4. Import and add to router's `asyncio.gather()` call

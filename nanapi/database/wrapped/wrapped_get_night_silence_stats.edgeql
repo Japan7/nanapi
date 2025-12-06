@@ -1,0 +1,68 @@
+with
+  tz := <str>$timezone,
+  discord_id := <str>$discord_id,
+  year_start := <datetime>$year_start,
+  year_end := <datetime>$year_end,
+  messages := (
+    select discord::Message
+    filter
+      .author_id = discord_id
+      and .timestamp >= year_start
+      and .timestamp < year_end
+  ),
+  # Get messages with their local time info
+  msgs_with_time := (
+    select messages {
+      ts := .timestamp,
+      local_ts := cal::to_local_datetime(.timestamp, tz),
+      hour := <int64>datetime_get(cal::to_local_datetime(.timestamp, tz), 'hour'),
+      local_date := cal::to_local_date(.timestamp, tz),
+    }
+  ),
+  # Group by local date to find first and last message of each day
+  day_groups := (
+    group msgs_with_time
+    using local_date := .local_date
+    by local_date
+  ),
+  # For each day, get the first and last message times
+  daily_bounds := (
+    select day_groups {
+      local_date := .key.local_date,
+      first_msg_ts := min(.elements.ts),
+      last_msg_ts := max(.elements.ts),
+      first_msg_hour := min(.elements.hour),
+      last_msg_hour := max(.elements.hour),
+    }
+  ),
+  # Sort by date to pair consecutive days
+  sorted_days := (select daily_bounds order by .local_date),
+  dates := array_agg((select sorted_days.local_date)),
+  first_msgs := array_agg((select sorted_days.first_msg_ts)),
+  last_msgs := array_agg((select sorted_days.last_msg_ts)),
+  first_hours := array_agg((select sorted_days.first_msg_hour)),
+  last_hours := array_agg((select sorted_days.last_msg_hour)),
+  # Calculate night silences between consecutive days
+  # Night silence = first_msg[i+1] - last_msg[i] where the gap is < 24h
+  night_silences := (
+    for i in range_unpack(range(0, len(dates) - 1))
+    union (
+      with
+        gap := first_msgs[i + 1] - last_msgs[i],
+        gap_seconds := duration_get(gap, 'totalseconds'),
+        # Only count gaps less than 24h (86400 seconds) and consecutive dates
+        is_consecutive := dates[i + 1] - dates[i] = <cal::date_duration>'1 day'
+      select {
+        gap_seconds := gap_seconds,
+        last_hour := last_hours[i],
+        first_hour := first_hours[i + 1],
+      }
+      filter is_consecutive and gap_seconds < 86400 and gap_seconds > 0
+    )
+  )
+select {
+  night_count := count(night_silences),
+  avg_night_silence_seconds := math::mean(night_silences.gap_seconds),
+  avg_last_msg_hour := math::mean(night_silences.last_hour),
+  avg_first_msg_hour := math::mean(night_silences.first_hour),
+}
