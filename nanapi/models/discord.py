@@ -10,3 +10,8 @@ class UpdateMessageNoindexBody(BaseModel):
 class MessagesRagResult(BaseModel):
     object: RagQueryResultObject
     distance: float
+
+
+class ReactionAddBody(BaseModel):
+    animated: bool | None = None
+    burst: bool | None = None

@@ -1,9 +1,9 @@
 from typing import Annotated, Any
 
 import orjson
-from fastapi import Body, Depends, HTTPException, status
-from gel import AsyncIOClient
-from pydantic import Json
+from fastapi import Body, Depends, HTTPException, Response, status
+from gel import AsyncIOClient, MissingRequiredError
+from pydantic import BaseModel, Json
 
 from nanapi.database.discord.message_bulk_delete import (
     MessageBulkDeleteResult,
@@ -19,8 +19,28 @@ from nanapi.database.discord.message_update_noindex import (
     message_update_noindex,
 )
 from nanapi.database.discord.rag_query import rag_query
-from nanapi.models.discord import MessagesRagResult, UpdateMessageNoindexBody
+from nanapi.database.discord.reaction_delete import (
+    ReactionDeleteResult,
+    reaction_delete,
+)
+from nanapi.database.discord.reaction_insert import ReactionInsertResult, reaction_insert
+from nanapi.models.discord import MessagesRagResult, ReactionAddBody, UpdateMessageNoindexBody
 from nanapi.utils.fastapi import HTTPExceptionModel, NanAPIRouter, get_client_edgedb
+
+
+class Emoji(BaseModel):
+    name: str
+    emoji_id: str | None = None
+
+
+def parse_emoji(emoji: str):
+    parts = emoji.split(':')
+    if len(parts) > 2:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+    name = parts[0]
+    emoji_id = parts[1] if len(parts) == 2 else None
+    return Emoji(name=name, emoji_id=emoji_id)
+
 
 router = NanAPIRouter(prefix='/discord', tags=['discord'])
 
@@ -86,3 +106,71 @@ async def update_message_noindex(
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return resp
+
+
+@router.oauth2_client_restricted.put(
+    '/messages/{message_id}/reactions/{emoji}/{user_id}',
+    response_model=ReactionInsertResult,
+    responses={
+        status.HTTP_400_BAD_REQUEST: dict(model=HTTPExceptionModel),
+        status.HTTP_404_NOT_FOUND: {},
+    },
+)
+async def add_message_reaction(
+    message_id: str,
+    user_id: str,
+    body: ReactionAddBody,
+    emoji: Emoji = Depends(parse_emoji),
+    edgedb: AsyncIOClient = Depends(get_client_edgedb),
+):
+    """Add a reaction to a Discord message."""
+    try:
+        return await reaction_insert(
+            edgedb,
+            message_id=message_id,
+            user_id=user_id,
+            **emoji.model_dump(),
+            **body.model_dump(),
+        )
+    except MissingRequiredError:
+        return Response(status_code=status.HTTP_404_NOT_FOUND)
+
+
+@router.oauth2_client_restricted.delete(
+    '/messages/{message_id}/reactions/{emoji}/{user_id}',
+    response_model=list[ReactionDeleteResult],
+    responses={status.HTTP_400_BAD_REQUEST: dict(model=HTTPExceptionModel)},
+)
+async def remove_message_reaction(
+    message_id: str,
+    user_id: str,
+    emoji: Emoji = Depends(parse_emoji),
+    edgedb: AsyncIOClient = Depends(get_client_edgedb),
+):
+    """Remove a reaction from a Discord message."""
+    return await reaction_delete(
+        edgedb,
+        message_id=message_id,
+        user_id=user_id,
+        **emoji.model_dump(),
+    )
+
+
+@router.oauth2_client_restricted.delete(
+    '/messages/{message_id}/reactions',
+    response_model=list[ReactionDeleteResult],
+    responses={status.HTTP_400_BAD_REQUEST: dict(model=HTTPExceptionModel)},
+)
+async def clear_message_reactions(
+    message_id: str,
+    emoji: str | None = None,
+    edgedb: AsyncIOClient = Depends(get_client_edgedb),
+):
+    """Clear all reactions or a specific emoji from a Discord message."""
+    emoji_obj = parse_emoji(emoji) if emoji else None
+    return await reaction_delete(
+        edgedb,
+        message_id=message_id,
+        name=emoji_obj.name if emoji_obj else None,
+        emoji_id=emoji_obj.emoji_id if emoji_obj else None,
+    )

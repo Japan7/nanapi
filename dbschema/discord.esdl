@@ -11,6 +11,7 @@ module discord {
     property edited_timestamp -> datetime;
     property deleted_at -> datetime;
     property noindex -> str;
+    multi link reactions := .<message[is Reaction];
     multi link pages := .<messages[is MessagePage];
     constraint exclusive on ((.client, .message_id));
     index on ((.guild_id, .channel_id, .message_id, .author_id, .timestamp, .edited_timestamp, .deleted_at, .noindex));
@@ -28,5 +29,23 @@ module discord {
       on target delete allow;
     }
     deferred index ext::ai::index(embedding_model := 'text-embedding-3-small') on (.context);
+  }
+
+  type Reaction extending default::ClientObject {
+    required link message -> Message {
+      on target delete delete source;
+    }
+    required link user -> user::User {
+      on target delete delete source;
+    }
+    required property name -> str;
+    property emoji_id -> str;
+    required property animated -> bool {
+      default := false;
+    }
+    required property burst -> bool {
+      default := false;
+    }
+    constraint exclusive on ((.message, .user, .emoji_id ?? .name));
   }
 }
