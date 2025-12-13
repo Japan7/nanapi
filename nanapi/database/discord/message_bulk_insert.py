@@ -10,18 +10,57 @@ EDGEQL_QUERY = r"""
 with
   messages := <array <json>>$messages,
 for data in array_unpack(messages) union (
-  insert discord::Message {
-    client := global client,
-    data := data,
-    guild_id := <str>json_get(data, 'guild_id'),
-    channel_id := <str>json_get(data, 'channel_id'),
-    message_id := <str>json_get(data, 'id'),
-    author_id := <str>json_get(data, 'author', 'id'),
-    content := <str>json_get(data, 'content'),
-    timestamp := <datetime>json_get(data, 'timestamp'),
-    edited_timestamp := <datetime>json_get(data, 'edited_timestamp'),
-  }
-  unless conflict on ((.client, .message_id))
+  with
+    message_data := <json>json_get(data, 'message'),
+    reactions_data := <array <json>>json_get(data, 'reactions'),
+    message_id := <str>json_get(message_data, 'id'),
+    inserted := (
+      insert discord::Message {
+        client := global client,
+        data := message_data,
+        guild_id := <str>json_get(message_data, 'guild_id'),
+        channel_id := <str>json_get(message_data, 'channel_id'),
+        message_id := message_id,
+        author_id := <str>json_get(message_data, 'author', 'id'),
+        content := <str>json_get(message_data, 'content'),
+        timestamp := <datetime>json_get(message_data, 'timestamp'),
+        edited_timestamp := <datetime>json_get(message_data, 'edited_timestamp'),
+      }
+      unless conflict on ((.client, .message_id))
+      else (select discord::Message)
+    ),
+  for item in array_unpack(reactions_data) union (
+    with
+      reaction_data := <json>json_get(item, 'reaction'),
+      users_data := <array <json>>json_get(item, 'users'),
+      emoji := <json>json_get(reaction_data, 'emoji'),
+      name := <str>json_get(emoji, 'name'),
+      emoji_id := <str>json_get(emoji, 'id'),
+      animated := <bool>json_get(emoji, 'animated') ?? false,
+      burst := <int32>json_get(reaction_data, 'count_details', 'burst') > 0,
+    for user_data in array_unpack(users_data) union (
+      with
+        user_id := <str>json_get(user_data, 'id'),
+        user := (
+          insert user::User {
+            discord_id := user_id,
+            discord_username := <str>json_get(user_data, 'username'),
+          }
+          unless conflict on .discord_id
+          else (select user::User)
+        ),
+      insert discord::Reaction {
+        client := global client,
+        message := inserted,
+        user := user,
+        name := name,
+        emoji_id := emoji_id,
+        animated := animated,
+        burst := burst,
+      }
+      unless conflict
+    )
+  )
 )
 """
 
