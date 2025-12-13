@@ -5,11 +5,6 @@ from fastapi import Body, Depends, HTTPException, Response, status
 from gel import AsyncIOClient, MissingRequiredError
 from pydantic import BaseModel, Json
 
-from nanapi.database.discord.message_batch_update_noindex import (
-    MessageBatchUpdateNoindexItems,
-    MessageBatchUpdateNoindexResult,
-    message_batch_update_noindex,
-)
 from nanapi.database.discord.message_bulk_delete import (
     MessageBulkDeleteResult,
     message_bulk_delete,
@@ -17,6 +12,10 @@ from nanapi.database.discord.message_bulk_delete import (
 from nanapi.database.discord.message_bulk_insert import (
     MessageBulkInsertResult,
     message_bulk_insert,
+)
+from nanapi.database.discord.message_bulk_update_noindex import (
+    MessageBulkUpdateNoindexResult,
+    message_bulk_update_noindex,
 )
 from nanapi.database.discord.message_merge import MessageMergeResult, message_merge
 from nanapi.database.discord.message_update_noindex import (
@@ -115,14 +114,16 @@ async def update_message_noindex(
 
 @router.oauth2_client_restricted.put(
     '/messages/noindex',
-    response_model=list[MessageBatchUpdateNoindexResult],
+    response_model=list[MessageBulkUpdateNoindexResult],
 )
-async def batch_update_message_noindex(
-    body: list[MessageBatchUpdateNoindexItems],
+async def bulk_update_message_noindex(
+    items: Annotated[list[Json[Any]], Body()],
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
     """Update indexation instructions for multiple Discord messages."""
-    return await message_batch_update_noindex(edgedb, items=body)
+    return await message_bulk_update_noindex(
+        edgedb, items=[orjson.dumps(data).decode() for data in items]
+    )
 
 
 @router.oauth2_client_restricted.put(
