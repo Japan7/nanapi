@@ -28,7 +28,12 @@ from nanapi.database.discord.reaction_delete import (
     reaction_delete,
 )
 from nanapi.database.discord.reaction_insert import ReactionInsertResult, reaction_insert
-from nanapi.models.discord import MessagesRagResult, ReactionAddBody, UpdateMessageNoindexBody
+from nanapi.models.discord import (
+    BulkUpdateMessageNoindexBodyItem,
+    MessagesRagResult,
+    ReactionAddBody,
+    UpdateMessageNoindexBody,
+)
 from nanapi.utils.fastapi import HTTPExceptionModel, NanAPIRouter, get_client_edgedb
 
 
@@ -96,6 +101,20 @@ async def upsert_message(
 
 
 @router.oauth2_client_restricted.put(
+    '/noindex',
+    response_model=list[MessageBulkUpdateNoindexResult],
+)
+async def bulk_update_message_noindex(
+    body: list[BulkUpdateMessageNoindexBodyItem],
+    edgedb: AsyncIOClient = Depends(get_client_edgedb),
+):
+    """Update indexation instructions for multiple Discord messages."""
+    return await message_bulk_update_noindex(
+        edgedb, items=[orjson.dumps(item.model_dump()).decode() for item in body]
+    )
+
+
+@router.oauth2_client_restricted.put(
     '/messages/{message_id}/noindex',
     response_model=MessageUpdateNoindexResult,
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
@@ -110,20 +129,6 @@ async def update_message_noindex(
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return resp
-
-
-@router.oauth2_client_restricted.put(
-    '/messages/noindex',
-    response_model=list[MessageBulkUpdateNoindexResult],
-)
-async def bulk_update_message_noindex(
-    items: Annotated[list[Json[Any]], Body()],
-    edgedb: AsyncIOClient = Depends(get_client_edgedb),
-):
-    """Update indexation instructions for multiple Discord messages."""
-    return await message_bulk_update_noindex(
-        edgedb, items=[orjson.dumps(data).decode() for data in items]
-    )
 
 
 @router.oauth2_client_restricted.put(

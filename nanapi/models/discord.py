@@ -7,6 +7,11 @@ class UpdateMessageNoindexBody(BaseModel):
     noindex: str
 
 
+class BulkUpdateMessageNoindexBodyItem(BaseModel):
+    message_id: str
+    noindex: str
+
+
 class MessagesRagResult(BaseModel):
     object: RagQueryResultObject
     distance: float
