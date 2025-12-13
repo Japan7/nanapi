@@ -5,6 +5,11 @@ from fastapi import Body, Depends, HTTPException, Response, status
 from gel import AsyncIOClient, MissingRequiredError
 from pydantic import BaseModel, Json
 
+from nanapi.database.discord.message_batch_update_noindex import (
+    MessageBatchUpdateNoindexItems,
+    MessageBatchUpdateNoindexResult,
+    message_batch_update_noindex,
+)
 from nanapi.database.discord.message_bulk_delete import (
     MessageBulkDeleteResult,
     message_bulk_delete,
@@ -106,6 +111,18 @@ async def update_message_noindex(
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return resp
+
+
+@router.oauth2_client_restricted.put(
+    '/messages/noindex',
+    response_model=list[MessageBatchUpdateNoindexResult],
+)
+async def batch_update_message_noindex(
+    body: list[MessageBatchUpdateNoindexItems],
+    edgedb: AsyncIOClient = Depends(get_client_edgedb),
+):
+    """Update indexation instructions for multiple Discord messages."""
+    return await message_batch_update_noindex(edgedb, items=body)
 
 
 @router.oauth2_client_restricted.put(
