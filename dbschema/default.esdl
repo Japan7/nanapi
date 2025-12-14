@@ -19,5 +19,6 @@ module default {
       using (global client ?= .client);
     access policy everyone_ro
       allow select;
+    index on (.client);
   }
 }
