@@ -1,5 +1,26 @@
 with
   messages := <array <json>>$messages,
+  # Pre-extract all unique users from the entire payload to batch insert them once
+  all_users := (
+    for data in array_unpack(messages) union (
+      for item in array_unpack(<array <json>>json_get(data, 'reactions')) union (
+        for user_data in array_unpack(<array <json>>json_get(item, 'users')) union (
+          (<str>json_get(user_data, 'id'), <str>json_get(user_data, 'username'))
+        )
+      )
+    )
+  ),
+  # Batch insert all unique users upfront
+  inserted_users := (
+    for user_tuple in (select distinct all_users) union (
+      insert user::User {
+        discord_id := user_tuple.0,
+        discord_username := user_tuple.1,
+      }
+      unless conflict on .discord_id
+      else (select user::User)
+    )
+  ),
 for data in array_unpack(messages) union (
   with
     message_data := <json>json_get(data, 'message'),
@@ -32,14 +53,8 @@ for data in array_unpack(messages) union (
     for user_data in array_unpack(users_data) union (
       with
         user_id := <str>json_get(user_data, 'id'),
-        user := (
-          insert user::User {
-            discord_id := user_id,
-            discord_username := <str>json_get(user_data, 'username'),
-          }
-          unless conflict on .discord_id
-          else (select user::User)
-        ),
+        # Look up the pre-inserted user instead of inserting again
+        user := (select inserted_users filter .discord_id = user_id limit 1),
       insert discord::Reaction {
         client := global client,
         message := inserted,
