@@ -47,6 +47,6 @@ module discord {
       default := false;
     }
     constraint exclusive on ((.message, .user, .emoji_id ?? .name));
-    index on ((.message, .user, (.name ++ ':' ++ .emoji_id) if exists .emoji_id else .name));
+    index on ((.message, .user, .emoji_id ?? .name));
   }
 }
