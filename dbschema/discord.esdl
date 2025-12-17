@@ -5,7 +5,7 @@ module discord {
     required property channel_id -> str;
     required property message_id -> str;
     required property author_id -> str;
-    link author := (with author_id := .author_id select detached user::User filter .discord_id = author_id);
+    link author := (select user::User filter .discord_id = Message.author_id);
     required property content -> str;
     required property timestamp -> datetime;
     property edited_timestamp -> datetime;
@@ -35,9 +35,8 @@ module discord {
     required link message -> Message {
       on target delete delete source;
     }
-    required link user -> user::User {
-      on target delete delete source;
-    }
+    required property user_id -> str;
+    link user := (select user::User filter .discord_id = Reaction.user_id);
     required property name -> str;
     property emoji_id -> str;
     required property animated -> bool {
@@ -46,7 +45,10 @@ module discord {
     required property burst -> bool {
       default := false;
     }
-    constraint exclusive on ((.message, .user, .emoji_id ?? .name));
-    index on ((.message, .user, .emoji_id ?? .name));
+    required property emoji_key -> str {
+      default := .name ++ ((':' ++ .emoji_id) if exists .emoji_id else '');
+    }
+    constraint exclusive on ((.message, .user_id, .emoji_key));
+    index on ((.message, .user_id, .emoji_key));
   }
 }

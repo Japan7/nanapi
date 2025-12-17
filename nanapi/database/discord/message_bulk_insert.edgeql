@@ -39,30 +39,20 @@ for data in array_unpack(messages) union (
             animated := animated,
             burst := burst,
             user_id := <str>json_get(user_data, 'id'),
-            username := <str>json_get(user_data, 'username'),
           )
         )
       )
     ),
   for r in reaction_items union (
-    with
-      user := (
-        insert user::User {
-          discord_id := r.user_id,
-          discord_username := r.username,
-        }
-        unless conflict on .discord_id
-        else (select user::User)
-      ),
     insert discord::Reaction {
       client := current_client,
       message := inserted,
-      user := user,
+      user_id := r.user_id,
       name := r.name,
       emoji_id := r.emoji_id,
       animated := r.animated,
       burst := r.burst,
     }
-    unless conflict
+    unless conflict on ((.message, .user_id, .emoji_key))
   )
 )

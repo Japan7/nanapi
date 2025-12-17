@@ -13,12 +13,11 @@ with
   emoji_id := <optional str>$emoji_id,
   animated := <optional bool>$animated,
   burst := <optional bool>$burst,
-  message := (select discord::Message filter .message_id = message_id and .client = global client),
-  user := (select user::User filter .discord_id = user_id)
+  message := (select discord::Message filter .client = global client and .message_id = message_id),
 insert discord::Reaction {
   client := global client,
   message := message,
-  user := user,
+  user_id := user_id,
   name := name,
   emoji_id := emoji_id,
   animated := animated,
