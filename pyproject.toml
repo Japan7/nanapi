@@ -62,11 +62,11 @@ homepage = "https://github.com/Japan7/nanapi"
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
 reportMissingTypeStubs = false
-ignore = ["nanapi/nanachan_v2_migrate.py", "notebooks"]
+ignore = ["nanapi/nanachan_v2_migrate.py"]
 
 [tool.ruff]
 line-length = 99
-exclude = ["nanapi/nanachan_v2_migrate.py", "notebooks"]
+exclude = ["nanapi/nanachan_v2_migrate.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "B", "SIM", "I"]
