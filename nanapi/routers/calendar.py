@@ -176,4 +176,4 @@ async def get_ics(client: str, user: str | None = None, aggregate: bool = False)
 
     calendar = await ics_from_events(events, user_calendar)
 
-    return Response(content=calendar.serialize(), media_type='text/calendar')
+    return Response(content=calendar.to_ical(), media_type='text/calendar')
