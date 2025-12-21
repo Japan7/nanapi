@@ -1,5 +1,4 @@
-from . import state
+from . import index, nanalook, state
 from .app import app
-from .pages import index
 
-__all__ = ['state', 'app', 'index']
+__all__ = ['index', 'nanalook', 'state', 'app']

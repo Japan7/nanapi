@@ -12,7 +12,7 @@ def index() -> rx.Component:
             rx.heading('Welcome to Reflex!', size='9'),
             rx.text(
                 'Get started by editing ',
-                rx.code(f'{config.app_name}/{config.app_name}.py'),
+                rx.code(f'{config.app_module_import}'),
                 size='5',
             ),
             rx.link(
