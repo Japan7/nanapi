@@ -1267,7 +1267,7 @@ async def collection_name_autocomplete(search: str, client_id: UUID = Depends(cl
     """Autocomplete collection names."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_collections_{client_id}')
-        resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))  # pyright: ignore[reportUnknownMemberType]
+        resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))
         return resp.hits
 
 

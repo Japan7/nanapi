@@ -103,7 +103,7 @@ async def media_search(search: str, type: MEDIA_TYPES | None = None):
         index = client.index(f'{INSTANCE_NAME}_medias')
         resp = cast(
             SearchResults[dict[str, Any]],
-            await index.search(  # pyright: ignore[reportUnknownMemberType]
+            await index.search(
                 search, limit=25, filter=f'type={type}' if type is not None else None
             ),
         )
@@ -120,7 +120,7 @@ async def media_title_autocomplete(search: str, type: MEDIA_TYPES | None = None)
         index = client.index(f'{INSTANCE_NAME}_medias')
         resp = cast(
             SearchResults[dict[str, Any]],
-            await index.search(  # pyright: ignore[reportUnknownMemberType]
+            await index.search(
                 search, limit=25, filter=f'type={type}' if type is not None else None
             ),
         )
@@ -177,7 +177,7 @@ async def chara_search(search: str):
     """Search for AniList characters by name."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_charas')
-        resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))  # pyright: ignore[reportUnknownMemberType]
+        resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))
     ids = [int(hit['id_al']) for hit in resp.hits]
     data = await chara_select(get_edgedb(), ids_al=[int(hit['id_al']) for hit in resp.hits])
     data.sort(key=lambda c: ids.index(c.id_al))
@@ -189,7 +189,7 @@ async def chara_name_autocomplete(search: str):
     """Autocomplete AniList character names."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_charas')
-        resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))  # pyright: ignore[reportUnknownMemberType]
+        resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))
         return resp.hits
 
 
@@ -249,7 +249,7 @@ async def staff_search(search: str):
     """Search for AniList staff by name."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_staffs')
-        resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))  # pyright: ignore[reportUnknownMemberType]
+        resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))
     ids = [int(hit['id_al']) for hit in resp.hits]
     data = await staff_select(get_edgedb(), ids_al=[int(hit['id_al']) for hit in resp.hits])
     data.sort(key=lambda s: ids.index(s.id_al))
@@ -261,7 +261,7 @@ async def staff_name_autocomplete(search: str):
     """Autocomplete AniList staff names."""
     async with get_meilisearch() as client:
         index = client.index(f'{INSTANCE_NAME}_staffs')
-        resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))  # pyright: ignore[reportUnknownMemberType]
+        resp = cast(SearchResults[dict[str, Any]], await index.search(search, limit=25))
         return resp.hits
 
 

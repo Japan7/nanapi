@@ -17,10 +17,8 @@
 # MEILISEARCH_HOST_URL = 'http://localhost:7700'
 # MEILISEARCH_CONFIG = dict()
 
-## FastAPI/Uvicorn
-# FASTAPI_APP = 'nanapi.fastapi:app'
+## FastAPI
 # FASTAPI_CONFIG = dict()
-# HYPERCORN_CONFIG = dict(workers=4, accesslog='-')
 
 ## Security
 BASIC_AUTH_USERNAME = 'username'

@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "gel_pydantic_codegen",
+      "label": "gel-pydantic-codegen",
       "type": "shell",
       "command": "uv run gel-pydantic-codegen nanapi/database/",
       "problemMatcher": "$python",

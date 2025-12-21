@@ -143,7 +143,7 @@ async def get_current_client(token: str = Depends(OAUTH2_SCHEME)) -> ClientGetBy
         headers={'WWW-Authenticate': 'Bearer'},
     )
     try:
-        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])  # pyright: ignore[reportUnknownMemberType]
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
         username: str | None = payload.get('sub', None)
         if username is None:
             raise credentials_exception
@@ -176,7 +176,7 @@ async def check_restricted_access(
 
 @cache
 def get_client_edgedb(client_id: UUID = Depends(client_id_param)) -> gel.AsyncIOClient:
-    client = get_edgedb().with_globals(client_id=client_id)  # pyright: ignore[reportUnknownMemberType]
+    client = get_edgedb().with_globals(client_id=client_id)
     return cast(gel.AsyncIOClient, client)
 
 

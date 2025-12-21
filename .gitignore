@@ -159,9 +159,11 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-.DS_Store
-local_settings.py
-dumps/
-meilisearch.out
+*.db
+.states
+.web
+assets/external/
+
+/local_settings.py
 /notebooks/settings.py
 /gel.local.toml

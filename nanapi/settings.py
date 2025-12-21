@@ -17,10 +17,8 @@ EDGEDB_CONFIG: dict[str, Any] = dict()
 MEILISEARCH_HOST_URL = 'http://localhost:7700'
 MEILISEARCH_CONFIG: dict[str, Any] = dict()
 
-## FastAPI/Uvicorn
-FASTAPI_APP = 'nanapi.fastapi:app'
+## FastAPI
 FASTAPI_CONFIG: dict[str, Any] = dict()
-HYPERCORN_CONFIG: dict[str, Any] = dict(workers=4, accesslog='-')
 
 ## Security
 # BASIC_AUTH_USERNAME = 'username'

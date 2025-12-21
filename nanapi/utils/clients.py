@@ -17,7 +17,7 @@ def get_edgedb() -> gel.AsyncIOClient:
 
 
 def _get_edgedb() -> gel.AsyncIOClient:
-    client = gel.create_async_client(**EDGEDB_CONFIG)  # pyright: ignore[reportUnknownMemberType]
+    client = gel.create_async_client(**EDGEDB_CONFIG)
     # TODO: something more clever
     client = client.with_retry_options(gel.RetryOptions(attempts=300))
     return cast(gel.AsyncIOClient, client)

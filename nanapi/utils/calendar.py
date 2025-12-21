@@ -19,7 +19,7 @@ async def ics_from_events(
         async with get_session().get(ics_url) as resp:
             resp.raise_for_status()
             ics_str = await resp.text()
-        user_cal = cast(Calendar, Calendar.from_ical(ics_str))  # pyright: ignore[reportUnknownMemberType]
+        user_cal = cast(Calendar, Calendar.from_ical(ics_str))
         calendar.events.extend(user_cal.events)
     return calendar
 
