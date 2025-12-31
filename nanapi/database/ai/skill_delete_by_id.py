@@ -6,24 +6,24 @@ from gel import AsyncIOExecutor
 from pydantic import BaseModel, TypeAdapter
 
 EDGEQL_QUERY = r"""
-delete ai::Prompt filter .client = global client and .name = <str>$name
+delete ai::Skill filter .id = <uuid>$id
 """
 
 
-class PromptDeleteResult(BaseModel):
+class SkillDeleteByIdResult(BaseModel):
     id: UUID
 
 
-adapter = TypeAdapter[PromptDeleteResult | None](PromptDeleteResult | None)
+adapter = TypeAdapter[SkillDeleteByIdResult | None](SkillDeleteByIdResult | None)
 
 
-async def prompt_delete(
+async def skill_delete_by_id(
     executor: AsyncIOExecutor,
     *,
-    name: str,
-) -> PromptDeleteResult | None:
+    id: UUID,
+) -> SkillDeleteByIdResult | None:
     resp = await executor.query_single_json(  # pyright: ignore[reportUnknownMemberType]
         EDGEQL_QUERY,
-        name=name,
+        id=id,
     )
     return adapter.validate_json(resp, strict=False)

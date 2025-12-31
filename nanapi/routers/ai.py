@@ -1,64 +1,37 @@
-from fastapi import Depends, HTTPException, Response, status
+from uuid import UUID
+
+from fastapi import Depends, Response, status
 from gel import AsyncIOClient
 
-from nanapi.database.ai.prompt_delete import PromptDeleteResult, prompt_delete
-from nanapi.database.ai.prompt_insert import PromptInsertResult, prompt_insert
-from nanapi.database.ai.prompt_select_by_name import (
-    PromptSelectByNameResult,
-    prompt_select_by_name,
-)
-from nanapi.database.ai.prompt_select_name_desc import (
-    PromptSelectNameDescResult,
-    prompt_select_name_desc,
-)
-from nanapi.models.ai import InsertPromptBody
+from nanapi.database.ai.skill_delete_by_id import SkillDeleteByIdResult, skill_delete_by_id
+from nanapi.database.ai.skill_insert import SkillInsertResult, skill_insert
+from nanapi.database.ai.skill_select_all import SkillSelectAllResult, skill_select_all
+from nanapi.models.ai import InsertSkillBody
 from nanapi.utils.fastapi import NanAPIRouter, get_client_edgedb
 
 router = NanAPIRouter(prefix='/ai', tags=['ai'])
 
 
-@router.oauth2_client.get('/prompts', response_model=list[PromptSelectNameDescResult])
-async def prompt_index(edgedb: AsyncIOClient = Depends(get_client_edgedb)):
-    """List all prompts (name and description)."""
-    return await prompt_select_name_desc(edgedb)
+@router.oauth2_client.get('/skills', response_model=list[SkillSelectAllResult])
+async def skill_index(edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """List all skills."""
+    return await skill_select_all(edgedb)
 
 
-@router.oauth2_client_restricted.post('/prompts', response_model=PromptInsertResult)
-async def insert_prompt(
-    body: InsertPromptBody,
-    edgedb: AsyncIOClient = Depends(get_client_edgedb),
-):
-    """Insert a new prompt."""
-    return await prompt_insert(
-        edgedb,
-        name=body.name,
-        description=body.description,
-        prompt=body.prompt,
-        arguments=[a.model_dump_json() for a in body.arguments],
-    )
-
-
-@router.oauth2_client.get(
-    '/prompts/{name}',
-    response_model=PromptSelectByNameResult,
-    responses={status.HTTP_404_NOT_FOUND: {}},
-)
-async def get_prompt(name: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
-    """Get a prompt by name."""
-    resp = await prompt_select_by_name(edgedb, name=name)
-    if not resp:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    return resp
+@router.oauth2_client_restricted.post('/skills', response_model=SkillInsertResult)
+async def insert_skill(body: InsertSkillBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Insert a new skill."""
+    return await skill_insert(edgedb, **body.model_dump())
 
 
 @router.oauth2_client_restricted.delete(
-    '/prompts/{name}',
-    response_model=PromptDeleteResult,
+    '/skills/{id}',
+    response_model=SkillDeleteByIdResult,
     responses={status.HTTP_204_NO_CONTENT: {}},
 )
-async def delete_prompt(name: str, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
-    """Delete a prompt by name."""
-    resp = await prompt_delete(edgedb, name=name)
+async def delete_skill(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
+    """Delete a skill."""
+    resp = await skill_delete_by_id(edgedb, id=id)
     if resp is None:
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     return resp
