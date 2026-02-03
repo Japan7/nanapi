@@ -178,7 +178,7 @@ class CharaImage(ALImage):
         )
         al_images_dict = {i.url: base64.b64decode(i.data) for i in al_images}
         tasks = [
-            img.load_image(al_images_dict.get(img.chara.image_large, None))
+            img.load_image(al_images_dict.get(img.chara.image_large))
             for g in image_groups
             for img in g
         ]
@@ -544,7 +544,7 @@ class MediaImage(ALImage):
         async with asyncio.TaskGroup() as tg:
             for img in images:
                 tg.create_task(
-                    img.load_image(al_images_dict.get(img.media.cover_image_extra_large, None))
+                    img.load_image(al_images_dict.get(img.media.cover_image_extra_large))
                 )
 
 
