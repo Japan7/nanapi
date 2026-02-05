@@ -3,7 +3,7 @@ with
   medias := (select anilist::Media filter .id_al in array_unpack(ids_al)),
   pool := (
     select anilist::Character
-    filter .edges.media in medias and .image_large not ilike '%/default.jpg'
+    filter .edges.media in medias and any(.image_large not ilike '%/default.jpg')
   ),
 select pool {
   id_al,

@@ -13,7 +13,7 @@ with
   media := (select anilist::Media filter .id_al = id_al),
   charas := (
     select media.character_edges.character
-    filter (.image_large not ilike '%/default.jpg')
+    filter any(.image_large not ilike '%/default.jpg')
   ),
   nb_charas := count(charas),
   owned := (
