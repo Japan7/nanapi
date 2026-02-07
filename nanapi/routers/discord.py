@@ -1,3 +1,4 @@
+import logging
 from typing import Annotated, Any
 
 import orjson
@@ -35,6 +36,8 @@ from nanapi.models.discord import (
     UpdateMessageNoindexBody,
 )
 from nanapi.utils.fastapi import HTTPExceptionModel, NanAPIRouter, get_client_edgedb
+
+logger = logging.getLogger(__name__)
 
 
 class Emoji(BaseModel):
@@ -155,7 +158,8 @@ async def add_message_reaction(
             **emoji.model_dump(),
             **body.model_dump(),
         )
-    except MissingRequiredError:
+    except MissingRequiredError as e:
+        logger.exception(e)
         return Response(status_code=status.HTTP_404_NOT_FOUND)
 
 
