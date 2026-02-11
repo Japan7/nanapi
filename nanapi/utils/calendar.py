@@ -1,5 +1,3 @@
-from typing import cast
-
 from icalendar import Calendar, Event, vCalAddress
 
 from nanapi.database.calendar.guild_event_select import GuildEventSelectResult
@@ -19,7 +17,7 @@ async def ics_from_events(
         async with get_session().get(ics_url) as resp:
             resp.raise_for_status()
             ics_str = await resp.text()
-        user_cal = cast(Calendar, Calendar.from_ical(ics_str))  # pyright: ignore[reportUnknownMemberType]
+        user_cal = Calendar.from_ical(ics_str)
         for event in user_cal.events:
             calendar.add_component(event)
     return calendar
