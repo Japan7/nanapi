@@ -76,12 +76,14 @@ class GuildEventMergeResultProjection(BaseModel):
 
 
 class GuildEventMergeResultParticipants(BaseModel):
+    age_verified: bool
     discord_id: str
     discord_username: str
     id: UUID
 
 
 class GuildEventMergeResultOrganizer(BaseModel):
+    age_verified: bool
     discord_id: str
     discord_username: str
     id: UUID

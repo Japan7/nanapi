@@ -4,6 +4,9 @@ module user {
       constraint exclusive;
     }
     required property discord_username -> str;
+    required property age_verified -> bool {
+        default := true;
+    };
     link profile := .<user[is Profile];
     link amq := .<user[is amq::Account];
     link anilist := .<user[is anilist::Account];

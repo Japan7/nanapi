@@ -18,6 +18,7 @@ select player {
   *,
   user: {
     discord_id,
+    age_verified,
   },
 }
 """
@@ -30,6 +31,7 @@ class WaicolleGameMode(StrEnum):
 
 
 class PlayerGetByUserResultUser(BaseModel):
+    age_verified: bool
     discord_id: str
 
 
