@@ -59,6 +59,7 @@ class ProjectionStatus(StrEnum):
 
 
 class ProjoSelectResultParticipants(BaseModel):
+    age_verified: bool
     discord_id: str
     discord_username: str
     id: UUID

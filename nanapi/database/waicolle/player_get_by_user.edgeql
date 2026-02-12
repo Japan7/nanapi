@@ -8,5 +8,6 @@ select player {
   *,
   user: {
     discord_id,
+    age_verified,
   },
 }

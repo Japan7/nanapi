@@ -11,6 +11,7 @@ select calendar::UserCalendar { ** }
 
 
 class UserCalendarSelectAllResultUser(BaseModel):
+    age_verified: bool
     discord_id: str
     discord_username: str
     id: UUID

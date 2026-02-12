@@ -6,7 +6,13 @@ from nanapi.database.user.profile_select_filter_discord_id import profile_select
 from nanapi.database.user.profile_select_ilike import profile_select_ilike
 from nanapi.database.user.user_bulk_merge import UserBulkMergeResult, user_bulk_merge
 from nanapi.database.user.user_select import UserSelectResult, user_select
-from nanapi.models.user import ProfileSearchResult, UpsertDiscordAccountBodyItem, UpsertProfileBody
+from nanapi.database.user.user_upsert import UserUpsertResult, user_upsert
+from nanapi.models.user import (
+    ProfileSearchResult,
+    UpsertDiscordAccountBodyItem,
+    UpsertProfileBody,
+    UpsertUser,
+)
 from nanapi.utils.clients import get_edgedb
 from nanapi.utils.fastapi import HTTPExceptionModel, NanAPIRouter
 
@@ -23,6 +29,17 @@ async def discord_account_index():
 async def upsert_discord_accounts(body: list[UpsertDiscordAccountBodyItem]):
     """Bulk upsert Discord accounts."""
     return await user_bulk_merge(get_edgedb(), users=[i.model_dump() for i in body])
+
+
+@router.oauth2.patch('/account', response_model=UserUpsertResult)
+async def upsert_user(body: UpsertUser):
+    """upsert an user."""
+    return await user_upsert(
+        get_edgedb(),
+        discord_id=body.discord_id,
+        discord_username=body.discord_username,
+        age_verified=body.age_verified,
+    )
 
 
 @router.oauth2.get('/profiles/search', response_model=list[ProfileSearchResult])

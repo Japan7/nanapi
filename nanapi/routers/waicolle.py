@@ -292,6 +292,7 @@ async def donate_player_coins(
         status.HTTP_400_BAD_REQUEST: dict(model=HTTPExceptionModel),
         status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel),
         status.HTTP_409_CONFLICT: dict(model=HTTPExceptionModel),
+        status.HTTP_418_IM_A_TEAPOT: dict(model=HTTPExceptionModel),
     },
 )
 async def player_roll(
@@ -318,8 +319,15 @@ async def player_roll(
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND, detail='Player Not Found'
                 )
+
             if player.frozen_at is not None:
                 return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+            if player.user.age_verified:
+                raise HTTPException(
+                    status_code=status.HTTP_418_IM_A_TEAPOT,
+                    detail='Player is underage, no gambling allowed.',
+                )
 
             # Get Roll
             if roll_id is not None:

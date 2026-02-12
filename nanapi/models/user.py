@@ -10,6 +10,12 @@ class UpsertDiscordAccountBodyItem(BaseModel):
     discord_username: str
 
 
+class UpsertUser(BaseModel):
+    discord_id: str
+    discord_username: str
+    age_verified: bool
+
+
 class ProfileSearchResult(ProfileGetByDiscordIdResult):
     pass
 
