@@ -1178,7 +1178,7 @@ wheels = [
 
 [[package]]
 name = "gel-pydantic-codegen"
-version = "1.1.0"
+version = "1.2.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "gel" },
@@ -1187,9 +1187,9 @@ dependencies = [
     { name = "pydantic" },
     { name = "ruff" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/94/84/d587d7545c52ef0d98a27b358ccc10f53bc188dbf05b5acfbf0a3df8b6d9/gel_pydantic_codegen-1.1.0.tar.gz", hash = "sha256:dc9a72e060715d7dd31a571721cda872cde454429732b25e22652bdb2f2fe985", size = 29089, upload-time = "2025-05-13T11:50:37.231Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/26/a5/fa25ab80bac5d18236c55272f59c4689681bf871e4d7267c0b14bd9c5021/gel_pydantic_codegen-1.2.0.tar.gz", hash = "sha256:8f7d790be411dd47d9cbfbf06ef46340317a105280961fd93036525eb47aa0e3", size = 37082, upload-time = "2026-02-13T08:31:02.757Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/2a/d0/4a563a7d5493dc792e0aa96045b3bb13cd7bb72a2f01f085b3a3d7871a89/gel_pydantic_codegen-1.1.0-py3-none-any.whl", hash = "sha256:a3ea42b51dd6cb92b03bdcbb58f6d466b13d8296eaf52c811873f5c62653fccf", size = 9196, upload-time = "2025-05-13T11:50:36.453Z" },
+    { url = "https://files.pythonhosted.org/packages/c6/8a/608f0d53fefd1cebccb775050d11d1f5b8c70d07aadd18048540496f0eb6/gel_pydantic_codegen-1.2.0-py3-none-any.whl", hash = "sha256:d81e49171d5575e1612507e16689bb41b6030b7ec26774bb9233ebd3bee8194f", size = 9278, upload-time = "2026-02-13T08:31:01.473Z" },
 ]
 
 [[package]]
@@ -2246,7 +2246,7 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "fawltydeps", specifier = "==0.20.0" },
-    { name = "gel-pydantic-codegen", specifier = "==1.1.0" },
+    { name = "gel-pydantic-codegen", specifier = "==1.2.0" },
     { name = "nanapi-notebooks", editable = "notebooks" },
     { name = "pyinstrument", specifier = "==5.1.2" },
     { name = "pyright", specifier = "==1.1.408" },
