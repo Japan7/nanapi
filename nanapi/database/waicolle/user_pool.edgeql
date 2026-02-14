@@ -13,7 +13,7 @@ with
         if exists player else true
       ))
       and
-      (.image_large not ilike '%/default.jpg')
+      any(.image_large not ilike '%/default.jpg')
     )
   ),
   genred := (

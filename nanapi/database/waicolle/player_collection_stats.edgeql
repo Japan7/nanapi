@@ -5,7 +5,7 @@ with
   collec := (select waicolle::Collection filter .id = id),
   charas := (
     select collec.characters
-    filter (.image_large not ilike '%/default.jpg')
+    filter any(.image_large not ilike '%/default.jpg')
   ),
   nb_charas := count(charas),
   owned := (
