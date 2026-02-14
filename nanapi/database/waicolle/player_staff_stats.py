@@ -38,14 +38,14 @@ select {
 
 class PlayerStaffStatsResultStaff(BaseModel):
     id_al: int
-    name_user_preferred: str
     name_native: str | None
+    name_user_preferred: str
 
 
 class PlayerStaffStatsResult(BaseModel):
-    staff: PlayerStaffStatsResultStaff
     nb_charas: int
     nb_owned: int
+    staff: PlayerStaffStatsResultStaff
 
 
 adapter = TypeAdapter[PlayerStaffStatsResult](PlayerStaffStatsResult)

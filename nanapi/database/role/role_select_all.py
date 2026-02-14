@@ -14,8 +14,8 @@ filter .client = global client
 
 
 class RoleSelectAllResult(BaseModel):
-    role_id: str
     emoji: str
+    role_id: str
 
 
 adapter = TypeAdapter[list[RoleSelectAllResult]](list[RoleSelectAllResult])

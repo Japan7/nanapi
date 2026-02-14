@@ -30,31 +30,31 @@ limit 1
 
 
 class WaicolleRank(StrEnum):
-    S = 'S'
     A = 'A'
     B = 'B'
     C = 'C'
     D = 'D'
     E = 'E'
+    S = 'S'
 
 
 class CharaGetRandomResult(BaseModel):
-    id_al: int
+    age: str | None
+    date_of_birth_day: int | None
+    date_of_birth_month: int | None
+    date_of_birth_year: int | None
+    description: str | None
     favourites: int
-    site_url: str
-    name_user_preferred: str
+    fuzzy_gender: str | None
+    gender: str | None
+    id_al: int
+    image_large: str
     name_alternative: list[str]
     name_alternative_spoiler: list[str]
     name_native: str | None
-    description: str | None
-    image_large: str
-    gender: str | None
-    age: str | None
-    date_of_birth_year: int | None
-    date_of_birth_month: int | None
-    date_of_birth_day: int | None
+    name_user_preferred: str
     rank: WaicolleRank
-    fuzzy_gender: str | None
+    site_url: str
 
 
 adapter = TypeAdapter[CharaGetRandomResult | None](CharaGetRandomResult | None)

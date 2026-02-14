@@ -28,17 +28,17 @@ select {
 
 
 class WaicolleRank(StrEnum):
-    S = 'S'
     A = 'A'
     B = 'B'
     C = 'C'
     D = 'D'
     E = 'E'
+    S = 'S'
 
 
 class WrappedGetWasabiStatsResult(BaseModel):
-    total_rolls: int
     ranks: list[WaicolleRank]
+    total_rolls: int
 
 
 adapter = TypeAdapter[WrappedGetWasabiStatsResult](WrappedGetWasabiStatsResult)

@@ -23,9 +23,9 @@ and character in .tracked_characters
 
 
 class WaicolleGameMode(StrEnum):
-    WAIFU = 'WAIFU'
-    HUSBANDO = 'HUSBANDO'
     ALL = 'ALL'
+    HUSBANDO = 'HUSBANDO'
+    WAIFU = 'WAIFU'
 
 
 class PlayerSelectByCharaResultUser(BaseModel):
@@ -33,12 +33,12 @@ class PlayerSelectByCharaResultUser(BaseModel):
 
 
 class PlayerSelectByCharaResult(BaseModel):
-    user: PlayerSelectByCharaResultUser
-    id: UUID
-    frozen_at: datetime | None
     blood_shards: int
+    frozen_at: datetime | None
     game_mode: WaicolleGameMode
+    id: UUID
     moecoins: int
+    user: PlayerSelectByCharaResultUser
 
 
 adapter = TypeAdapter[list[PlayerSelectByCharaResult]](list[PlayerSelectByCharaResult])

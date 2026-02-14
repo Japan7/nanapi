@@ -23,10 +23,6 @@ select assert_exists(player) {
 """
 
 
-class PlayerTrackedItemsResultTrackedCollections(BaseModel):
-    id: UUID
-
-
 class PlayerTrackedItemsResultTrackedStaffs(BaseModel):
     id_al: int
 
@@ -35,10 +31,14 @@ class PlayerTrackedItemsResultTrackedMedias(BaseModel):
     id_al: int
 
 
+class PlayerTrackedItemsResultTrackedCollections(BaseModel):
+    id: UUID
+
+
 class PlayerTrackedItemsResult(BaseModel):
+    tracked_collections: list[PlayerTrackedItemsResultTrackedCollections]
     tracked_medias: list[PlayerTrackedItemsResultTrackedMedias]
     tracked_staffs: list[PlayerTrackedItemsResultTrackedStaffs]
-    tracked_collections: list[PlayerTrackedItemsResultTrackedCollections]
 
 
 adapter = TypeAdapter[PlayerTrackedItemsResult](PlayerTrackedItemsResult)

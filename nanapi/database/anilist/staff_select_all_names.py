@@ -17,9 +17,9 @@ order by .favourites desc
 
 class StaffSelectAllNamesResult(BaseModel):
     id_al: int
-    name_user_preferred: str
     name_alternative: list[str]
     name_native: str | None
+    name_user_preferred: str
 
 
 adapter = TypeAdapter[list[StaffSelectAllNamesResult]](list[StaffSelectAllNamesResult])

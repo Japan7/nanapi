@@ -34,8 +34,12 @@ GAME_SELECT_STATUS = Literal[
 
 
 class QuizzStatus(StrEnum):
-    STARTED = 'STARTED'
     ENDED = 'ENDED'
+    STARTED = 'STARTED'
+
+
+class GameSelectResultWinner(BaseModel):
+    discord_id: str
 
 
 class GameSelectResultQuizzAuthor(BaseModel):
@@ -43,28 +47,24 @@ class GameSelectResultQuizzAuthor(BaseModel):
 
 
 class GameSelectResultQuizz(BaseModel):
-    author: GameSelectResultQuizzAuthor
-    id: UUID
-    channel_id: str
     answer: str | None
     attachment_url: str | None
+    author: GameSelectResultQuizzAuthor
+    channel_id: str
     hints: list[str] | None
+    id: UUID
     question: str | None
     submitted_at: datetime
 
 
-class GameSelectResultWinner(BaseModel):
-    discord_id: str
-
-
 class GameSelectResult(BaseModel):
-    winner: GameSelectResultWinner | None
-    quizz: GameSelectResultQuizz
+    ended_at: datetime | None
     id: UUID
     message_id: str
-    ended_at: datetime | None
+    quizz: GameSelectResultQuizz
     started_at: datetime
     status: QuizzStatus
+    winner: GameSelectResultWinner | None
 
 
 adapter = TypeAdapter[list[GameSelectResult]](list[GameSelectResult])

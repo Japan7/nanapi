@@ -54,21 +54,34 @@ PROJO_SELECT_STATUS = Literal[
 
 
 class ProjectionStatus(StrEnum):
-    ONGOING = 'ONGOING'
     COMPLETED = 'COMPLETED'
+    ONGOING = 'ONGOING'
+
+
+class ProjoSelectResultParticipants(BaseModel):
+    discord_id: str
+    discord_username: str
+    id: UUID
+
+
+class ProjoSelectResultMedias(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    id_al: int
+    link_added: datetime | None = Field(validation_alias='@added', serialization_alias='@added')
+    title_user_preferred: str
 
 
 class ProjoSelectResultLegacyEvents(BaseModel):
-    id: UUID
     date: datetime
     description: str
+    id: UUID
 
 
 class ProjoSelectResultGuildEvents(BaseModel):
-    id: UUID
-    discord_id: str
     description: str | None
+    discord_id: str
     end_time: datetime
+    id: UUID
     image: str | None
     location: str | None
     name: str
@@ -76,37 +89,24 @@ class ProjoSelectResultGuildEvents(BaseModel):
     url: str | None
 
 
-class ProjoSelectResultParticipants(BaseModel):
-    id: UUID
-    discord_id: str
-    discord_username: str
-
-
 class ProjoSelectResultExternalMedias(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
     id: UUID
+    link_added: datetime | None = Field(validation_alias='@added', serialization_alias='@added')
     title: str
-    link_added: datetime | None = Field(validation_alias='@added', serialization_alias='@added')
-
-
-class ProjoSelectResultMedias(BaseModel):
-    model_config = ConfigDict(populate_by_name=True)
-    id_al: int
-    title_user_preferred: str
-    link_added: datetime | None = Field(validation_alias='@added', serialization_alias='@added')
 
 
 class ProjoSelectResult(BaseModel):
-    medias: list[ProjoSelectResultMedias]
-    external_medias: list[ProjoSelectResultExternalMedias]
-    participants: list[ProjoSelectResultParticipants]
-    guild_events: list[ProjoSelectResultGuildEvents]
-    legacy_events: list[ProjoSelectResultLegacyEvents]
-    status: ProjectionStatus
-    name: str
-    message_id: str | None
     channel_id: str
+    external_medias: list[ProjoSelectResultExternalMedias]
+    guild_events: list[ProjoSelectResultGuildEvents]
     id: UUID
+    legacy_events: list[ProjoSelectResultLegacyEvents]
+    medias: list[ProjoSelectResultMedias]
+    message_id: str | None
+    name: str
+    participants: list[ProjoSelectResultParticipants]
+    status: ProjectionStatus
 
 
 adapter = TypeAdapter[list[ProjoSelectResult]](list[ProjoSelectResult])

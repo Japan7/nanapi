@@ -17,10 +17,10 @@ filter .id = <uuid>$id
 
 
 class HistoireGetByIdResult(BaseModel):
-    id: UUID
-    title: str
-    text: str
     formatted: bool
+    id: UUID
+    text: str
+    title: str
 
 
 adapter = TypeAdapter[HistoireGetByIdResult | None](HistoireGetByIdResult | None)

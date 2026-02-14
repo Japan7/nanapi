@@ -59,14 +59,14 @@ class AnilistMediaType(StrEnum):
 
 class PlayerCollectionStatsResultCollectionStaffs(BaseModel):
     id_al: int
-    name_user_preferred: str
     name_native: str | None
+    name_user_preferred: str
 
 
 class PlayerCollectionStatsResultCollectionMedias(BaseModel):
-    type: AnilistMediaType
     id_al: int
     title_user_preferred: str
+    type: AnilistMediaType
 
 
 class PlayerCollectionStatsResultCollectionAuthorUser(BaseModel):
@@ -78,10 +78,10 @@ class PlayerCollectionStatsResultCollectionAuthor(BaseModel):
 
 
 class PlayerCollectionStatsResultCollection(BaseModel):
-    id: UUID
-    name: str
     author: PlayerCollectionStatsResultCollectionAuthor
+    id: UUID
     medias: list[PlayerCollectionStatsResultCollectionMedias]
+    name: str
     staffs: list[PlayerCollectionStatsResultCollectionStaffs]
 
 

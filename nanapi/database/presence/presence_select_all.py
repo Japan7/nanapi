@@ -13,15 +13,15 @@ filter .client = global client
 
 
 class PresencePresenceType(StrEnum):
-    PLAYING = 'PLAYING'
     LISTENING = 'LISTENING'
+    PLAYING = 'PLAYING'
     WATCHING = 'WATCHING'
 
 
 class PresenceSelectAllResult(BaseModel):
     id: UUID
-    type: PresencePresenceType
     name: str
+    type: PresencePresenceType
 
 
 adapter = TypeAdapter[list[PresenceSelectAllResult]](list[PresenceSelectAllResult])

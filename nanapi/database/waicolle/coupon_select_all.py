@@ -26,8 +26,8 @@ class CouponSelectAllResultClaimedBy(BaseModel):
 
 
 class CouponSelectAllResult(BaseModel):
-    code: str
     claimed_by: list[CouponSelectAllResultClaimedBy]
+    code: str
 
 
 adapter = TypeAdapter[list[CouponSelectAllResult]](list[CouponSelectAllResult])

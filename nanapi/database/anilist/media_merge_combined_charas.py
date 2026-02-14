@@ -121,17 +121,17 @@ select {
 """
 
 
-class MediaMergeCombinedCharasResultCharacters(BaseModel):
-    id: UUID
-
-
 class MediaMergeCombinedCharasResultMedia(BaseModel):
     id: UUID
 
 
+class MediaMergeCombinedCharasResultCharacters(BaseModel):
+    id: UUID
+
+
 class MediaMergeCombinedCharasResult(BaseModel):
-    media: MediaMergeCombinedCharasResultMedia
     characters: list[MediaMergeCombinedCharasResultCharacters]
+    media: MediaMergeCombinedCharasResultMedia
 
 
 adapter = TypeAdapter[MediaMergeCombinedCharasResult](MediaMergeCombinedCharasResult)

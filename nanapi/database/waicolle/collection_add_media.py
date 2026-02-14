@@ -39,8 +39,8 @@ class AnilistMediaType(StrEnum):
 
 class CollectionAddMediaResultMedia(BaseModel):
     id_al: int
-    type: AnilistMediaType
     title_user_preferred: str
+    type: AnilistMediaType
 
 
 class CollectionAddMediaResultCollection(BaseModel):

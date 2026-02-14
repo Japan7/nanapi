@@ -27,8 +27,12 @@ filter .id = id
 
 
 class QuizzStatus(StrEnum):
-    STARTED = 'STARTED'
     ENDED = 'ENDED'
+    STARTED = 'STARTED'
+
+
+class GameGetByIdResultWinner(BaseModel):
+    discord_id: str
 
 
 class GameGetByIdResultQuizzAuthor(BaseModel):
@@ -36,28 +40,24 @@ class GameGetByIdResultQuizzAuthor(BaseModel):
 
 
 class GameGetByIdResultQuizz(BaseModel):
-    author: GameGetByIdResultQuizzAuthor
-    id: UUID
-    channel_id: str
     answer: str | None
     attachment_url: str | None
+    author: GameGetByIdResultQuizzAuthor
+    channel_id: str
     hints: list[str] | None
+    id: UUID
     question: str | None
     submitted_at: datetime
 
 
-class GameGetByIdResultWinner(BaseModel):
-    discord_id: str
-
-
 class GameGetByIdResult(BaseModel):
-    winner: GameGetByIdResultWinner | None
-    quizz: GameGetByIdResultQuizz
+    ended_at: datetime | None
     id: UUID
     message_id: str
-    ended_at: datetime | None
+    quizz: GameGetByIdResultQuizz
     started_at: datetime
     status: QuizzStatus
+    winner: GameGetByIdResultWinner | None
 
 
 adapter = TypeAdapter[GameGetByIdResult | None](GameGetByIdResult | None)

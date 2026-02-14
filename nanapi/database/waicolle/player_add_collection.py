@@ -27,18 +27,18 @@ select {
 """
 
 
+class PlayerAddCollectionResultPlayer(BaseModel):
+    id: UUID
+
+
 class PlayerAddCollectionResultCollection(BaseModel):
     id: UUID
     name: str
 
 
-class PlayerAddCollectionResultPlayer(BaseModel):
-    id: UUID
-
-
 class PlayerAddCollectionResult(BaseModel):
-    player: PlayerAddCollectionResultPlayer
     collection: PlayerAddCollectionResultCollection
+    player: PlayerAddCollectionResultPlayer
 
 
 adapter = TypeAdapter[PlayerAddCollectionResult](PlayerAddCollectionResult)

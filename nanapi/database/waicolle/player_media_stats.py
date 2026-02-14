@@ -43,9 +43,9 @@ class AnilistMediaType(StrEnum):
 
 
 class PlayerMediaStatsResultMedia(BaseModel):
-    type: AnilistMediaType
     id_al: int
     title_user_preferred: str
+    type: AnilistMediaType
 
 
 class PlayerMediaStatsResult(BaseModel):

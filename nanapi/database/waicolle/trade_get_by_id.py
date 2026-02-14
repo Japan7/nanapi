@@ -28,7 +28,7 @@ filter .id = id
 """
 
 
-class TradeGetByIdResultOffered(BaseModel):
+class TradeGetByIdResultReceived(BaseModel):
     id: UUID
 
 
@@ -40,7 +40,7 @@ class TradeGetByIdResultOfferee(BaseModel):
     user: TradeGetByIdResultOffereeUser
 
 
-class TradeGetByIdResultReceived(BaseModel):
+class TradeGetByIdResultOffered(BaseModel):
     id: UUID
 
 
@@ -54,13 +54,13 @@ class TradeGetByIdResultAuthor(BaseModel):
 
 class TradeGetByIdResult(BaseModel):
     author: TradeGetByIdResultAuthor
-    received: list[TradeGetByIdResultReceived]
-    offeree: TradeGetByIdResultOfferee
-    offered: list[TradeGetByIdResultOffered]
-    id: UUID
-    created_at: datetime
-    completed_at: datetime | None
     blood_shards: int
+    completed_at: datetime | None
+    created_at: datetime
+    id: UUID
+    offered: list[TradeGetByIdResultOffered]
+    offeree: TradeGetByIdResultOfferee
+    received: list[TradeGetByIdResultReceived]
 
 
 adapter = TypeAdapter[TradeGetByIdResult | None](TradeGetByIdResult | None)

@@ -29,22 +29,22 @@ select anilist::Staff {
 
 
 class StaffSelectResult(BaseModel):
-    id_al: int
-    favourites: int
-    site_url: str
-    name_user_preferred: str
-    name_native: str | None
-    name_alternative: list[str]
-    description: str | None
-    image_large: str
-    gender: str | None
     age: int | None
-    date_of_birth_year: int | None
-    date_of_birth_month: int | None
     date_of_birth_day: int | None
-    date_of_death_year: int | None
-    date_of_death_month: int | None
+    date_of_birth_month: int | None
+    date_of_birth_year: int | None
     date_of_death_day: int | None
+    date_of_death_month: int | None
+    date_of_death_year: int | None
+    description: str | None
+    favourites: int
+    gender: str | None
+    id_al: int
+    image_large: str
+    name_alternative: list[str]
+    name_native: str | None
+    name_user_preferred: str
+    site_url: str
 
 
 adapter = TypeAdapter[list[StaffSelectResult]](list[StaffSelectResult])

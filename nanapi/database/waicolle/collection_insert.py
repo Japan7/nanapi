@@ -38,9 +38,9 @@ class CollectionInsertResultAuthor(BaseModel):
 
 
 class CollectionInsertResult(BaseModel):
+    author: CollectionInsertResultAuthor
     id: UUID
     name: str
-    author: CollectionInsertResultAuthor
 
 
 adapter = TypeAdapter[CollectionInsertResult](CollectionInsertResult)

@@ -11,14 +11,14 @@ select calendar::UserCalendar { ** }
 
 
 class UserCalendarSelectAllResultUser(BaseModel):
-    id: UUID
     discord_id: str
     discord_username: str
+    id: UUID
 
 
 class UserCalendarSelectAllResult(BaseModel):
-    id: UUID
     ics: str
+    id: UUID
     user: UserCalendarSelectAllResultUser
 
 

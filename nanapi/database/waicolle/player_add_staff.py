@@ -30,8 +30,8 @@ select {
 
 class PlayerAddStaffResultStaff(BaseModel):
     id_al: int
-    name_user_preferred: str
     name_native: str | None
+    name_user_preferred: str
 
 
 class PlayerAddStaffResultPlayer(BaseModel):

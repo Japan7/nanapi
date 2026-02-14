@@ -18,10 +18,10 @@ order by .favourites desc
 
 class CharaSelectAllNamesResult(BaseModel):
     id_al: int
-    name_user_preferred: str
     name_alternative: list[str]
     name_alternative_spoiler: list[str]
     name_native: str | None
+    name_user_preferred: str
 
 
 adapter = TypeAdapter[list[CharaSelectAllNamesResult]](list[CharaSelectAllNamesResult])

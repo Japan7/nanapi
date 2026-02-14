@@ -33,12 +33,12 @@ class CollectionGetByIdResultAuthor(BaseModel):
 
 
 class CollectionGetByIdResult(BaseModel):
-    id: UUID
-    name: str
     author: CollectionGetByIdResultAuthor
-    medias_ids_al: list[int]
-    staffs_ids_al: list[int]
     characters_ids_al: list[int]
+    id: UUID
+    medias_ids_al: list[int]
+    name: str
+    staffs_ids_al: list[int]
 
 
 adapter = TypeAdapter[CollectionGetByIdResult | None](CollectionGetByIdResult | None)

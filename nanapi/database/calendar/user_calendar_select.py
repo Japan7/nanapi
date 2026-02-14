@@ -14,14 +14,14 @@ select assert_single(calendar) { ** }
 
 
 class UserCalendarSelectResultUser(BaseModel):
-    id: UUID
     discord_id: str
     discord_username: str
+    id: UUID
 
 
 class UserCalendarSelectResult(BaseModel):
-    id: UUID
     ics: str
+    id: UUID
     user: UserCalendarSelectResultUser
 
 

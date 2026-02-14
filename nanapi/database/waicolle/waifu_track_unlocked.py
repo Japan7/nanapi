@@ -76,8 +76,12 @@ class WaicolleCollagePosition(StrEnum):
     RIGHT_OF = 'RIGHT_OF'
 
 
-class WaifuTrackUnlockedResultCustomPositionWaifu(BaseModel):
-    id: UUID
+class WaifuTrackUnlockedResultOwnerUser(BaseModel):
+    discord_id: str
+
+
+class WaifuTrackUnlockedResultOwner(BaseModel):
+    user: WaifuTrackUnlockedResultOwnerUser
 
 
 class WaifuTrackUnlockedResultOriginalOwnerUser(BaseModel):
@@ -88,12 +92,8 @@ class WaifuTrackUnlockedResultOriginalOwner(BaseModel):
     user: WaifuTrackUnlockedResultOriginalOwnerUser
 
 
-class WaifuTrackUnlockedResultOwnerUser(BaseModel):
-    discord_id: str
-
-
-class WaifuTrackUnlockedResultOwner(BaseModel):
-    user: WaifuTrackUnlockedResultOwnerUser
+class WaifuTrackUnlockedResultCustomPositionWaifu(BaseModel):
+    id: UUID
 
 
 class WaifuTrackUnlockedResultCharacter(BaseModel):
@@ -101,23 +101,23 @@ class WaifuTrackUnlockedResultCharacter(BaseModel):
 
 
 class WaifuTrackUnlockedResult(BaseModel):
-    character: WaifuTrackUnlockedResultCharacter
-    owner: WaifuTrackUnlockedResultOwner
-    original_owner: WaifuTrackUnlockedResultOriginalOwner | None
-    custom_position_waifu: WaifuTrackUnlockedResultCustomPositionWaifu | None
-    id: UUID
-    timestamp: datetime
-    nanaed: bool
-    locked: bool
-    level: int
-    custom_position: WaicolleCollagePosition
-    custom_name: str | None
-    custom_image: str | None
-    custom_collage: bool
     blooded: bool
-    trade_locked: bool
+    character: WaifuTrackUnlockedResultCharacter
+    custom_collage: bool
+    custom_image: str | None
+    custom_name: str | None
+    custom_position: WaicolleCollagePosition
+    custom_position_waifu: WaifuTrackUnlockedResultCustomPositionWaifu | None
     disabled: bool
     frozen: bool
+    id: UUID
+    level: int
+    locked: bool
+    nanaed: bool
+    original_owner: WaifuTrackUnlockedResultOriginalOwner | None
+    owner: WaifuTrackUnlockedResultOwner
+    timestamp: datetime
+    trade_locked: bool
 
 
 adapter = TypeAdapter[list[WaifuTrackUnlockedResult]](list[WaifuTrackUnlockedResult])

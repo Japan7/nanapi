@@ -43,13 +43,13 @@ select {
 
 
 class WrappedGetEmoteStatsResultEmoteCounts(BaseModel):
-    name: str
     count: int
+    name: str
 
 
 class WrappedGetEmoteStatsResult(BaseModel):
-    total_emote_count: int
     emote_counts: list[WrappedGetEmoteStatsResultEmoteCounts]
+    total_emote_count: int
 
 
 adapter = TypeAdapter[WrappedGetEmoteStatsResult](WrappedGetEmoteStatsResult)

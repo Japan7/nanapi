@@ -23,10 +23,10 @@ filter .media.id_al = id_al
 
 
 class AnilistEntryStatus(StrEnum):
-    CURRENT = 'CURRENT'
     COMPLETED = 'COMPLETED'
-    PAUSED = 'PAUSED'
+    CURRENT = 'CURRENT'
     DROPPED = 'DROPPED'
+    PAUSED = 'PAUSED'
     PLANNING = 'PLANNING'
     REPEATING = 'REPEATING'
 
@@ -40,10 +40,10 @@ class EntrySelectFilterMediaResultAccount(BaseModel):
 
 
 class EntrySelectFilterMediaResult(BaseModel):
-    status: AnilistEntryStatus
+    account: EntrySelectFilterMediaResultAccount
     progress: int
     score: float
-    account: EntrySelectFilterMediaResultAccount
+    status: AnilistEntryStatus
 
 
 adapter = TypeAdapter[list[EntrySelectFilterMediaResult]](list[EntrySelectFilterMediaResult])

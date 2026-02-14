@@ -24,12 +24,12 @@ class QuizzGetByIdResultAuthor(BaseModel):
 
 
 class QuizzGetByIdResult(BaseModel):
-    author: QuizzGetByIdResultAuthor
-    id: UUID
-    channel_id: str
     answer: str | None
     attachment_url: str | None
+    author: QuizzGetByIdResultAuthor
+    channel_id: str
     hints: list[str] | None
+    id: UUID
     question: str | None
     submitted_at: datetime
 

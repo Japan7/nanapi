@@ -24,8 +24,8 @@ select {
 
 
 class WrappedGetConditionalStatsResult(BaseModel):
-    total: int
     contents: list[str]
+    total: int
 
 
 adapter = TypeAdapter[WrappedGetConditionalStatsResult](WrappedGetConditionalStatsResult)

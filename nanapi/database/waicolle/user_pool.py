@@ -42,26 +42,26 @@ by .rank
 
 
 class WaicolleRank(StrEnum):
-    S = 'S'
     A = 'A'
     B = 'B'
     C = 'C'
     D = 'D'
     E = 'E'
-
-
-class UserPoolResultElements(BaseModel):
-    id_al: int
+    S = 'S'
 
 
 class UserPoolResultKey(BaseModel):
     rank: WaicolleRank
 
 
+class UserPoolResultElements(BaseModel):
+    id_al: int
+
+
 class UserPoolResult(BaseModel):
-    key: UserPoolResultKey
-    grouping: list[str]
     elements: list[UserPoolResultElements]
+    grouping: list[str]
+    key: UserPoolResultKey
 
 
 adapter = TypeAdapter[list[UserPoolResult]](list[UserPoolResult])

@@ -19,8 +19,28 @@ select event { ** }
 
 
 class ProjectionStatus(StrEnum):
-    ONGOING = 'ONGOING'
     COMPLETED = 'COMPLETED'
+    ONGOING = 'ONGOING'
+
+
+class GuildEventDeleteResultProjection(BaseModel):
+    channel_id: str
+    id: UUID
+    message_id: str | None
+    name: str
+    status: ProjectionStatus
+
+
+class GuildEventDeleteResultParticipants(BaseModel):
+    discord_id: str
+    discord_username: str
+    id: UUID
+
+
+class GuildEventDeleteResultOrganizer(BaseModel):
+    discord_id: str
+    discord_username: str
+    id: UUID
 
 
 class GuildEventDeleteResultClient(BaseModel):
@@ -29,40 +49,20 @@ class GuildEventDeleteResultClient(BaseModel):
     username: str
 
 
-class GuildEventDeleteResultProjection(BaseModel):
-    id: UUID
-    channel_id: str
-    message_id: str | None
-    name: str
-    status: ProjectionStatus
-
-
-class GuildEventDeleteResultParticipants(BaseModel):
-    id: UUID
-    discord_id: str
-    discord_username: str
-
-
-class GuildEventDeleteResultOrganizer(BaseModel):
-    id: UUID
-    discord_id: str
-    discord_username: str
-
-
 class GuildEventDeleteResult(BaseModel):
-    url: str | None
-    start_time: datetime
-    name: str
-    location: str | None
-    image: str | None
-    end_time: datetime
+    client: GuildEventDeleteResultClient
     description: str | None
     discord_id: str
+    end_time: datetime
     id: UUID
+    image: str | None
+    location: str | None
+    name: str
     organizer: GuildEventDeleteResultOrganizer
     participants: list[GuildEventDeleteResultParticipants]
     projection: GuildEventDeleteResultProjection | None
-    client: GuildEventDeleteResultClient
+    start_time: datetime
+    url: str | None
 
 
 adapter = TypeAdapter[GuildEventDeleteResult | None](GuildEventDeleteResult | None)

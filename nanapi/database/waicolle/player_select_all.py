@@ -19,9 +19,9 @@ filter .client = global client
 
 
 class WaicolleGameMode(StrEnum):
-    WAIFU = 'WAIFU'
-    HUSBANDO = 'HUSBANDO'
     ALL = 'ALL'
+    HUSBANDO = 'HUSBANDO'
+    WAIFU = 'WAIFU'
 
 
 class PlayerSelectAllResultUser(BaseModel):
@@ -29,12 +29,12 @@ class PlayerSelectAllResultUser(BaseModel):
 
 
 class PlayerSelectAllResult(BaseModel):
-    user: PlayerSelectAllResultUser
-    id: UUID
-    frozen_at: datetime | None
     blood_shards: int
+    frozen_at: datetime | None
     game_mode: WaicolleGameMode
+    id: UUID
     moecoins: int
+    user: PlayerSelectAllResultUser
 
 
 adapter = TypeAdapter[list[PlayerSelectAllResult]](list[PlayerSelectAllResult])

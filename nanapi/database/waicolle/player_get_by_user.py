@@ -24,9 +24,9 @@ select player {
 
 
 class WaicolleGameMode(StrEnum):
-    WAIFU = 'WAIFU'
-    HUSBANDO = 'HUSBANDO'
     ALL = 'ALL'
+    HUSBANDO = 'HUSBANDO'
+    WAIFU = 'WAIFU'
 
 
 class PlayerGetByUserResultUser(BaseModel):
@@ -34,12 +34,12 @@ class PlayerGetByUserResultUser(BaseModel):
 
 
 class PlayerGetByUserResult(BaseModel):
-    user: PlayerGetByUserResultUser
-    id: UUID
-    frozen_at: datetime | None
     blood_shards: int
+    frozen_at: datetime | None
     game_mode: WaicolleGameMode
+    id: UUID
     moecoins: int
+    user: PlayerGetByUserResultUser
 
 
 adapter = TypeAdapter[PlayerGetByUserResult | None](PlayerGetByUserResult | None)

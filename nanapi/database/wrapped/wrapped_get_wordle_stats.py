@@ -37,8 +37,8 @@ class WrappedGetWordleStatsResultMessages(BaseModel):
 
 
 class WrappedGetWordleStatsResult(BaseModel):
-    messages: list[WrappedGetWordleStatsResultMessages]
     discord_id_pattern: str
+    messages: list[WrappedGetWordleStatsResultMessages]
 
 
 adapter = TypeAdapter[WrappedGetWordleStatsResult](WrappedGetWordleStatsResult)

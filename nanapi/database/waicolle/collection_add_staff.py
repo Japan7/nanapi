@@ -33,8 +33,8 @@ select {
 
 class CollectionAddStaffResultStaff(BaseModel):
     id_al: int
-    name_user_preferred: str
     name_native: str | None
+    name_user_preferred: str
 
 
 class CollectionAddStaffResultCollection(BaseModel):

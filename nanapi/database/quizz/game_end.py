@@ -49,8 +49,12 @@ select updated {
 
 
 class QuizzStatus(StrEnum):
-    STARTED = 'STARTED'
     ENDED = 'ENDED'
+    STARTED = 'STARTED'
+
+
+class GameEndResultWinner(BaseModel):
+    discord_id: str
 
 
 class GameEndResultQuizzAuthor(BaseModel):
@@ -58,28 +62,24 @@ class GameEndResultQuizzAuthor(BaseModel):
 
 
 class GameEndResultQuizz(BaseModel):
-    author: GameEndResultQuizzAuthor
-    id: UUID
-    channel_id: str
     answer: str | None
     attachment_url: str | None
+    author: GameEndResultQuizzAuthor
+    channel_id: str
     hints: list[str] | None
+    id: UUID
     question: str | None
     submitted_at: datetime
 
 
-class GameEndResultWinner(BaseModel):
-    discord_id: str
-
-
 class GameEndResult(BaseModel):
-    winner: GameEndResultWinner | None
-    quizz: GameEndResultQuizz
-    status: QuizzStatus
-    started_at: datetime
     ended_at: datetime | None
-    message_id: str
     id: UUID
+    message_id: str
+    quizz: GameEndResultQuizz
+    started_at: datetime
+    status: QuizzStatus
+    winner: GameEndResultWinner | None
 
 
 adapter = TypeAdapter[GameEndResult | None](GameEndResult | None)

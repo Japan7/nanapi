@@ -58,9 +58,24 @@ order by .media.popularity desc
 
 
 class AnilistCharacterRole(StrEnum):
+    BACKGROUND = 'BACKGROUND'
     MAIN = 'MAIN'
     SUPPORTING = 'SUPPORTING'
-    BACKGROUND = 'BACKGROUND'
+
+
+class AnilistMediaSeason(StrEnum):
+    FALL = 'FALL'
+    SPRING = 'SPRING'
+    SUMMER = 'SUMMER'
+    WINTER = 'WINTER'
+
+
+class AnilistMediaStatus(StrEnum):
+    CANCELLED = 'CANCELLED'
+    FINISHED = 'FINISHED'
+    HIATUS = 'HIATUS'
+    NOT_YET_RELEASED = 'NOT_YET_RELEASED'
+    RELEASING = 'RELEASING'
 
 
 class AnilistMediaType(StrEnum):
@@ -68,77 +83,62 @@ class AnilistMediaType(StrEnum):
     MANGA = 'MANGA'
 
 
-class AnilistMediaStatus(StrEnum):
-    FINISHED = 'FINISHED'
-    RELEASING = 'RELEASING'
-    NOT_YET_RELEASED = 'NOT_YET_RELEASED'
-    CANCELLED = 'CANCELLED'
-    HIATUS = 'HIATUS'
-
-
-class AnilistMediaSeason(StrEnum):
-    WINTER = 'WINTER'
-    SPRING = 'SPRING'
-    SUMMER = 'SUMMER'
-    FALL = 'FALL'
-
-
 class WaicolleRank(StrEnum):
-    S = 'S'
     A = 'A'
     B = 'B'
     C = 'C'
     D = 'D'
     E = 'E'
-
-
-class CEdgeSelectFilterStaffResultCharacter(BaseModel):
-    id_al: int
-    favourites: int
-    site_url: str
-    name_user_preferred: str
-    name_alternative: list[str]
-    name_alternative_spoiler: list[str]
-    name_native: str | None
-    description: str | None
-    image_large: str
-    gender: str | None
-    age: str | None
-    date_of_birth_year: int | None
-    date_of_birth_month: int | None
-    date_of_birth_day: int | None
-    rank: WaicolleRank
-    fuzzy_gender: str | None
+    S = 'S'
 
 
 class CEdgeSelectFilterStaffResultMedia(BaseModel):
-    id_al: int
-    favourites: int
-    site_url: str
-    type: AnilistMediaType
-    id_mal: int | None
-    title_user_preferred: str
-    title_native: str | None
-    title_english: str | None
-    synonyms: list[str]
+    chapters: int | None
+    cover_image_color: str | None
+    cover_image_extra_large: str
     description: str | None
-    status: AnilistMediaStatus | None
+    duration: int | None
+    episodes: int | None
+    favourites: int
+    genres: list[str]
+    id_al: int
+    id_mal: int | None
+    is_adult: bool
+    popularity: int
     season: AnilistMediaSeason | None
     season_year: int | None
-    episodes: int | None
-    duration: int | None
-    chapters: int | None
-    cover_image_extra_large: str
-    cover_image_color: str | None
-    popularity: int
-    is_adult: bool
-    genres: list[str]
+    site_url: str
+    status: AnilistMediaStatus | None
+    synonyms: list[str]
+    title_english: str | None
+    title_native: str | None
+    title_user_preferred: str
+    type: AnilistMediaType
+
+
+class CEdgeSelectFilterStaffResultCharacter(BaseModel):
+    age: str | None
+    date_of_birth_day: int | None
+    date_of_birth_month: int | None
+    date_of_birth_year: int | None
+    description: str | None
+    favourites: int
+    fuzzy_gender: str | None
+    gender: str | None
+    id_al: int
+    image_large: str
+    name_alternative: list[str]
+    name_alternative_spoiler: list[str]
+    name_native: str | None
+    name_user_preferred: str
+    rank: WaicolleRank
+    site_url: str
 
 
 class CEdgeSelectFilterStaffResult(BaseModel):
+    character: CEdgeSelectFilterStaffResultCharacter
     character_role: AnilistCharacterRole
     media: CEdgeSelectFilterStaffResultMedia
-    character: CEdgeSelectFilterStaffResultCharacter
 
 
 adapter = TypeAdapter[list[CEdgeSelectFilterStaffResult]](list[CEdgeSelectFilterStaffResult])

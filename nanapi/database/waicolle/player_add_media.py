@@ -34,19 +34,19 @@ class AnilistMediaType(StrEnum):
     MANGA = 'MANGA'
 
 
-class PlayerAddMediaResultMedia(BaseModel):
-    id_al: int
-    type: AnilistMediaType
-    title_user_preferred: str
-
-
 class PlayerAddMediaResultPlayer(BaseModel):
     id: UUID
 
 
+class PlayerAddMediaResultMedia(BaseModel):
+    id_al: int
+    title_user_preferred: str
+    type: AnilistMediaType
+
+
 class PlayerAddMediaResult(BaseModel):
-    player: PlayerAddMediaResultPlayer
     media: PlayerAddMediaResultMedia
+    player: PlayerAddMediaResultPlayer
 
 
 adapter = TypeAdapter[PlayerAddMediaResult](PlayerAddMediaResult)

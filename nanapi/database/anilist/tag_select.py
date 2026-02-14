@@ -16,11 +16,11 @@ select anilist::Tag {
 
 
 class TagSelectResult(BaseModel):
-    id_al: int
-    name: str
-    description: str
     category: str
+    description: str
+    id_al: int
     is_adult: bool
+    name: str
 
 
 adapter = TypeAdapter[list[TagSelectResult]](list[TagSelectResult])

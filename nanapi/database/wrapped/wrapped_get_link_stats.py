@@ -72,18 +72,18 @@ select {
 
 
 class WrappedGetLinkStatsResult(BaseModel):
-    total_link_count: int
-    youtube_count: int
-    twitter_count: int
-    reddit_count: int
+    anilist_count: int
     bluesky_count: int
-    tenor_count: int
     discord_count: int
     github_count: int
-    anilist_count: int
     instagram_count: int
-    wikipedia_count: int
+    reddit_count: int
     steam_count: int
+    tenor_count: int
+    total_link_count: int
+    twitter_count: int
+    wikipedia_count: int
+    youtube_count: int
 
 
 adapter = TypeAdapter[WrappedGetLinkStatsResult](WrappedGetLinkStatsResult)

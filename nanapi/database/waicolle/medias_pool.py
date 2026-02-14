@@ -34,26 +34,26 @@ by .rank
 
 
 class WaicolleRank(StrEnum):
-    S = 'S'
     A = 'A'
     B = 'B'
     C = 'C'
     D = 'D'
     E = 'E'
-
-
-class MediasPoolResultElements(BaseModel):
-    id_al: int
+    S = 'S'
 
 
 class MediasPoolResultKey(BaseModel):
     rank: WaicolleRank
 
 
+class MediasPoolResultElements(BaseModel):
+    id_al: int
+
+
 class MediasPoolResult(BaseModel):
-    key: MediasPoolResultKey
-    grouping: list[str]
     elements: list[MediasPoolResultElements]
+    grouping: list[str]
+    key: MediasPoolResultKey
 
 
 adapter = TypeAdapter[list[MediasPoolResult]](list[MediasPoolResult])

@@ -26,12 +26,12 @@ class QuizzGetOldestResultAuthor(BaseModel):
 
 
 class QuizzGetOldestResult(BaseModel):
-    author: QuizzGetOldestResultAuthor
-    id: UUID
-    channel_id: str
     answer: str | None
     attachment_url: str | None
+    author: QuizzGetOldestResultAuthor
+    channel_id: str
     hints: list[str] | None
+    id: UUID
     question: str | None
     submitted_at: datetime
 

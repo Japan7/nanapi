@@ -11,10 +11,10 @@ select ai::Skill { * } filter .client = global client
 
 
 class SkillSelectAllResult(BaseModel):
-    id: UUID
-    name: str
     content: str
     description: str
+    id: UUID
+    name: str
 
 
 adapter = TypeAdapter[list[SkillSelectAllResult]](list[SkillSelectAllResult])

@@ -30,8 +30,12 @@ select assert_single(games) {
 
 
 class QuizzStatus(StrEnum):
-    STARTED = 'STARTED'
     ENDED = 'ENDED'
+    STARTED = 'STARTED'
+
+
+class GameGetCurrentResultWinner(BaseModel):
+    discord_id: str
 
 
 class GameGetCurrentResultQuizzAuthor(BaseModel):
@@ -39,28 +43,24 @@ class GameGetCurrentResultQuizzAuthor(BaseModel):
 
 
 class GameGetCurrentResultQuizz(BaseModel):
-    author: GameGetCurrentResultQuizzAuthor
-    id: UUID
-    channel_id: str
     answer: str | None
     attachment_url: str | None
+    author: GameGetCurrentResultQuizzAuthor
+    channel_id: str
     hints: list[str] | None
+    id: UUID
     question: str | None
     submitted_at: datetime
 
 
-class GameGetCurrentResultWinner(BaseModel):
-    discord_id: str
-
-
 class GameGetCurrentResult(BaseModel):
-    winner: GameGetCurrentResultWinner | None
-    quizz: GameGetCurrentResultQuizz
+    ended_at: datetime | None
     id: UUID
     message_id: str
-    ended_at: datetime | None
+    quizz: GameGetCurrentResultQuizz
     started_at: datetime
     status: QuizzStatus
+    winner: GameGetCurrentResultWinner | None
 
 
 adapter = TypeAdapter[GameGetCurrentResult | None](GameGetCurrentResult | None)

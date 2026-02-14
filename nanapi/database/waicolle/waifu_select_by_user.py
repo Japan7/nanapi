@@ -57,8 +57,12 @@ class WaicolleCollagePosition(StrEnum):
     RIGHT_OF = 'RIGHT_OF'
 
 
-class WaifuSelectByUserResultCustomPositionWaifu(BaseModel):
-    id: UUID
+class WaifuSelectByUserResultOwnerUser(BaseModel):
+    discord_id: str
+
+
+class WaifuSelectByUserResultOwner(BaseModel):
+    user: WaifuSelectByUserResultOwnerUser
 
 
 class WaifuSelectByUserResultOriginalOwnerUser(BaseModel):
@@ -69,12 +73,8 @@ class WaifuSelectByUserResultOriginalOwner(BaseModel):
     user: WaifuSelectByUserResultOriginalOwnerUser
 
 
-class WaifuSelectByUserResultOwnerUser(BaseModel):
-    discord_id: str
-
-
-class WaifuSelectByUserResultOwner(BaseModel):
-    user: WaifuSelectByUserResultOwnerUser
+class WaifuSelectByUserResultCustomPositionWaifu(BaseModel):
+    id: UUID
 
 
 class WaifuSelectByUserResultCharacter(BaseModel):
@@ -82,21 +82,21 @@ class WaifuSelectByUserResultCharacter(BaseModel):
 
 
 class WaifuSelectByUserResult(BaseModel):
-    character: WaifuSelectByUserResultCharacter
-    owner: WaifuSelectByUserResultOwner
-    original_owner: WaifuSelectByUserResultOriginalOwner | None
-    custom_position_waifu: WaifuSelectByUserResultCustomPositionWaifu | None
-    id: UUID
-    frozen: bool
-    disabled: bool
     blooded: bool
+    character: WaifuSelectByUserResultCharacter
     custom_collage: bool
     custom_image: str | None
     custom_name: str | None
     custom_position: WaicolleCollagePosition
+    custom_position_waifu: WaifuSelectByUserResultCustomPositionWaifu | None
+    disabled: bool
+    frozen: bool
+    id: UUID
     level: int
     locked: bool
     nanaed: bool
+    original_owner: WaifuSelectByUserResultOriginalOwner | None
+    owner: WaifuSelectByUserResultOwner
     timestamp: datetime
     trade_locked: bool
 

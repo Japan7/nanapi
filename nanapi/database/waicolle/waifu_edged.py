@@ -57,16 +57,8 @@ class WaicolleCollagePosition(StrEnum):
     RIGHT_OF = 'RIGHT_OF'
 
 
-class WaifuEdgedResultElementsCustomPositionWaifu(BaseModel):
-    id: UUID
-
-
-class WaifuEdgedResultElementsOriginalOwnerUser(BaseModel):
-    discord_id: str
-
-
-class WaifuEdgedResultElementsOriginalOwner(BaseModel):
-    user: WaifuEdgedResultElementsOriginalOwnerUser
+class WaifuEdgedResultKey(BaseModel):
+    chara_id_al: int
 
 
 class WaifuEdgedResultElementsOwnerUser(BaseModel):
@@ -77,38 +69,46 @@ class WaifuEdgedResultElementsOwner(BaseModel):
     user: WaifuEdgedResultElementsOwnerUser
 
 
+class WaifuEdgedResultElementsOriginalOwnerUser(BaseModel):
+    discord_id: str
+
+
+class WaifuEdgedResultElementsOriginalOwner(BaseModel):
+    user: WaifuEdgedResultElementsOriginalOwnerUser
+
+
+class WaifuEdgedResultElementsCustomPositionWaifu(BaseModel):
+    id: UUID
+
+
 class WaifuEdgedResultElementsCharacter(BaseModel):
     id_al: int
 
 
 class WaifuEdgedResultElements(BaseModel):
-    character: WaifuEdgedResultElementsCharacter
-    owner: WaifuEdgedResultElementsOwner
-    original_owner: WaifuEdgedResultElementsOriginalOwner | None
-    custom_position_waifu: WaifuEdgedResultElementsCustomPositionWaifu | None
-    trade_locked: bool
-    timestamp: datetime
-    nanaed: bool
-    locked: bool
-    level: int
-    custom_position: WaicolleCollagePosition
-    custom_name: str | None
-    custom_image: str | None
-    custom_collage: bool
     blooded: bool
+    character: WaifuEdgedResultElementsCharacter
+    custom_collage: bool
+    custom_image: str | None
+    custom_name: str | None
+    custom_position: WaicolleCollagePosition
+    custom_position_waifu: WaifuEdgedResultElementsCustomPositionWaifu | None
     disabled: bool
     frozen: bool
     id: UUID
-
-
-class WaifuEdgedResultKey(BaseModel):
-    chara_id_al: int
+    level: int
+    locked: bool
+    nanaed: bool
+    original_owner: WaifuEdgedResultElementsOriginalOwner | None
+    owner: WaifuEdgedResultElementsOwner
+    timestamp: datetime
+    trade_locked: bool
 
 
 class WaifuEdgedResult(BaseModel):
-    key: WaifuEdgedResultKey
-    grouping: list[str]
     elements: list[WaifuEdgedResultElements]
+    grouping: list[str]
+    key: WaifuEdgedResultKey
 
 
 adapter = TypeAdapter[list[WaifuEdgedResult]](list[WaifuEdgedResult])

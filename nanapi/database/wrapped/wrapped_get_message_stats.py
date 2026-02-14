@@ -126,46 +126,46 @@ select {
 """
 
 
+class WrappedGetMessageStatsResultWeekdayDistribution(BaseModel):
+    count: int
+    weekday: int
+
+
+class WrappedGetMessageStatsResultMonthDistribution(BaseModel):
+    count: int
+    month: int
+
+
+class WrappedGetMessageStatsResultHourDistribution(BaseModel):
+    count: int
+    hour: int
+
+
+class WrappedGetMessageStatsResultDayDistribution(BaseModel):
+    count: int
+    day: int
+
+
 class WrappedGetMessageStatsResultChannelDistribution(BaseModel):
     channel_id: str
     count: int
 
 
-class WrappedGetMessageStatsResultMonthDistribution(BaseModel):
-    month: int
-    count: int
-
-
-class WrappedGetMessageStatsResultDayDistribution(BaseModel):
-    day: int
-    count: int
-
-
-class WrappedGetMessageStatsResultWeekdayDistribution(BaseModel):
-    weekday: int
-    count: int
-
-
-class WrappedGetMessageStatsResultHourDistribution(BaseModel):
-    hour: int
-    count: int
-
-
 class WrappedGetMessageStatsResult(BaseModel):
+    attachment_count: int
+    channel_distribution: list[WrappedGetMessageStatsResultChannelDistribution]
+    day_distribution: list[WrappedGetMessageStatsResultDayDistribution]
+    everyone_count: int
+    hour_distribution: list[WrappedGetMessageStatsResultHourDistribution]
+    link_count: int
+    longest_silence_seconds: int | None
+    longest_silence_start: datetime | None
+    mention_count: int
+    month_distribution: list[WrappedGetMessageStatsResultMonthDistribution]
     total_count: int
     total_length: int
     total_words: int
-    attachment_count: int
-    link_count: int
-    mention_count: int
-    everyone_count: int
-    longest_silence_seconds: int | None
-    longest_silence_start: datetime | None
-    hour_distribution: list[WrappedGetMessageStatsResultHourDistribution]
     weekday_distribution: list[WrappedGetMessageStatsResultWeekdayDistribution]
-    day_distribution: list[WrappedGetMessageStatsResultDayDistribution]
-    month_distribution: list[WrappedGetMessageStatsResultMonthDistribution]
-    channel_distribution: list[WrappedGetMessageStatsResultChannelDistribution]
 
 
 adapter = TypeAdapter[WrappedGetMessageStatsResult](WrappedGetMessageStatsResult)

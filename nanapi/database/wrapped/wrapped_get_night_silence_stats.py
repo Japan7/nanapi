@@ -78,10 +78,10 @@ select {
 
 
 class WrappedGetNightSilenceStatsResult(BaseModel):
-    night_count: int
-    avg_night_silence_seconds: float
-    avg_last_msg_hour: float
     avg_first_msg_hour: float
+    avg_last_msg_hour: float
+    avg_night_silence_seconds: float
+    night_count: int
 
 
 adapter = TypeAdapter[WrappedGetNightSilenceStatsResult](WrappedGetNightSilenceStatsResult)

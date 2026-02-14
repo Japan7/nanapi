@@ -31,11 +31,11 @@ select {
 
 
 class WrappedGetRerollStatsResult(BaseModel):
-    total_rerolls: int
-    total_rerolled: int
-    total_received: int
     single_rerolls: int
     single_success: int
+    total_received: int
+    total_rerolled: int
+    total_rerolls: int
 
 
 adapter = TypeAdapter[WrappedGetRerollStatsResult](WrappedGetRerollStatsResult)

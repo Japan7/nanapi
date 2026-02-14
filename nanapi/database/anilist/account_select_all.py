@@ -27,8 +27,8 @@ class AccountSelectAllResultUser(BaseModel):
 
 class AccountSelectAllResult(BaseModel):
     service: AnilistService
-    username: str
     user: AccountSelectAllResultUser
+    username: str
 
 
 adapter = TypeAdapter[list[AccountSelectAllResult]](list[AccountSelectAllResult])

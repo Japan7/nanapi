@@ -73,11 +73,11 @@ class ProfileMergeSelectResultUser(BaseModel):
 
 class ProfileMergeSelectResult(BaseModel):
     birthday: datetime | None
-    graduation_year: int | None
     full_name: str | None
+    graduation_year: int | None
+    n7_major: str | None
     photo: str | None
     pronouns: str | None
-    n7_major: str | None
     telephone: str | None
     user: ProfileMergeSelectResultUser
 

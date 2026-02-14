@@ -48,8 +48,12 @@ class WaicolleCollagePosition(StrEnum):
     RIGHT_OF = 'RIGHT_OF'
 
 
-class WaifuChangeOwnerResultCustomPositionWaifu(BaseModel):
-    id: UUID
+class WaifuChangeOwnerResultOwnerUser(BaseModel):
+    discord_id: str
+
+
+class WaifuChangeOwnerResultOwner(BaseModel):
+    user: WaifuChangeOwnerResultOwnerUser
 
 
 class WaifuChangeOwnerResultOriginalOwnerUser(BaseModel):
@@ -60,12 +64,8 @@ class WaifuChangeOwnerResultOriginalOwner(BaseModel):
     user: WaifuChangeOwnerResultOriginalOwnerUser
 
 
-class WaifuChangeOwnerResultOwnerUser(BaseModel):
-    discord_id: str
-
-
-class WaifuChangeOwnerResultOwner(BaseModel):
-    user: WaifuChangeOwnerResultOwnerUser
+class WaifuChangeOwnerResultCustomPositionWaifu(BaseModel):
+    id: UUID
 
 
 class WaifuChangeOwnerResultCharacter(BaseModel):
@@ -73,23 +73,23 @@ class WaifuChangeOwnerResultCharacter(BaseModel):
 
 
 class WaifuChangeOwnerResult(BaseModel):
-    character: WaifuChangeOwnerResultCharacter
-    owner: WaifuChangeOwnerResultOwner
-    original_owner: WaifuChangeOwnerResultOriginalOwner | None
-    custom_position_waifu: WaifuChangeOwnerResultCustomPositionWaifu | None
-    trade_locked: bool
-    timestamp: datetime
-    nanaed: bool
-    locked: bool
-    level: int
-    custom_position: WaicolleCollagePosition
-    custom_name: str | None
-    custom_image: str | None
-    custom_collage: bool
     blooded: bool
+    character: WaifuChangeOwnerResultCharacter
+    custom_collage: bool
+    custom_image: str | None
+    custom_name: str | None
+    custom_position: WaicolleCollagePosition
+    custom_position_waifu: WaifuChangeOwnerResultCustomPositionWaifu | None
     disabled: bool
     frozen: bool
     id: UUID
+    level: int
+    locked: bool
+    nanaed: bool
+    original_owner: WaifuChangeOwnerResultOriginalOwner | None
+    owner: WaifuChangeOwnerResultOwner
+    timestamp: datetime
+    trade_locked: bool
 
 
 adapter = TypeAdapter[list[WaifuChangeOwnerResult]](list[WaifuChangeOwnerResult])

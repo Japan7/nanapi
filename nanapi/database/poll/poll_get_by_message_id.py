@@ -40,10 +40,10 @@ class PollGetByMessageIdResultOptions(BaseModel):
 
 
 class PollGetByMessageIdResult(BaseModel):
-    message_id: str
     channel_id: str
-    question: str
+    message_id: str
     options: list[PollGetByMessageIdResultOptions]
+    question: str
 
 
 adapter = TypeAdapter[PollGetByMessageIdResult | None](PollGetByMessageIdResult | None)

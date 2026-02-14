@@ -57,16 +57,9 @@ class WaicolleCollagePosition(StrEnum):
     RIGHT_OF = 'RIGHT_OF'
 
 
-class WaifuAscendableResultElementsCustomPositionWaifu(BaseModel):
-    id: UUID
-
-
-class WaifuAscendableResultElementsOriginalOwnerUser(BaseModel):
-    discord_id: str
-
-
-class WaifuAscendableResultElementsOriginalOwner(BaseModel):
-    user: WaifuAscendableResultElementsOriginalOwnerUser
+class WaifuAscendableResultKey(BaseModel):
+    chara_id_al: int
+    level: int
 
 
 class WaifuAscendableResultElementsOwnerUser(BaseModel):
@@ -77,39 +70,46 @@ class WaifuAscendableResultElementsOwner(BaseModel):
     user: WaifuAscendableResultElementsOwnerUser
 
 
+class WaifuAscendableResultElementsOriginalOwnerUser(BaseModel):
+    discord_id: str
+
+
+class WaifuAscendableResultElementsOriginalOwner(BaseModel):
+    user: WaifuAscendableResultElementsOriginalOwnerUser
+
+
+class WaifuAscendableResultElementsCustomPositionWaifu(BaseModel):
+    id: UUID
+
+
 class WaifuAscendableResultElementsCharacter(BaseModel):
     id_al: int
 
 
 class WaifuAscendableResultElements(BaseModel):
-    character: WaifuAscendableResultElementsCharacter
-    owner: WaifuAscendableResultElementsOwner
-    original_owner: WaifuAscendableResultElementsOriginalOwner | None
-    custom_position_waifu: WaifuAscendableResultElementsCustomPositionWaifu | None
-    trade_locked: bool
-    timestamp: datetime
-    nanaed: bool
-    locked: bool
-    level: int
-    custom_position: WaicolleCollagePosition
-    custom_name: str | None
-    custom_image: str | None
-    custom_collage: bool
     blooded: bool
+    character: WaifuAscendableResultElementsCharacter
+    custom_collage: bool
+    custom_image: str | None
+    custom_name: str | None
+    custom_position: WaicolleCollagePosition
+    custom_position_waifu: WaifuAscendableResultElementsCustomPositionWaifu | None
     disabled: bool
     frozen: bool
     id: UUID
-
-
-class WaifuAscendableResultKey(BaseModel):
-    chara_id_al: int
     level: int
+    locked: bool
+    nanaed: bool
+    original_owner: WaifuAscendableResultElementsOriginalOwner | None
+    owner: WaifuAscendableResultElementsOwner
+    timestamp: datetime
+    trade_locked: bool
 
 
 class WaifuAscendableResult(BaseModel):
-    key: WaifuAscendableResultKey
-    grouping: list[str]
     elements: list[WaifuAscendableResultElements]
+    grouping: list[str]
+    key: WaifuAscendableResultKey
 
 
 adapter = TypeAdapter[list[WaifuAscendableResult]](list[WaifuAscendableResult])

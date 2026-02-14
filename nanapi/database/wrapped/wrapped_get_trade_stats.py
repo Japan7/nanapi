@@ -38,13 +38,13 @@ select {
 
 
 class WrappedGetTradeStatsResult(BaseModel):
+    partners_as_author: list[str]
+    partners_as_offeree: list[str]
+    total_offered: int
+    total_received: int
     total_trades: int
     trades_as_author: int
     trades_as_offeree: int
-    total_offered: int
-    total_received: int
-    partners_as_author: list[str]
-    partners_as_offeree: list[str]
 
 
 adapter = TypeAdapter[WrappedGetTradeStatsResult](WrappedGetTradeStatsResult)

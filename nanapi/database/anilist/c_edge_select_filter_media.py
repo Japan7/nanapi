@@ -53,61 +53,61 @@ order by .media.popularity desc
 
 
 class AnilistCharacterRole(StrEnum):
+    BACKGROUND = 'BACKGROUND'
     MAIN = 'MAIN'
     SUPPORTING = 'SUPPORTING'
-    BACKGROUND = 'BACKGROUND'
 
 
 class WaicolleRank(StrEnum):
-    S = 'S'
     A = 'A'
     B = 'B'
     C = 'C'
     D = 'D'
     E = 'E'
+    S = 'S'
 
 
 class CEdgeSelectFilterMediaResultVoiceActors(BaseModel):
-    id_al: int
-    favourites: int
-    site_url: str
-    name_user_preferred: str
-    name_native: str | None
-    name_alternative: list[str]
-    description: str | None
-    image_large: str
-    gender: str | None
     age: int | None
-    date_of_birth_year: int | None
-    date_of_birth_month: int | None
     date_of_birth_day: int | None
-    date_of_death_year: int | None
-    date_of_death_month: int | None
+    date_of_birth_month: int | None
+    date_of_birth_year: int | None
     date_of_death_day: int | None
+    date_of_death_month: int | None
+    date_of_death_year: int | None
+    description: str | None
+    favourites: int
+    gender: str | None
+    id_al: int
+    image_large: str
+    name_alternative: list[str]
+    name_native: str | None
+    name_user_preferred: str
+    site_url: str
 
 
 class CEdgeSelectFilterMediaResultCharacter(BaseModel):
-    id_al: int
+    age: str | None
+    date_of_birth_day: int | None
+    date_of_birth_month: int | None
+    date_of_birth_year: int | None
+    description: str | None
     favourites: int
-    site_url: str
-    name_user_preferred: str
+    fuzzy_gender: str | None
+    gender: str | None
+    id_al: int
+    image_large: str
     name_alternative: list[str]
     name_alternative_spoiler: list[str]
     name_native: str | None
-    description: str | None
-    image_large: str
-    gender: str | None
-    age: str | None
-    date_of_birth_year: int | None
-    date_of_birth_month: int | None
-    date_of_birth_day: int | None
+    name_user_preferred: str
     rank: WaicolleRank
-    fuzzy_gender: str | None
+    site_url: str
 
 
 class CEdgeSelectFilterMediaResult(BaseModel):
-    character_role: AnilistCharacterRole
     character: CEdgeSelectFilterMediaResultCharacter
+    character_role: AnilistCharacterRole
     voice_actors: list[CEdgeSelectFilterMediaResultVoiceActors]
 
 

@@ -19,28 +19,28 @@ and (.start_time > start_after if exists start_after else true)
 
 
 class ProjectionStatus(StrEnum):
-    ONGOING = 'ONGOING'
     COMPLETED = 'COMPLETED'
-
-
-class GuildEventSelectResultOrganizer(BaseModel):
-    id: UUID
-    discord_id: str
-    discord_username: str
-
-
-class GuildEventSelectResultParticipants(BaseModel):
-    id: UUID
-    discord_id: str
-    discord_username: str
+    ONGOING = 'ONGOING'
 
 
 class GuildEventSelectResultProjection(BaseModel):
-    id: UUID
     channel_id: str
+    id: UUID
     message_id: str | None
     name: str
     status: ProjectionStatus
+
+
+class GuildEventSelectResultParticipants(BaseModel):
+    discord_id: str
+    discord_username: str
+    id: UUID
+
+
+class GuildEventSelectResultOrganizer(BaseModel):
+    discord_id: str
+    discord_username: str
+    id: UUID
 
 
 class GuildEventSelectResultClient(BaseModel):
@@ -50,19 +50,19 @@ class GuildEventSelectResultClient(BaseModel):
 
 
 class GuildEventSelectResult(BaseModel):
-    id: UUID
-    discord_id: str
+    client: GuildEventSelectResultClient
     description: str | None
+    discord_id: str
     end_time: datetime
+    id: UUID
     image: str | None
     location: str | None
     name: str
+    organizer: GuildEventSelectResultOrganizer
+    participants: list[GuildEventSelectResultParticipants]
+    projection: GuildEventSelectResultProjection | None
     start_time: datetime
     url: str | None
-    client: GuildEventSelectResultClient
-    projection: GuildEventSelectResultProjection | None
-    participants: list[GuildEventSelectResultParticipants]
-    organizer: GuildEventSelectResultOrganizer
 
 
 adapter = TypeAdapter[list[GuildEventSelectResult]](list[GuildEventSelectResult])

@@ -16,8 +16,8 @@ filter .url in array_unpack(urls)
 
 
 class ImageSelectResult(BaseModel):
-    url: str
     data: str
+    url: str
 
 
 adapter = TypeAdapter[list[ImageSelectResult]](list[ImageSelectResult])

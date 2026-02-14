@@ -38,22 +38,16 @@ select {
 """
 
 
-class WaifuExportResultCharas(BaseModel):
-    id_al: int
-    image: str
-    favourites: int
-
-
 class WaifuExportResultWaifus(BaseModel):
-    id: UUID
+    blooded: bool
     character_id: int
-    owner_discord_id: str
-    original_owner_discord_id: str | None
-    timestamp: datetime
+    id: UUID
     level: int
     locked: bool
     nanaed: bool
-    blooded: bool
+    original_owner_discord_id: str | None
+    owner_discord_id: str
+    timestamp: datetime
     trade_locked: bool
 
 
@@ -63,10 +57,16 @@ class WaifuExportResultPlayers(BaseModel):
     tracked: list[int]
 
 
+class WaifuExportResultCharas(BaseModel):
+    favourites: int
+    id_al: int
+    image: str
+
+
 class WaifuExportResult(BaseModel):
+    charas: list[WaifuExportResultCharas]
     players: list[WaifuExportResultPlayers]
     waifus: list[WaifuExportResultWaifus]
-    charas: list[WaifuExportResultCharas]
 
 
 adapter = TypeAdapter[WaifuExportResult](WaifuExportResult)

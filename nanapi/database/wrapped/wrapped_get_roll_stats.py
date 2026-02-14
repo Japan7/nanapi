@@ -31,10 +31,10 @@ select {
 
 
 class WrappedGetRollStatsResult(BaseModel):
-    total_rolls: int
-    total_moecoins: int
-    total_waifus: int
     reasons: list[str]
+    total_moecoins: int
+    total_rolls: int
+    total_waifus: int
 
 
 adapter = TypeAdapter[WrappedGetRollStatsResult](WrappedGetRollStatsResult)

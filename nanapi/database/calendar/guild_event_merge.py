@@ -63,28 +63,28 @@ select assert_exists(event) { ** }
 
 
 class ProjectionStatus(StrEnum):
-    ONGOING = 'ONGOING'
     COMPLETED = 'COMPLETED'
-
-
-class GuildEventMergeResultOrganizer(BaseModel):
-    id: UUID
-    discord_id: str
-    discord_username: str
-
-
-class GuildEventMergeResultParticipants(BaseModel):
-    id: UUID
-    discord_id: str
-    discord_username: str
+    ONGOING = 'ONGOING'
 
 
 class GuildEventMergeResultProjection(BaseModel):
-    id: UUID
     channel_id: str
+    id: UUID
     message_id: str | None
     name: str
     status: ProjectionStatus
+
+
+class GuildEventMergeResultParticipants(BaseModel):
+    discord_id: str
+    discord_username: str
+    id: UUID
+
+
+class GuildEventMergeResultOrganizer(BaseModel):
+    discord_id: str
+    discord_username: str
+    id: UUID
 
 
 class GuildEventMergeResultClient(BaseModel):
@@ -94,19 +94,19 @@ class GuildEventMergeResultClient(BaseModel):
 
 
 class GuildEventMergeResult(BaseModel):
-    id: UUID
-    discord_id: str
+    client: GuildEventMergeResultClient
     description: str | None
+    discord_id: str
     end_time: datetime
+    id: UUID
     image: str | None
     location: str | None
     name: str
+    organizer: GuildEventMergeResultOrganizer
+    participants: list[GuildEventMergeResultParticipants]
+    projection: GuildEventMergeResultProjection | None
     start_time: datetime
     url: str | None
-    client: GuildEventMergeResultClient
-    projection: GuildEventMergeResultProjection | None
-    participants: list[GuildEventMergeResultParticipants]
-    organizer: GuildEventMergeResultOrganizer
 
 
 adapter = TypeAdapter[GuildEventMergeResult](GuildEventMergeResult)

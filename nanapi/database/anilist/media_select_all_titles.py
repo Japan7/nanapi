@@ -25,11 +25,11 @@ class AnilistMediaType(StrEnum):
 
 class MediaSelectAllTitlesResult(BaseModel):
     id_al: int
-    type: AnilistMediaType
-    title_user_preferred: str
-    title_native: str | None
-    title_english: str | None
     synonyms: list[str]
+    title_english: str | None
+    title_native: str | None
+    title_user_preferred: str
+    type: AnilistMediaType
 
 
 adapter = TypeAdapter[list[MediaSelectAllTitlesResult]](list[MediaSelectAllTitlesResult])

@@ -25,8 +25,8 @@ class ReminderSelectAllResultUser(BaseModel):
 
 
 class ReminderSelectAllResult(BaseModel):
-    id: UUID
     channel_id: str
+    id: UUID
     message: str
     timestamp: datetime
     user: ReminderSelectAllResultUser

@@ -21,9 +21,9 @@ select pool {
 
 
 class MediasPoolExportResult(BaseModel):
+    favourites: int
     id_al: int
     image: str
-    favourites: int
 
 
 adapter = TypeAdapter[list[MediasPoolExportResult]](list[MediasPoolExportResult])

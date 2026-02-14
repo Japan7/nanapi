@@ -27,8 +27,8 @@ select {
 
 
 class WrappedGetWasabiMessagesResult(BaseModel):
-    total_wasabi: int
     contents: list[str]
+    total_wasabi: int
 
 
 adapter = TypeAdapter[WrappedGetWasabiMessagesResult](WrappedGetWasabiMessagesResult)

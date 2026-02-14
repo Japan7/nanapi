@@ -27,8 +27,8 @@ select {
 
 
 class WrappedGetDailyTagStatsResult(BaseModel):
-    total_rolls: int
     contents: list[str]
+    total_rolls: int
 
 
 adapter = TypeAdapter[WrappedGetDailyTagStatsResult](WrappedGetDailyTagStatsResult)

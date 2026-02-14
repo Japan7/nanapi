@@ -19,6 +19,14 @@ by .client
 """
 
 
+class CollectionMeiliResultKeyClient(BaseModel):
+    id: UUID
+
+
+class CollectionMeiliResultKey(BaseModel):
+    client: CollectionMeiliResultKeyClient
+
+
 class CollectionMeiliResultElementsAuthorUser(BaseModel):
     discord_id: str
 
@@ -28,23 +36,15 @@ class CollectionMeiliResultElementsAuthor(BaseModel):
 
 
 class CollectionMeiliResultElements(BaseModel):
+    author: CollectionMeiliResultElementsAuthor
     id: UUID
     name: str
-    author: CollectionMeiliResultElementsAuthor
-
-
-class CollectionMeiliResultKeyClient(BaseModel):
-    id: UUID
-
-
-class CollectionMeiliResultKey(BaseModel):
-    client: CollectionMeiliResultKeyClient
 
 
 class CollectionMeiliResult(BaseModel):
-    key: CollectionMeiliResultKey
-    grouping: list[str]
     elements: list[CollectionMeiliResultElements]
+    grouping: list[str]
+    key: CollectionMeiliResultKey
 
 
 adapter = TypeAdapter[list[CollectionMeiliResult]](list[CollectionMeiliResult])

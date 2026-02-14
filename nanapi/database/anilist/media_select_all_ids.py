@@ -22,10 +22,10 @@ class AnilistMediaType(StrEnum):
 
 
 class MediaSelectAllIdsResult(BaseModel):
-    type: AnilistMediaType
     id_al: int
     id_mal: int | None
     last_update: int
+    type: AnilistMediaType
 
 
 adapter = TypeAdapter[list[MediaSelectAllIdsResult]](list[MediaSelectAllIdsResult])

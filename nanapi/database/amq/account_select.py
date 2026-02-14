@@ -26,8 +26,8 @@ class AccountSelectResultUser(BaseModel):
 
 
 class AccountSelectResult(BaseModel):
-    username: str
     user: AccountSelectResultUser
+    username: str
 
 
 adapter = TypeAdapter[list[AccountSelectResult]](list[AccountSelectResult])

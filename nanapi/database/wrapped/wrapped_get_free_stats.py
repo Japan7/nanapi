@@ -31,17 +31,17 @@ select {
 
 
 class WaicolleRank(StrEnum):
-    S = 'S'
     A = 'A'
     B = 'B'
     C = 'C'
     D = 'D'
     E = 'E'
+    S = 'S'
 
 
 class WrappedGetFreeStatsResult(BaseModel):
-    event_count: int
     coupon_count: int
+    event_count: int
     ranks: list[WaicolleRank]
 
 

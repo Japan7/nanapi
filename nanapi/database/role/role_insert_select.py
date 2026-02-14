@@ -23,8 +23,8 @@ select role {
 
 
 class RoleInsertSelectResult(BaseModel):
-    role_id: str
     emoji: str
+    role_id: str
 
 
 adapter = TypeAdapter[RoleInsertSelectResult](RoleInsertSelectResult)

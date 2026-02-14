@@ -29,8 +29,12 @@ limit 1
 
 
 class QuizzStatus(StrEnum):
-    STARTED = 'STARTED'
     ENDED = 'ENDED'
+    STARTED = 'STARTED'
+
+
+class GameGetLastResultWinner(BaseModel):
+    discord_id: str
 
 
 class GameGetLastResultQuizzAuthor(BaseModel):
@@ -38,28 +42,24 @@ class GameGetLastResultQuizzAuthor(BaseModel):
 
 
 class GameGetLastResultQuizz(BaseModel):
-    author: GameGetLastResultQuizzAuthor
-    id: UUID
-    channel_id: str
     answer: str | None
     attachment_url: str | None
+    author: GameGetLastResultQuizzAuthor
+    channel_id: str
     hints: list[str] | None
+    id: UUID
     question: str | None
     submitted_at: datetime
 
 
-class GameGetLastResultWinner(BaseModel):
-    discord_id: str
-
-
 class GameGetLastResult(BaseModel):
-    winner: GameGetLastResultWinner | None
-    quizz: GameGetLastResultQuizz
+    ended_at: datetime | None
     id: UUID
     message_id: str
-    ended_at: datetime | None
+    quizz: GameGetLastResultQuizz
     started_at: datetime
     status: QuizzStatus
+    winner: GameGetLastResultWinner | None
 
 
 adapter = TypeAdapter[GameGetLastResult | None](GameGetLastResult | None)

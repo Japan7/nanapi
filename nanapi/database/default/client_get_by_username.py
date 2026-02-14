@@ -19,8 +19,8 @@ filter .username = username
 
 class ClientGetByUsernameResult(BaseModel):
     id: UUID
-    username: str
     password_hash: str
+    username: str
 
 
 adapter = TypeAdapter[ClientGetByUsernameResult | None](ClientGetByUsernameResult | None)

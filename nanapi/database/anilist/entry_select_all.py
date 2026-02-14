@@ -39,12 +39,16 @@ ENTRY_SELECT_ALL_MEDIA_TYPE = Literal[
 
 
 class AnilistEntryStatus(StrEnum):
-    CURRENT = 'CURRENT'
     COMPLETED = 'COMPLETED'
-    PAUSED = 'PAUSED'
+    CURRENT = 'CURRENT'
     DROPPED = 'DROPPED'
+    PAUSED = 'PAUSED'
     PLANNING = 'PLANNING'
     REPEATING = 'REPEATING'
+
+
+class EntrySelectAllResultMedia(BaseModel):
+    id_al: int
 
 
 class EntrySelectAllResultAccountUser(BaseModel):
@@ -55,16 +59,12 @@ class EntrySelectAllResultAccount(BaseModel):
     user: EntrySelectAllResultAccountUser
 
 
-class EntrySelectAllResultMedia(BaseModel):
-    id_al: int
-
-
 class EntrySelectAllResult(BaseModel):
-    status: AnilistEntryStatus
+    account: EntrySelectAllResultAccount
+    media: EntrySelectAllResultMedia
     progress: int
     score: float
-    media: EntrySelectAllResultMedia
-    account: EntrySelectAllResultAccount
+    status: AnilistEntryStatus
 
 
 adapter = TypeAdapter[list[EntrySelectAllResult]](list[EntrySelectAllResult])

@@ -35,9 +35,9 @@ class ProfileGetByDiscordIdResult(BaseModel):
     birthday: datetime | None
     full_name: str | None
     graduation_year: int | None
+    n7_major: str | None
     photo: str | None
     pronouns: str | None
-    n7_major: str | None
     telephone: str | None
     user: ProfileGetByDiscordIdResultUser
 

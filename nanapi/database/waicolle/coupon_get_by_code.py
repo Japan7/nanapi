@@ -28,8 +28,8 @@ class CouponGetByCodeResultClaimedBy(BaseModel):
 
 
 class CouponGetByCodeResult(BaseModel):
-    code: str
     claimed_by: list[CouponGetByCodeResultClaimedBy]
+    code: str
 
 
 adapter = TypeAdapter[CouponGetByCodeResult | None](CouponGetByCodeResult | None)

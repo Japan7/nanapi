@@ -30,17 +30,17 @@ select {
 
 
 class WaicolleRank(StrEnum):
-    S = 'S'
     A = 'A'
     B = 'B'
     C = 'C'
     D = 'D'
     E = 'E'
+    S = 'S'
 
 
 class WrappedGetDropStatsResult(BaseModel):
-    total_drops: int
     ranks: list[WaicolleRank]
+    total_drops: int
 
 
 adapter = TypeAdapter[WrappedGetDropStatsResult](WrappedGetDropStatsResult)

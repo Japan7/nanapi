@@ -30,9 +30,9 @@ select updated {
 
 
 class WaicolleGameMode(StrEnum):
-    WAIFU = 'WAIFU'
-    HUSBANDO = 'HUSBANDO'
     ALL = 'ALL'
+    HUSBANDO = 'HUSBANDO'
+    WAIFU = 'WAIFU'
 
 
 class PlayerAddCoinsResultUser(BaseModel):
@@ -40,12 +40,12 @@ class PlayerAddCoinsResultUser(BaseModel):
 
 
 class PlayerAddCoinsResult(BaseModel):
-    user: PlayerAddCoinsResultUser
-    moecoins: int
-    game_mode: WaicolleGameMode
     blood_shards: int
     frozen_at: datetime | None
+    game_mode: WaicolleGameMode
     id: UUID
+    moecoins: int
+    user: PlayerAddCoinsResultUser
 
 
 adapter = TypeAdapter[PlayerAddCoinsResult | None](PlayerAddCoinsResult | None)

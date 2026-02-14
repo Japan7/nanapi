@@ -63,16 +63,16 @@ select {
 
 
 class WrappedGetEventStatsResultTopBffs(BaseModel):
-    discord_id: str
     count: int
+    discord_id: str
 
 
 class WrappedGetEventStatsResult(BaseModel):
-    total_events: int
+    event_names: list[str]
     projection_count: int
     projection_runtime: int
     top_bffs: list[WrappedGetEventStatsResultTopBffs]
-    event_names: list[str]
+    total_events: int
 
 
 adapter = TypeAdapter[WrappedGetEventStatsResult](WrappedGetEventStatsResult)

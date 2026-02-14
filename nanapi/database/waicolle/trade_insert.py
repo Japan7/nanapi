@@ -78,46 +78,46 @@ class WaicolleCollagePosition(StrEnum):
     RIGHT_OF = 'RIGHT_OF'
 
 
-class TradeInsertResultOfferedCustomPositionWaifu(BaseModel):
+class TradeInsertResultReceivedOwnerUser(BaseModel):
+    discord_id: str
+
+
+class TradeInsertResultReceivedOwner(BaseModel):
+    user: TradeInsertResultReceivedOwnerUser
+
+
+class TradeInsertResultReceivedOriginalOwnerUser(BaseModel):
+    discord_id: str
+
+
+class TradeInsertResultReceivedOriginalOwner(BaseModel):
+    user: TradeInsertResultReceivedOriginalOwnerUser
+
+
+class TradeInsertResultReceivedCustomPositionWaifu(BaseModel):
     id: UUID
 
 
-class TradeInsertResultOfferedOriginalOwnerUser(BaseModel):
-    discord_id: str
-
-
-class TradeInsertResultOfferedOriginalOwner(BaseModel):
-    user: TradeInsertResultOfferedOriginalOwnerUser
-
-
-class TradeInsertResultOfferedOwnerUser(BaseModel):
-    discord_id: str
-
-
-class TradeInsertResultOfferedOwner(BaseModel):
-    user: TradeInsertResultOfferedOwnerUser
-
-
-class TradeInsertResultOfferedCharacter(BaseModel):
+class TradeInsertResultReceivedCharacter(BaseModel):
     id_al: int
 
 
-class TradeInsertResultOffered(BaseModel):
-    character: TradeInsertResultOfferedCharacter
-    owner: TradeInsertResultOfferedOwner
-    original_owner: TradeInsertResultOfferedOriginalOwner | None
-    custom_position_waifu: TradeInsertResultOfferedCustomPositionWaifu | None
-    id: UUID
-    frozen: bool
-    disabled: bool
+class TradeInsertResultReceived(BaseModel):
     blooded: bool
+    character: TradeInsertResultReceivedCharacter
     custom_collage: bool
     custom_image: str | None
     custom_name: str | None
     custom_position: WaicolleCollagePosition
+    custom_position_waifu: TradeInsertResultReceivedCustomPositionWaifu | None
+    disabled: bool
+    frozen: bool
+    id: UUID
     level: int
     locked: bool
     nanaed: bool
+    original_owner: TradeInsertResultReceivedOriginalOwner | None
+    owner: TradeInsertResultReceivedOwner
     timestamp: datetime
     trade_locked: bool
 
@@ -130,46 +130,46 @@ class TradeInsertResultOfferee(BaseModel):
     user: TradeInsertResultOffereeUser
 
 
-class TradeInsertResultReceivedCustomPositionWaifu(BaseModel):
+class TradeInsertResultOfferedOwnerUser(BaseModel):
+    discord_id: str
+
+
+class TradeInsertResultOfferedOwner(BaseModel):
+    user: TradeInsertResultOfferedOwnerUser
+
+
+class TradeInsertResultOfferedOriginalOwnerUser(BaseModel):
+    discord_id: str
+
+
+class TradeInsertResultOfferedOriginalOwner(BaseModel):
+    user: TradeInsertResultOfferedOriginalOwnerUser
+
+
+class TradeInsertResultOfferedCustomPositionWaifu(BaseModel):
     id: UUID
 
 
-class TradeInsertResultReceivedOriginalOwnerUser(BaseModel):
-    discord_id: str
-
-
-class TradeInsertResultReceivedOriginalOwner(BaseModel):
-    user: TradeInsertResultReceivedOriginalOwnerUser
-
-
-class TradeInsertResultReceivedOwnerUser(BaseModel):
-    discord_id: str
-
-
-class TradeInsertResultReceivedOwner(BaseModel):
-    user: TradeInsertResultReceivedOwnerUser
-
-
-class TradeInsertResultReceivedCharacter(BaseModel):
+class TradeInsertResultOfferedCharacter(BaseModel):
     id_al: int
 
 
-class TradeInsertResultReceived(BaseModel):
-    character: TradeInsertResultReceivedCharacter
-    owner: TradeInsertResultReceivedOwner
-    original_owner: TradeInsertResultReceivedOriginalOwner | None
-    custom_position_waifu: TradeInsertResultReceivedCustomPositionWaifu | None
-    id: UUID
-    frozen: bool
-    disabled: bool
+class TradeInsertResultOffered(BaseModel):
     blooded: bool
+    character: TradeInsertResultOfferedCharacter
     custom_collage: bool
     custom_image: str | None
     custom_name: str | None
     custom_position: WaicolleCollagePosition
+    custom_position_waifu: TradeInsertResultOfferedCustomPositionWaifu | None
+    disabled: bool
+    frozen: bool
+    id: UUID
     level: int
     locked: bool
     nanaed: bool
+    original_owner: TradeInsertResultOfferedOriginalOwner | None
+    owner: TradeInsertResultOfferedOwner
     timestamp: datetime
     trade_locked: bool
 
@@ -184,13 +184,13 @@ class TradeInsertResultAuthor(BaseModel):
 
 class TradeInsertResult(BaseModel):
     author: TradeInsertResultAuthor
-    received: list[TradeInsertResultReceived]
-    offeree: TradeInsertResultOfferee
-    offered: list[TradeInsertResultOffered]
     blood_shards: int
     completed_at: datetime | None
     created_at: datetime
     id: UUID
+    offered: list[TradeInsertResultOffered]
+    offeree: TradeInsertResultOfferee
+    received: list[TradeInsertResultReceived]
 
 
 adapter = TypeAdapter[TradeInsertResult](TradeInsertResult)
