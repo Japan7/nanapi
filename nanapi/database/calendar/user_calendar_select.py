@@ -14,6 +14,7 @@ select assert_single(calendar) { ** }
 
 
 class UserCalendarSelectResultUser(BaseModel):
+    age_verified: bool
     discord_id: str
     discord_username: str
     id: UUID

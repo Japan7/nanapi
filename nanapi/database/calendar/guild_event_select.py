@@ -32,12 +32,14 @@ class GuildEventSelectResultProjection(BaseModel):
 
 
 class GuildEventSelectResultParticipants(BaseModel):
+    age_verified: bool
     discord_id: str
     discord_username: str
     id: UUID
 
 
 class GuildEventSelectResultOrganizer(BaseModel):
+    age_verified: bool
     discord_id: str
     discord_username: str
     id: UUID

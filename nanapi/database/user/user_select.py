@@ -8,11 +8,13 @@ EDGEQL_QUERY = r"""
 select user::User {
   discord_id,
   discord_username,
+  age_verified,
 }
 """
 
 
 class UserSelectResult(BaseModel):
+    age_verified: bool
     discord_id: str
     discord_username: str
 
