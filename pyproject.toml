@@ -31,7 +31,7 @@ dependencies = [
     "hypercorn==0.18.0",
     "tzdata==2025.3",
     "pyjwt==2.11.0",
-    "icalendar==7.0.0",
+    "icalendar==7.0.1",
     "yarl==1.22.0",
     "starlette==0.52.1",
     "tiktoken==0.12.0",
