@@ -135,6 +135,11 @@ class BaseRoll(abc.ABC):
         return self
 
 
+class EmptyPoolException(Exception):
+    def __init__(self):
+        super().__init__('User pool is empty')
+
+
 class UserRoll(BaseRoll):
     async def load(self, executor: AsyncIOExecutor, force: bool = False):
         await super().load(executor, force=force)
@@ -174,7 +179,11 @@ class UserRoll(BaseRoll):
         key=lambda *args, **kwargs: hashkey(kwargs.get('discord_id', None)),
     )
     async def _cached_user_pool(cls, executor: AsyncIOExecutor, *, discord_id: str | None = None):
-        return await user_pool(executor, discord_id=discord_id)
+        res = await user_pool(executor, discord_id=discord_id)
+        if len(res) == 0:
+            # do not cache empty user pool
+            raise EmptyPoolException()
+        return res
 
     async def after(self, executor: AsyncIOExecutor, discord_id: str):
         pass
