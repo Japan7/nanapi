@@ -157,6 +157,7 @@ from nanapi.utils.waicolle import (
     ROLLS,
     TagRoll,
     UserRoll,
+    load_rolls,
 )
 
 router = NanAPIRouter(prefix='/waicolle', tags=['waicolle'])
@@ -1421,8 +1422,7 @@ async def get_ranks():
 @router.oauth2.get('/settings/rolls', response_model=list[RollData])
 async def get_rolls(discord_id: str):
     """Get all rolls and their data."""
-    rolls = {roll_id: roll_getter() for roll_id, roll_getter in ROLLS.items()}
-    await asyncio.gather(*[roll.load(get_edgedb()) for roll in rolls.values()])
+    rolls = await load_rolls()
     return [
         RollData(
             id=roll_id,

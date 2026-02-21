@@ -1,4 +1,8 @@
 import asyncio
+import logging
+from contextlib import asynccontextmanager
+from datetime import date, datetime, timedelta
+import sys
 
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.gzip import GZipMiddleware
@@ -10,6 +14,7 @@ from fastapi.openapi.docs import (
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
 
+from nanapi.local_settings import LOG_LEVEL
 from nanapi.routers import (
     ai,
     amq,
@@ -40,11 +45,70 @@ from nanapi.settings import (
 )
 from nanapi.utils.fastapi import NanAPIRouter
 from nanapi.utils.logs import get_traceback, get_traceback_str, webhook_post_error
+from nanapi.utils.waicolle import load_rolls
+
+from . import __name__ as module_name
+
+logger = logging.getLogger(__name__)
 
 
 def custom_generate_unique_id(route: APIRoute):
     tag_prefix = f'{route.tags[0]}_' if route.tags else ''
     return f'{tag_prefix}{route.name}'.casefold()
+
+
+async def daily_tasks():
+    # reload rolls every day
+    # the rolls for the current day should be already prepared,
+    # but it should prepare the rolls for the next day
+    logger.info('[daily] preloading rolls')
+    asyncio.create_task(load_rolls())
+
+
+async def daily_loop():
+    while True:
+        tomorrow = date.today() + timedelta(days=1)
+        t = datetime.fromordinal(tomorrow.toordinal()) - datetime.now()
+        await asyncio.sleep(t.total_seconds())
+        await daily_tasks()
+
+
+async def startup():
+    # preload rolls so it might not take too much time to load
+    # when someone needs it
+    logger.info('[startup] preloading rolls')
+    asyncio.create_task(load_rolls())
+    asyncio.create_task(daily_loop())
+
+
+async def cleanup():
+    pass
+
+
+class HypercornLogFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool | logging.LogRecord:
+        if record.name.startswith('hypercorn'):
+            return False
+
+        return super().filter(record)
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    format = (
+        '[%(asctime)s] [%(process)d] [%(levelname)s] [%(name)s:%(lineno)d] %(message)s'
+    )
+    handler = logging.StreamHandler(sys.stderr)
+    datefmt = '%Y-%m-%d %H:%M:%S %z'
+    handler.setFormatter(logging.Formatter(format, datefmt=datefmt))
+    # would get duplicate logs otherwise
+    handler.addFilter(HypercornLogFilter())
+
+    logging.basicConfig(level=LOG_LEVEL, handlers=[handler])
+
+    await startup()
+    yield
+    await cleanup()
 
 
 app = FastAPI(
@@ -54,6 +118,7 @@ app = FastAPI(
     swagger_ui_oauth2_redirect_url=None,
     redoc_url=None,
     generate_unique_id_function=custom_generate_unique_id,
+    lifespan=lifespan,
     **FASTAPI_CONFIG,
 )
 

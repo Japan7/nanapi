@@ -1,3 +1,5 @@
+import logging
+
 from hypercorn.config import Config
 from hypercorn.run import run
 
@@ -10,6 +12,9 @@ def main():
     settings.AL_LOW_PRIORITY_THRESH = 0
 
     config = Config()
+    config.loglevel = settings.LOG_LEVEL
+    config.accesslog = '-'
+    config.errorlog = '-'
     config.application_path = FASTAPI_APP
     for k, v in HYPERCORN_CONFIG.items():
         setattr(config, k, v)

@@ -526,3 +526,9 @@ ROLLS: dict[str, Callable[[], BaseRoll]] = {
     'daily': TagRoll.get_daily,
     'weekly': SeasonalRoll.get_weekly,
 }
+
+
+async def load_rolls():
+    rolls = {roll_id: roll_getter() for roll_id, roll_getter in ROLLS.items()}
+    await asyncio.gather(*[roll.load(get_edgedb()) for roll in rolls.values()])
+    return rolls
