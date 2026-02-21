@@ -485,9 +485,10 @@ class SeasonalRoll(BaseMediaRoll):
         last_week_season_saved = await weekly_season.get(str(last_week_key))
 
         # boomer and zoomer enough ig
+        current_year = datetime.now().year
         seasons = cast(
             list[tuple[int, MEDIA_SELECT_IDS_BY_SEASON_SEASON]],
-            list(product(range(1990, 2030), ['WINTER', 'SPRING', 'SUMMER', 'FALL'])),
+            list(product(range(1990, current_year + 1), ['WINTER', 'SPRING', 'SUMMER', 'FALL'])),
         )
 
         if last_week_season_saved:
