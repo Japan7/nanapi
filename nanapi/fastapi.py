@@ -14,7 +14,6 @@ from fastapi.openapi.docs import (
 from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute
 
-from nanapi.local_settings import LOG_LEVEL
 from nanapi.routers import (
     ai,
     amq,
@@ -38,6 +37,7 @@ from nanapi.settings import (
     ERROR_WEBHOOK_URL,
     FASTAPI_CONFIG,
     INSTANCE_NAME,
+    LOG_LEVEL,
     OPENAPI_URL,
     PROFILING,
     REDOC_URL,
