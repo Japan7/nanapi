@@ -1,8 +1,8 @@
 import asyncio
 import logging
+import sys
 from contextlib import asynccontextmanager
 from datetime import date, datetime, timedelta
-import sys
 
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.gzip import GZipMiddleware
@@ -46,8 +46,6 @@ from nanapi.settings import (
 from nanapi.utils.fastapi import NanAPIRouter
 from nanapi.utils.logs import get_traceback, get_traceback_str, webhook_post_error
 from nanapi.utils.waicolle import load_rolls
-
-from . import __name__ as module_name
 
 logger = logging.getLogger(__name__)
 
@@ -95,9 +93,7 @@ class HypercornLogFilter(logging.Filter):
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
-    format = (
-        '[%(asctime)s] [%(process)d] [%(levelname)s] [%(name)s:%(lineno)d] %(message)s'
-    )
+    format = '[%(asctime)s] [%(process)d] [%(levelname)s] [%(name)s:%(lineno)d] %(message)s'
     handler = logging.StreamHandler(sys.stderr)
     datefmt = '%Y-%m-%d %H:%M:%S %z'
     handler.setFormatter(logging.Formatter(format, datefmt=datefmt))

@@ -1,5 +1,3 @@
-import logging
-
 from hypercorn.config import Config
 from hypercorn.run import run
 
