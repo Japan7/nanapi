@@ -11,7 +11,7 @@ with
 select anilist::Media {
   id_al,
 }
-filter .tags.name = tag_name and .tags@rank >= min_rank
+filter any(.tags.name = tag_name) and any(.tags@rank >= min_rank)
 """
 
 
