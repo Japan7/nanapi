@@ -6,7 +6,7 @@ with
   medias := (select anilist::Media filter .id_al in array_unpack(ids_al)),
   pool := (
     select anilist::Character
-    filter .edges.media in medias and .image_large not ilike '%/default.jpg'
+    filter any(.edges.media in medias) and .image_large not ilike '%/default.jpg'
   ),
 genred := (
     select pool
