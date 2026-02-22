@@ -323,7 +323,7 @@ async def player_roll(
             if player.frozen_at is not None:
                 return Response(status_code=status.HTTP_204_NO_CONTENT)
 
-            if player.user.age_verified:
+            if not player.user.age_verified:
                 raise HTTPException(
                     status_code=status.HTTP_418_IM_A_TEAPOT,
                     detail='Player is underage, no gambling allowed.',
