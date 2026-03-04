@@ -29,12 +29,6 @@ JWT_ALGORITHM = 'HS256'
 JWT_EXPIRE_MINUTES = 30
 # JWT_SECRET_KEY = ''  # openssl rand -hex 32
 
-## OpenAPI
-OPENAPI_URL = '/openapi.json'
-DOCS_URL = '/docs'
-SWAGGER_UI_OAUTH2_REDIRECT_URL = DOCS_URL + '/oauth2-redirect'
-REDOC_URL = '/redoc'
-
 ## AniList
 # AniList API is currently in “degraded” mode and limits to
 # 60 requests per minutes. The headers are still reporting 90

@@ -29,12 +29,6 @@ BASIC_AUTH_PASSWORD = 'password'
 # JWT_EXPIRE_MINUTES = 30
 JWT_SECRET_KEY = ''  # openssl rand -hex 32
 
-## OpenAPI
-# OPENAPI_URL = '/openapi.json'
-# DOCS_URL = '/docs'
-# SWAGGER_UI_OAUTH2_REDIRECT_URL = DOCS_URL + '/oauth2-redirect'
-# REDOC_URL = '/redoc'
-
 ## AniList
 # AL_LOW_PRIORITY_THRESH = 30
 
