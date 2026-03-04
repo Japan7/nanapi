@@ -105,9 +105,8 @@ jobs:
 
   merge:
     if: (github.event_name != 'pull_request') && !startsWith(github.ref, 'refs/heads/renovate')
+    needs: build
     runs-on: ubuntu-latest
-    needs:
-      - build
     steps:
       - name: Download digests
         uses: actions/download-artifact@v8
@@ -154,8 +153,7 @@ jobs:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
 
   deploy:
-    if: (github.event_name != 'pull_request') && !startsWith(github.ref, 'refs/heads/renovate')
-    needs: build
+    needs: merge
     runs-on: ubuntu-latest
     permissions:
       contents: write
