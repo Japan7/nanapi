@@ -154,9 +154,9 @@ from nanapi.utils.waicolle import (
     RE_SYMBOLES,
     REROLLS_MAX_RANKS,
     RNG,
-    ROLLS,
     TagRoll,
     UserRoll,
+    get_roll,
     load_rolls,
 )
 
@@ -331,12 +331,11 @@ async def player_roll(
 
             # Get Roll
             if roll_id is not None:
-                roll_getter = ROLLS.get(roll_id, None)
-                if roll_getter is None:
+                roll = await get_roll(roll_id)
+                if roll is None:
                     raise HTTPException(
                         status_code=status.HTTP_404_NOT_FOUND, detail='Roll Not Found'
                     )
-                roll = roll_getter()
                 reason = reason if reason is not None else roll_id
             elif coupon_code is not None:
                 # Check eligibility
@@ -1453,7 +1452,7 @@ async def export_waifus(edgedb: AsyncIOClient = Depends(get_client_edgedb)):
 @router.oauth2.get('/exports/daily', response_model=list[MediasPoolExportResult])
 async def export_daily():
     """Export daily media pool."""
-    roll = TagRoll.get_daily()
+    roll = await TagRoll.get_daily()
     await roll.load(get_edgedb())
     assert roll.ids_al
     return await medias_pool_export(get_edgedb(), ids_al=roll.ids_al)
