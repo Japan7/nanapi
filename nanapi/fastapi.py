@@ -3,6 +3,7 @@ import logging
 import sys
 from contextlib import asynccontextmanager
 from datetime import date, datetime, timedelta
+from random import randint
 
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.gzip import GZipMiddleware
@@ -56,7 +57,13 @@ async def daily_loop():
     while True:
         tomorrow = date.today() + timedelta(days=1)
         t = datetime.fromordinal(tomorrow.toordinal()) - datetime.now()
-        await asyncio.sleep(t.total_seconds())
+        # I can’t find a way to tell which worker is being used so
+        # spread tasks with a random number of seconds to not have
+        # our n workers waking up at the same time.
+        # a little delay should be fine since this is mostly here to
+        # prepare the rolls for the next day.
+        random_delay = randint(1, 3600 * 4)
+        await asyncio.sleep(t.total_seconds() + random_delay)
         await daily_tasks()
 
 
