@@ -1,5 +1,6 @@
 import asyncio
 import re
+from base64 import b64decode
 from collections import defaultdict
 from datetime import datetime, timedelta
 from typing import Any, cast
@@ -143,7 +144,7 @@ from nanapi.models.waicolle import (
 )
 from nanapi.settings import INSTANCE_NAME, TZ
 from nanapi.utils.clients import get_edgedb, get_meilisearch
-from nanapi.utils.collages import chara_album, waifu_collage
+from nanapi.utils.collages import chara_album, load_img, waifu_collage
 from nanapi.utils.fastapi import (
     HTTPExceptionModel,
     NanAPIRouter,
@@ -997,12 +998,21 @@ async def blood_expired_waifus(
 @router.oauth2_client_restricted.patch(
     '/waifus/{id}/customs',
     response_model=WaifuUpdateCustomImageNameResult,
-    responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
+    responses={
+        status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel),
+        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE: dict(model=HTTPExceptionModel),
+    },
 )
 async def customize_waifu(
     id: UUID, body: CustomizeWaifuBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
 ):
     """Customize waifu image name."""
+    if body.custom_image is not None:
+        try:
+            _ = load_img(b64decode(body.custom_image))
+        except Exception:
+            raise HTTPException(status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
     resp = await waifu_update_custom_image_name(edgedb, id=id, **body.model_dump())
     if resp is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
