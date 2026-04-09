@@ -48,6 +48,12 @@ AI_EMBEDDING_MODEL_NAME = 'text-embedding-3-small'
 AI_EMBEDDING_MODEL_MAX_TOKENS = 8192
 AI_MESSAGEPAGES_FOR_CLIENTS: list[str] = []
 
+## Discord
+DISCORD_BOT_TOKEN = ''
+DISCORD_SYNC_BATCH_SIZE = 1000
+DISCORD_SYNC_CONCURRENCY = 4
+DISCORD_SYNC_LOOKBACK_MINUTES = 360
+
 try:
     from .local_settings import *  # noqa: F403
 except ImportError:

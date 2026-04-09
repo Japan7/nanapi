@@ -28,7 +28,17 @@ for data in array_unpack(messages) union (
         edited_timestamp := <datetime>json_get(message_data, 'edited_timestamp'),
       }
       unless conflict on ((.client, .message_id))
-      else (select discord::Message)
+      else (
+        update discord::Message set {
+          data := message_data,
+          guild_id := <str>json_get(message_data, 'guild_id'),
+          channel_id := <str>json_get(message_data, 'channel_id'),
+          author_id := <str>json_get(message_data, 'author', 'id'),
+          content := <str>json_get(message_data, 'content'),
+          timestamp := <datetime>json_get(message_data, 'timestamp'),
+          edited_timestamp := <datetime>json_get(message_data, 'edited_timestamp'),
+        }
+      )
     ),
     # Flatten reaction data to reduce nesting depth
     reaction_items := (

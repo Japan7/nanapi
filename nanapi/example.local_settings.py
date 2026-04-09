@@ -30,7 +30,11 @@ BASIC_AUTH_PASSWORD = 'password'
 JWT_SECRET_KEY = ''  # openssl rand -hex 32
 
 ## AniList
-# AL_LOW_PRIORITY_THRESH = 30
+# AniList API is currently in “degraded” mode and limits to
+# 60 requests per minutes. The headers are still reporting 90
+# so we set it to 70 per default to keep an interactive budget
+# of 10 requests.
+# AL_LOW_PRIORITY_THRESH = 70
 
 ## MyAnimeList
 MAL_CLIENT_ID = ''
@@ -43,3 +47,9 @@ MAL_CLIENT_ID = ''
 # AI_EMBEDDING_MODEL_NAME = 'text-embedding-3-small'
 # AI_EMBEDDING_MODEL_MAX_TOKENS = 8192
 # AI_MESSAGEPAGES_FOR_CLIENTS = []
+
+## Discord
+DISCORD_BOT_TOKEN = ''
+# DISCORD_SYNC_BATCH_SIZE = 1000
+# DISCORD_SYNC_CONCURRENCY = 4
+# DISCORD_SYNC_LOOKBACK_MINUTES = 360
