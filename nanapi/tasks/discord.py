@@ -15,10 +15,6 @@ from tqdm import tqdm
 
 from nanapi.database.discord.message_bulk_insert import message_bulk_insert
 from nanapi.database.discord.message_bulk_update_noindex import message_bulk_update_noindex
-from nanapi.database.discord.message_select_latest_timestamps import (
-    MessageSelectLatestTimestampsResult,
-    message_select_latest_timestamps,
-)
 from nanapi.database.discord.reaction_bulk_delete_by_message_ids import (
     reaction_bulk_delete_by_message_ids,
 )
@@ -26,7 +22,7 @@ from nanapi.settings import (
     DISCORD_BOT_TOKEN,
     DISCORD_SYNC_BATCH_SIZE,
     DISCORD_SYNC_CONCURRENCY,
-    DISCORD_SYNC_LOOKBACK_MINUTES,
+    DISCORD_SYNC_LOOKBACK_HOURS,
     LOG_LEVEL,
 )
 from nanapi.utils.fastapi import get_client_edgedb
@@ -50,9 +46,6 @@ class Args:
     guild_id: str = ''
     client_id: UUID | None = None
     nanachan_user_id: str = ''
-    batch_size: int = DISCORD_SYNC_BATCH_SIZE
-    concurrency: int = DISCORD_SYNC_CONCURRENCY
-    lookback_minutes: int = DISCORD_SYNC_LOOKBACK_MINUTES
 
 
 class ThreadMetadata(BaseModel):
@@ -227,9 +220,6 @@ def parse_args() -> Args:
     _ = parser.add_argument('--guild-id', required=True)
     _ = parser.add_argument('--client-id', required=True, type=UUID)
     _ = parser.add_argument('--nanachan-user-id', required=True)
-    _ = parser.add_argument('--batch-size', type=int, default=DISCORD_SYNC_BATCH_SIZE)
-    _ = parser.add_argument('--concurrency', type=int, default=DISCORD_SYNC_CONCURRENCY)
-    _ = parser.add_argument('--lookback-minutes', type=int, default=DISCORD_SYNC_LOOKBACK_MINUTES)
     args = Args()
     _ = parser.parse_args(namespace=args)
     assert args.client_id is not None
@@ -300,12 +290,6 @@ async def flush_batch(
             return
 
 
-def latest_timestamp_map(
-    latest_timestamps: list[MessageSelectLatestTimestampsResult],
-) -> dict[str, datetime | None]:
-    return {row.channel_id: row.latest_timestamp for row in latest_timestamps}
-
-
 async def sync_channel(
     discord: DiscordClient,
     edgedb: AsyncIOClient,
@@ -321,8 +305,6 @@ async def sync_channel(
     inserted = 0
     batch_messages: list[dict[str, Any]] = []
     batch_noindexes: list[dict[str, str]] = []
-    cutoff_label = cutoff.isoformat() if cutoff is not None else 'beginning'
-    logger.info(f'syncing channel {channel.id} from {cutoff_label}')
     while True:
         page = await discord.list_channel_messages(channel.id, before=before)
         if not page:
@@ -363,7 +345,8 @@ async def sync_channel(
     if batch_messages:
         await flush_batch(edgedb, batch_messages=batch_messages, batch_noindexes=batch_noindexes)
         inserted += len(batch_messages)
-    logger.info(f'finished channel {channel.id} with {inserted} messages processed')
+    if inserted:
+        logger.info(f'finished channel {channel.id} with {inserted} messages processed')
     return inserted
 
 
@@ -403,21 +386,16 @@ async def sync_discord(args: Args) -> None:
         raise ValueError('DISCORD_BOT_TOKEN must be set in local settings')
     assert args.client_id is not None
     edgedb = get_client_edgedb(args.client_id)
-    async with DiscordClient(DISCORD_BOT_TOKEN, args.concurrency) as discord:
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=DISCORD_SYNC_LOOKBACK_HOURS)
+    logger.info(f'syncing from {cutoff.isoformat()}')
+    async with DiscordClient(DISCORD_BOT_TOKEN, DISCORD_SYNC_CONCURRENCY) as discord:
         channels, nanachan_thread_ids = await discover_channels(
             discord, guild_id=args.guild_id, nanachan_user_id=args.nanachan_user_id
         )
-        latest_timestamps = await message_select_latest_timestamps(
-            edgedb, guild_id=args.guild_id, channel_ids=[channel.id for channel in channels]
-        )
-        latest_by_channel = latest_timestamp_map(latest_timestamps)
-        lookback = timedelta(minutes=max(0, args.lookback_minutes))
-        channel_semaphore = asyncio.Semaphore(max(1, args.concurrency))
+        channel_semaphore = asyncio.Semaphore(max(1, DISCORD_SYNC_CONCURRENCY))
 
         async def sync_with_limit(channel: ChannelData) -> int:
             async with channel_semaphore:
-                latest = latest_by_channel.get(channel.id)
-                cutoff = latest - lookback if latest is not None else None
                 return await sync_channel(
                     discord,
                     edgedb,
@@ -426,7 +404,7 @@ async def sync_discord(args: Args) -> None:
                     cutoff=cutoff,
                     nanachan_thread_ids=nanachan_thread_ids,
                     nanachan_user_id=args.nanachan_user_id,
-                    batch_size=max(1, args.batch_size),
+                    batch_size=max(1, DISCORD_SYNC_BATCH_SIZE),
                 )
 
         tasks = [asyncio.create_task(sync_with_limit(channel)) for channel in channels]
