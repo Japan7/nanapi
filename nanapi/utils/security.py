@@ -24,10 +24,10 @@ def get_password_hash(password: str) -> str:
     return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
 
 
-_basic_auth = HTTPBasic()
+JAPAN7_BASIC_AUTH = HTTPBasic()
 
 
-def japan7_basic_auth(credentials: HTTPBasicCredentials = Depends(_basic_auth)) -> None:
+def japan7_basic_auth(credentials: HTTPBasicCredentials = Depends(JAPAN7_BASIC_AUTH)) -> None:
     current_username_bytes = credentials.username.encode()
     correct_username_bytes = BASIC_AUTH_USERNAME.encode()
     is_correct_username = secrets.compare_digest(current_username_bytes, correct_username_bytes)
@@ -42,7 +42,8 @@ def japan7_basic_auth(credentials: HTTPBasicCredentials = Depends(_basic_auth)) 
         )
 
 
-OAUTH2_SCHEME = OAuth2PasswordBearer(tokenUrl='clients/token')
+OAUTH2_BEARER_AUTH = OAuth2PasswordBearer(tokenUrl='clients/token', auto_error=False)
+OAUTH2_BASIC_AUTH = HTTPBasic(auto_error=False)
 
 
 async def authenticate_client(username: str, password: str) -> ClientGetByUsernameResult | None:

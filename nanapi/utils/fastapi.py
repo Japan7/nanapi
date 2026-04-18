@@ -1,11 +1,12 @@
 from functools import cache, cached_property
-from typing import Any, Self, cast, override
+from typing import Annotated, Any, Self, cast, override
 from uuid import UUID
 
 import gel
 import jwt
-from fastapi import APIRouter, Depends, FastAPI, HTTPException, status
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, Security, status
 from fastapi.responses import HTMLResponse
+from fastapi.security import HTTPBasicCredentials
 from pydantic import BaseModel
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.requests import Request
@@ -16,7 +17,12 @@ from nanapi.database.default.client_get_by_username import (
 )
 from nanapi.settings import JWT_ALGORITHM, JWT_SECRET_KEY, PROFILING
 from nanapi.utils.clients import get_edgedb
-from nanapi.utils.security import OAUTH2_SCHEME, japan7_basic_auth
+from nanapi.utils.security import (
+    OAUTH2_BASIC_AUTH,
+    OAUTH2_BEARER_AUTH,
+    authenticate_client,
+    japan7_basic_auth,
+)
 
 
 class HTTPExceptionModel(BaseModel):
@@ -136,24 +142,36 @@ class TokenData(BaseModel):
     username: str
 
 
-async def get_current_client(token: str = Depends(OAUTH2_SCHEME)) -> ClientGetByUsernameResult:
+async def get_current_client(
+    bearer: Annotated[str | None, Security(OAUTH2_BEARER_AUTH)],
+    basic: Annotated[HTTPBasicCredentials | None, Security(OAUTH2_BASIC_AUTH)],
+) -> ClientGetByUsernameResult:
+    client: ClientGetByUsernameResult | None = None
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail='Could not validate credentials',
-        headers={'WWW-Authenticate': 'Bearer'},
+        headers={'WWW-Authenticate': 'Bearer, Basic'},
     )
-    try:
-        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])  # pyright: ignore[reportUnknownMemberType]
-        username: str | None = payload.get('sub', None)
-        if username is None:
+
+    if bearer is not None:
+        try:
+            payload = jwt.decode(bearer, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])  # pyright: ignore[reportUnknownMemberType]
+            username: str | None = payload.get('sub', None)
+            if username is None:
+                raise credentials_exception
+            token_data = TokenData(username=username)
+        except jwt.PyJWTError:
             raise credentials_exception
-        token_data = TokenData(username=username)
-    except jwt.PyJWTError:
-        raise credentials_exception
-    client = await client_get_by_username(get_edgedb(), username=token_data.username)
-    if client is None:
-        raise credentials_exception
-    return client
+        client = await client_get_by_username(get_edgedb(), username=token_data.username)
+
+    elif basic is not None:
+        client = await authenticate_client(basic.username, basic.password)
+
+    if client is not None:
+        return client
+
+    raise credentials_exception
 
 
 def client_id_param(
