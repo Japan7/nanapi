@@ -1,4 +1,0 @@
-[project]
-name = "nanapi-notebooks"
-version = "0.1.0"
-dependencies = ["ipykernel", "pydantic-ai==1.56.0"]

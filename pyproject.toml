@@ -46,14 +46,7 @@ dev = [
     "gel-pydantic-codegen==1.2.0",
     "pyinstrument==5.1.2",
     "fawltydeps==0.20.0",
-    "nanapi-notebooks",
 ]
-
-[tool.uv.sources]
-nanapi-notebooks = { workspace = true }
-
-[tool.uv.workspace]
-members = ["notebooks"]
 
 [project.urls]
 homepage = "https://github.com/Japan7/nanapi"
@@ -62,7 +55,6 @@ homepage = "https://github.com/Japan7/nanapi"
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
 reportMissingTypeStubs = false
-ignore = ["notebooks"]
 
 [tool.ruff]
 line-length = 99
@@ -94,7 +86,6 @@ ignore = [
 quote-style = "single"
 
 [tool.fawltydeps]
-exclude = ["notebooks"]
 ignore_unused = [
     # cchardet is used by aiohttp
     "faust-cchardet",
@@ -112,6 +103,5 @@ ignore_unused = [
     "fastapi",
     # fastapi needs it for multipart uploads
     "python-multipart",
-    "nanapi-notebooks",
 ]
 output_format = "human_detailed"
