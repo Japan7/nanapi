@@ -12,7 +12,12 @@ from nanapi.database.default.client_get_by_username import (
     ClientGetByUsernameResult,
     client_get_by_username,
 )
-from nanapi.settings import BASIC_AUTH_PASSWORD, BASIC_AUTH_USERNAME, JWT_ALGORITHM, JWT_SECRET_KEY
+from nanapi.settings import (
+    JAPAN7_BASIC_AUTH_PASSWORD,
+    JAPAN7_BASIC_AUTH_USERNAME,
+    JWT_ALGORITHM,
+    JWT_SECRET_KEY,
+)
 from nanapi.utils.clients import get_edgedb
 
 
@@ -29,10 +34,10 @@ JAPAN7_BASIC_AUTH = HTTPBasic()
 
 def japan7_basic_auth(credentials: HTTPBasicCredentials = Depends(JAPAN7_BASIC_AUTH)) -> None:
     current_username_bytes = credentials.username.encode()
-    correct_username_bytes = BASIC_AUTH_USERNAME.encode()
+    correct_username_bytes = JAPAN7_BASIC_AUTH_USERNAME.encode()
     is_correct_username = secrets.compare_digest(current_username_bytes, correct_username_bytes)
     current_password_bytes = credentials.password.encode()
-    correct_password_bytes = BASIC_AUTH_PASSWORD.encode()
+    correct_password_bytes = JAPAN7_BASIC_AUTH_PASSWORD.encode()
     is_correct_password = secrets.compare_digest(current_password_bytes, correct_password_bytes)
     if not (is_correct_username and is_correct_password):
         raise HTTPException(
@@ -43,7 +48,7 @@ def japan7_basic_auth(credentials: HTTPBasicCredentials = Depends(JAPAN7_BASIC_A
 
 
 OAUTH2_BEARER_AUTH = OAuth2PasswordBearer(tokenUrl='clients/token', auto_error=False)
-OAUTH2_BASIC_AUTH = HTTPBasic(auto_error=False)
+HTTP_BASIC_AUTH = HTTPBasic(auto_error=False)
 
 
 async def authenticate_client(username: str, password: str) -> ClientGetByUsernameResult | None:

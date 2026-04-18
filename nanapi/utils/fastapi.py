@@ -18,7 +18,7 @@ from nanapi.database.default.client_get_by_username import (
 from nanapi.settings import JWT_ALGORITHM, JWT_SECRET_KEY, PROFILING
 from nanapi.utils.clients import get_edgedb
 from nanapi.utils.security import (
-    OAUTH2_BASIC_AUTH,
+    HTTP_BASIC_AUTH,
     OAUTH2_BEARER_AUTH,
     authenticate_client,
     japan7_basic_auth,
@@ -35,7 +35,7 @@ class NanAPIRouter(APIRouter):
         return cast(Self, APIRouterProxy(self))
 
     @cached_property
-    def basic_auth(self) -> Self:
+    def japan7_basic_auth(self) -> Self:
         return cast(
             Self,
             APIRouterProxy(
@@ -144,7 +144,7 @@ class TokenData(BaseModel):
 
 async def get_current_client(
     bearer: Annotated[str | None, Security(OAUTH2_BEARER_AUTH)],
-    basic: Annotated[HTTPBasicCredentials | None, Security(OAUTH2_BASIC_AUTH)],
+    basic: Annotated[HTTPBasicCredentials | None, Security(HTTP_BASIC_AUTH)],
 ) -> ClientGetByUsernameResult:
     client: ClientGetByUsernameResult | None = None
 

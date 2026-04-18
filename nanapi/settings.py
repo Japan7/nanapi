@@ -23,8 +23,8 @@ FASTAPI_CONFIG: dict[str, Any] = dict()
 HYPERCORN_CONFIG: dict[str, Any] = dict(workers=4, accesslog='-')
 
 ## Security
-# BASIC_AUTH_USERNAME = 'username'
-# BASIC_AUTH_PASSWORD = 'password'
+# JAPAN7_BASIC_AUTH_USERNAME = 'username'
+# JAPAN7_BASIC_AUTH_PASSWORD = 'password'
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRE_MINUTES = 30
 # JWT_SECRET_KEY = ''  # openssl rand -hex 32

@@ -21,7 +21,7 @@ async def whoami(current_user: ClientGetByUsernameResult = Depends(get_current_c
     return current_user
 
 
-@router.basic_auth.post(
+@router.japan7_basic_auth.post(
     '/',
     response_model=ClientInsertResult,
     status_code=status.HTTP_201_CREATED,
