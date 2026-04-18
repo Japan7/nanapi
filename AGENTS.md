@@ -59,10 +59,10 @@ EdgeDB uses **global variables** for tenant isolation:
 The custom `NanAPIRouter` class provides auth variants:
 
 - `@router.public.<method>` - No authentication
-- `@router.basic_auth.<method>` - HTTP Basic Auth (for API docs access)
-- `@router.oauth2.<method>` - JWT token required
-- `@router.oauth2_client.<method>` - JWT + optional client_id param
-- `@router.oauth2_client_restricted.<method>` - JWT + client_id must match authenticated client
+- `@router.japan7_basic_auth.<method>` - HTTP Basic Auth using the Japan7 shared credentials
+- `@router.oauth2.<method>` - Bearer JWT or HTTP Basic client credentials
+- `@router.oauth2_client.<method>` - Bearer JWT or HTTP Basic client credentials + optional client_id param
+- `@router.oauth2_client_restricted.<method>` - Bearer JWT or HTTP Basic client credentials + client_id must match authenticated client
 
 **Pattern:**
 ```python
@@ -162,7 +162,7 @@ For complete development environment setup, see [nanadev](https://github.com/Jap
 
 Copy `nanapi/example.local_settings.py` to `nanapi/local_settings.py` and configure:
 - `JWT_SECRET_KEY` - Required for auth
-- `BASIC_AUTH_USERNAME/PASSWORD` - For API docs access
+- `JAPAN7_BASIC_AUTH_USERNAME/PASSWORD` - For Japan7 shared HTTP Basic auth
 - `MAL_CLIENT_ID` - MyAnimeList integration
 - EdgeDB/Meilisearch connection details (defaults usually work locally)
 
