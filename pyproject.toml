@@ -22,7 +22,7 @@ dependencies = [
     "meilisearch-python-sdk==7.1.2",
     "numpy==2.4.4",
     "pillow==12.2.0",
-    "rich==14.3.4",
+    "rich==15.0.0",
     "discord-webhook[async]==1.4.1",
     "python-multipart==0.0.26",
     "bcrypt==5.0.0",
