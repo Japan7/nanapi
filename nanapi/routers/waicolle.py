@@ -823,8 +823,8 @@ async def get_waifus(
     custom_collage: int | None = None,
     as_og: int | None = None,
     ascended: int | None = None,
-    edged: int = 0,
-    ascendable: int = 0,
+    edged: int | None = None,
+    ascendable: int | None = None,
     chara_id_al: int | None = None,
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
