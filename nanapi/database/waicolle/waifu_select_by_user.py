@@ -20,9 +20,11 @@ with
   ascended := <optional bool>$ascended,
   as_og := <optional bool>$as_og ?? false,
   disabled := <optional bool>$disabled ?? false,
+  exclude_custom_image := <optional bool>$exclude_custom_image ?? false,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
 select waicolle::Waifu {
   *,
+  custom_image := (.custom_image if not exclude_custom_image else {}),
   character: { id_al },
   owner: {
     user: {
@@ -118,6 +120,7 @@ async def waifu_select_by_user(
     ascended: bool | None = None,
     as_og: bool | None = None,
     disabled: bool | None = None,
+    exclude_custom_image: bool | None = None,
 ) -> list[WaifuSelectByUserResult]:
     resp = await executor.query_json(  # pyright: ignore[reportUnknownMemberType]
         EDGEQL_QUERY,
@@ -132,5 +135,6 @@ async def waifu_select_by_user(
         ascended=ascended,
         as_og=as_og,
         disabled=disabled,
+        exclude_custom_image=exclude_custom_image,
     )
     return adapter.validate_json(resp, strict=False)

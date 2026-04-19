@@ -823,6 +823,7 @@ async def get_waifus(
     custom_collage: int | None = None,
     as_og: int | None = None,
     ascended: int | None = None,
+    exclude_custom_image: int | None = None,
     edged: int | None = None,
     ascendable: int | None = None,
     chara_id_al: int | None = None,
@@ -840,6 +841,7 @@ async def get_waifus(
     custom_collage: Whether waifu is part of a custom collage (0: no, 1: yes, None: ignore filter)
     as_og: Use discord_id as original owner (0 or None: no, 1: yes)
     ascended: Filter waifus with level >= 1 (0 or None: ignore filter, 1: yes)
+    exclude_custom_image: Exclude custom_images from the response (0 or None: no, 1: yes)
     edged: Whether waifu is close to a level upgrade (0 or None: ignore filter, 1: yes)
     ascendable: Whether waifu can level up (0 or None: ignore filter, 1: yes)
     chara_id_al: Waifus matching a specific character ID.
@@ -878,6 +880,9 @@ async def get_waifus(
                     custom_collage=(bool(custom_collage) if custom_collage is not None else None),
                     as_og=bool(as_og) if as_og is not None else None,
                     ascended=bool(ascended) if ascended is not None else None,
+                    exclude_custom_image=(
+                        bool(exclude_custom_image) if exclude_custom_image is not None else None
+                    ),
                 )
         except CardinalityViolationError as e:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

@@ -10,9 +10,11 @@ with
   ascended := <optional bool>$ascended,
   as_og := <optional bool>$as_og ?? false,
   disabled := <optional bool>$disabled ?? false,
+  exclude_custom_image := <optional bool>$exclude_custom_image ?? false,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
 select waicolle::Waifu {
   *,
+  custom_image := (.custom_image if not exclude_custom_image else {}),
   character: { id_al },
   owner: {
     user: {
