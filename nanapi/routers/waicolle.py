@@ -138,6 +138,7 @@ from nanapi.models.waicolle import (
     RerollResponse,
     RollData,
     S,
+    SearchWaifusBody,
     StaffAlbumResult,
     UpsertPlayerBody,
 )
@@ -847,23 +848,78 @@ async def get_waifus(
     chara_id_al: Waifus matching a specific character ID.
     chara_id_al is exclusive and cannot be used with other filters.
     """
+    parsed_ids = None
     if ids is not None:
         try:
             parsed_ids = [UUID(id) for id in ids.split(',')] if len(ids) > 0 else []
         except ValueError:
             raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
-        return await waifu_select(edgedb, ids=parsed_ids)
+    return await _search_waifus(
+        edgedb,
+        ids=parsed_ids,
+        discord_id=discord_id,
+        level=level,
+        locked=bool(locked) if locked is not None else None,
+        trade_locked=bool(trade_locked) if trade_locked is not None else None,
+        blooded=bool(blooded) if blooded is not None else None,
+        nanaed=bool(nanaed) if nanaed is not None else None,
+        custom_collage=bool(custom_collage) if custom_collage is not None else None,
+        as_og=bool(as_og) if as_og is not None else None,
+        ascended=bool(ascended) if ascended is not None else None,
+        exclude_custom_image=(
+            bool(exclude_custom_image) if exclude_custom_image is not None else None
+        ),
+        edged=bool(edged) if edged is not None else None,
+        ascendable=bool(ascendable) if ascendable is not None else None,
+        chara_id_al=chara_id_al,
+    )
+
+
+@router.oauth2_client.post(
+    '/waifus/search',
+    response_model=list[WaifuSelectResult],
+    responses={
+        status.HTTP_400_BAD_REQUEST: dict(model=HTTPExceptionModel),
+        status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel),
+    },
+)
+async def search_waifus_post(
+    body: SearchWaifusBody, edgedb: AsyncIOClient = Depends(get_client_edgedb)
+):
+    """Search waifus with filters from request body."""
+    return await _search_waifus(edgedb, **body.model_dump())
+
+
+async def _search_waifus(
+    edgedb: AsyncIOClient,
+    ids: list[UUID] | None = None,
+    discord_id: str | None = None,
+    level: int | None = None,
+    locked: bool | None = None,
+    trade_locked: bool | None = None,
+    blooded: bool | None = None,
+    nanaed: bool | None = None,
+    custom_collage: bool | None = None,
+    as_og: bool | None = None,
+    ascended: bool | None = None,
+    exclude_custom_image: bool | None = None,
+    edged: bool | None = None,
+    ascendable: bool | None = None,
+    chara_id_al: int | None = None,
+):
+    if ids is not None:
+        return await waifu_select(edgedb, ids=ids)
 
     if chara_id_al is not None:
         return await waifu_select_by_chara(edgedb, id_al=chara_id_al)
     elif discord_id is not None:
         try:
-            if bool(edged):
+            if edged:
                 resp = await waifu_edged(edgedb, discord_id=discord_id)
                 return sorted(
                     (group.elements[0] for group in resp), key=lambda w: w.timestamp, reverse=True
                 )
-            elif bool(ascendable):
+            elif ascendable:
                 resp = await waifu_ascendable(edgedb, discord_id=discord_id)
                 return sorted(
                     (group.elements[0] for group in resp), key=lambda w: w.timestamp, reverse=True
@@ -873,16 +929,14 @@ async def get_waifus(
                     edgedb,
                     discord_id=discord_id,
                     level=level,
-                    locked=bool(locked) if locked is not None else None,
-                    trade_locked=(bool(trade_locked) if trade_locked is not None else None),
-                    blooded=bool(blooded) if blooded is not None else None,
-                    nanaed=bool(nanaed) if nanaed is not None else None,
-                    custom_collage=(bool(custom_collage) if custom_collage is not None else None),
-                    as_og=bool(as_og) if as_og is not None else None,
-                    ascended=bool(ascended) if ascended is not None else None,
-                    exclude_custom_image=(
-                        bool(exclude_custom_image) if exclude_custom_image is not None else None
-                    ),
+                    locked=locked,
+                    trade_locked=trade_locked,
+                    blooded=blooded,
+                    nanaed=nanaed,
+                    custom_collage=custom_collage,
+                    as_og=as_og,
+                    ascended=ascended,
+                    exclude_custom_image=exclude_custom_image,
                 )
         except CardinalityViolationError as e:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))

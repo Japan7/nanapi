@@ -20,6 +20,11 @@ class ProfileSearchResult(ProfileGetByDiscordIdResult):
     pass
 
 
+class ProfileSearchBody(BaseModel):
+    discord_ids: list[str] | None = None
+    pattern: str | None = None
+
+
 class UpsertProfileBody(BaseModel):
     birthday: datetime | None = None
     discord_username: str

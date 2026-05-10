@@ -8,6 +8,7 @@ from nanapi.database.user.user_bulk_merge import UserBulkMergeResult, user_bulk_
 from nanapi.database.user.user_select import UserSelectResult, user_select
 from nanapi.database.user.user_upsert import UserUpsertResult, user_upsert
 from nanapi.models.user import (
+    ProfileSearchBody,
     ProfileSearchResult,
     UpsertDiscordAccountBodyItem,
     UpsertProfileBody,
@@ -50,6 +51,15 @@ async def profile_search(discord_ids: str | None = None, pattern: str | None = N
         return await profile_select_filter_discord_id(get_edgedb(), discord_ids=parsed)
     if pattern is not None:
         return await profile_select_ilike(get_edgedb(), pattern=pattern)
+
+
+@router.oauth2.post('/profiles/search', response_model=list[ProfileSearchResult])
+async def profile_search_post(body: ProfileSearchBody):
+    """Search user profiles by Discord IDs or pattern in request body."""
+    if body.discord_ids is not None:
+        return await profile_select_filter_discord_id(get_edgedb(), discord_ids=body.discord_ids)
+    if body.pattern is not None:
+        return await profile_select_ilike(get_edgedb(), pattern=body.pattern)
 
 
 @router.oauth2.get(

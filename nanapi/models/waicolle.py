@@ -189,6 +189,23 @@ class BulkUpdateWaifusBody(BaseModel):
     custom_collage: bool | None = None
 
 
+class SearchWaifusBody(BaseModel):
+    ids: list[UUID] | None = None
+    discord_id: str | None = None
+    level: int | None = None
+    locked: bool | None = None
+    trade_locked: bool | None = None
+    blooded: bool | None = None
+    nanaed: bool | None = None
+    custom_collage: bool | None = None
+    as_og: bool | None = None
+    ascended: bool | None = None
+    exclude_custom_image: bool | None = None
+    edged: bool | None = None
+    ascendable: bool | None = None
+    chara_id_al: int | None = None
+
+
 class NewTradeBody(BaseModel):
     author_discord_id: str
     received_ids: list[UUID]

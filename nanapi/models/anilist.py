@@ -369,6 +369,10 @@ class MALListResp(BaseModel):
 ##################
 # FastAPI models #
 ##################
+class SearchIdsALBody(BaseModel):
+    ids_al: list[int]
+
+
 class UpsertAnilistAccountBody(BaseModel):
     discord_username: str
     service: ACCOUNT_MERGE_SERVICE

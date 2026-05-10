@@ -36,6 +36,7 @@ from nanapi.models.anilist import (
     MEDIA_TYPES,
     CharaNameAutocompleteResult,
     MediaTitleAutocompleteResult,
+    SearchIdsALBody,
     StaffNameAutocompleteResult,
     UpsertAnilistAccountBody,
 )
@@ -94,6 +95,12 @@ async def get_medias(ids_al: str):
 
     db_resp = await media_select(get_edgedb(), ids_al=ids_al_parsed)
     return db_resp
+
+
+@router.oauth2.post('/medias/search', response_model=list[MediaSelectResult])
+async def get_medias_post(body: SearchIdsALBody):
+    """Get AniList media objects by IDs in request body."""
+    return await media_select(get_edgedb(), **body.model_dump())
 
 
 @router.oauth2.get('/medias/search', response_model=list[MediaSelectResult])
@@ -172,6 +179,12 @@ async def get_charas(ids_al: str):
     return db_resp
 
 
+@router.oauth2.post('/charas/search', response_model=list[CharaSelectResult])
+async def get_charas_post(body: SearchIdsALBody):
+    """Get AniList characters by IDs in request body."""
+    return await chara_select(get_edgedb(), **body.model_dump())
+
+
 @router.oauth2.get('/charas/search', response_model=list[CharaSelectResult])
 async def chara_search(search: str):
     """Search for AniList characters by name."""
@@ -242,6 +255,12 @@ async def get_staffs(ids_al: str):
 
     db_resp = await staff_select(get_edgedb(), ids_al=ids_al_parsed)
     return db_resp
+
+
+@router.oauth2.post('/staffs/search', response_model=list[StaffSelectResult])
+async def get_staffs_post(body: SearchIdsALBody):
+    """Get AniList staff by IDs in request body."""
+    return await staff_select(get_edgedb(), **body.model_dump())
 
 
 @router.oauth2.get('/staffs/search', response_model=list[StaffSelectResult])
