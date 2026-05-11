@@ -1055,18 +1055,18 @@ async def blood_expired_waifus(
             return await waifu_bulk_update(tx, ids=[w.id for w in expired], blooded=True)
 
 
-@router.oauth2_client.get(
+@router.public.get(
     '/waifus/{id}/image',
     responses={status.HTTP_404_NOT_FOUND: dict(model=HTTPExceptionModel)},
 )
-async def get_waifu_image(id: UUID, edgedb: AsyncIOClient = Depends(get_client_edgedb)):
-    waifus = await waifu_select(edgedb, ids=[id])
+async def get_waifu_image(id: UUID):
+    waifus = await waifu_select(get_edgedb(), ids=[id])
     if not waifus:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     waifu = waifus[0]
     if waifu.custom_image is not None:
         return Response(content=base64.b64decode(waifu.custom_image), media_type='image/png')
-    charas = await chara_select(edgedb, ids_al=[waifu.character.id_al])
+    charas = await chara_select(get_edgedb(), ids_al=[waifu.character.id_al])
     if not charas:
         raise RuntimeError(f'Inconsistent waifu data: chara {waifu.character.id_al} not found')
     chara = charas[0]
