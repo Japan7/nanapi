@@ -809,6 +809,19 @@ wheels = [
 ]
 
 [[package]]
+name = "httpcore2"
+version = "2.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "certifi" },
+    { name = "h11" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1a/7e/8ab39aab1d392845b6512009a9be57d24a5bd4ec7a22d02e513d0645e7a8/httpcore2-2.2.0.tar.gz", hash = "sha256:10e0e142f1ecc1c1cb2a9ebbce82e57f16169f61d163ea336abf36799e89294b", size = 63533, upload-time = "2026-05-17T05:29:55.836Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/39/22/64de17e7956e8c002f7558ed667d924c2a288344aeff4bd8ff5dc5fdb70b/httpcore2-2.2.0-py3-none-any.whl", hash = "sha256:ce859f268bf8d34fa2d7753e09e4dd5194f557e1b3038439b68a89b2999572fa", size = 79288, upload-time = "2026-05-17T05:29:52.56Z" },
+]
+
+[[package]]
 name = "httpx"
 version = "0.28.1"
 source = { registry = "https://pypi.org/simple" }
@@ -821,6 +834,21 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/b1/df/48c586a5fe32a0f01324ee087459e112ebb7224f646c0b5023f5e79e9956/httpx-0.28.1.tar.gz", hash = "sha256:75e98c5f16b0f35b567856f597f06ff2270a374470a5c2392242528e3e3e42fc", size = 141406, upload-time = "2024-12-06T15:37:23.222Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2a/39/e50c7c3a983047577ee07d2a9e53faf5a69493943ec3f6a384bdc792deb2/httpx-0.28.1-py3-none-any.whl", hash = "sha256:d909fcccc110f8c7faf814ca82a9a4d816bc5a6dbfea25d6591d6985b8ba59ad", size = 73517, upload-time = "2024-12-06T15:37:21.509Z" },
+]
+
+[[package]]
+name = "httpx2"
+version = "2.2.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "anyio" },
+    { name = "certifi" },
+    { name = "httpcore2" },
+    { name = "idna" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/f4/aa/c3119de1aa7ad870a01aaddbf3bc3445ed9a681c31d45e3838fd8b7bc155/httpx2-2.2.0.tar.gz", hash = "sha256:f3428d59b1752b8f5629826277262fb4d65e3a683f48af8a5b16c4d012e0b801", size = 80477, upload-time = "2026-05-17T05:29:57.376Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/be/e0/e0a52596c14194e428c20de4903f4abec38c0dfb5364d20f1d4a2b6266ef/httpx2-2.2.0-py3-none-any.whl", hash = "sha256:12347ebd2daeaefd50b529359778fff767082a09c5826752c963e71269722ff0", size = 74083, upload-time = "2026-05-17T05:29:54.543Z" },
 ]
 
 [package.optional-dependencies]
@@ -994,18 +1022,18 @@ wheels = [
 
 [[package]]
 name = "meilisearch-python-sdk"
-version = "7.1.4"
+version = "7.1.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
     { name = "camel-converter", extra = ["pydantic"] },
-    { name = "httpx", extra = ["http2"] },
+    { name = "httpx2", extra = ["http2"] },
     { name = "pydantic" },
     { name = "pyjwt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/55/d2/3b9888590e3d990a14f685c861322fe9b1f733b8f77a8e47f53c1b81a92a/meilisearch_python_sdk-7.1.4.tar.gz", hash = "sha256:2a51ec3fe289daa86b1f9c5d10d2230c2bb644a5d4938bed611bfcf95c618dc1", size = 259374, upload-time = "2026-05-03T14:05:53.062Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/a8/13/37f115637d49366397c60e05cb29cc3fbd333ea6258d86acda76eacd1369/meilisearch_python_sdk-7.1.5.tar.gz", hash = "sha256:ef5e8d3cbcdaed11bd99a1c49faf27ca483ef360eea643f63e1a9fc90373af6d", size = 262326, upload-time = "2026-05-13T19:20:07.194Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/5f/17/31a1520c6eb16c0f14d9028d8b269000f262f0d00341f24bf448736c206e/meilisearch_python_sdk-7.1.4-py3-none-any.whl", hash = "sha256:895e0ebe41ff7ee29aeb460c35984e712151bd06463f64b6d8b333d563cbb610", size = 76883, upload-time = "2026-05-03T14:05:51.506Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/60/4a688433a71ba5ff127d5f60f58443157fc35d68008232b29667d2f1189a/meilisearch_python_sdk-7.1.5-py3-none-any.whl", hash = "sha256:ae468abf9899d00327688493aad34e64fe098068018339655eb895c72f167df8", size = 76894, upload-time = "2026-05-13T19:20:06.124Z" },
 ]
 
 [[package]]
@@ -1161,7 +1189,7 @@ requires-dist = [
     { name = "gel", specifier = "==3.1.0" },
     { name = "hypercorn", specifier = "==0.18.0" },
     { name = "icalendar", specifier = "==7.1.0" },
-    { name = "meilisearch-python-sdk", specifier = "==7.1.4" },
+    { name = "meilisearch-python-sdk", specifier = "==7.1.5" },
     { name = "numpy", specifier = "==2.4.4" },
     { name = "orjson", specifier = "==3.11.9" },
     { name = "pillow", specifier = "==12.2.0" },
