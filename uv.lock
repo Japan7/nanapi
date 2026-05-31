@@ -1022,18 +1022,17 @@ wheels = [
 
 [[package]]
 name = "meilisearch-python-sdk"
-version = "7.1.5"
+version = "7.2.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
     { name = "camel-converter", extra = ["pydantic"] },
     { name = "httpx2", extra = ["http2"] },
     { name = "pydantic" },
-    { name = "pyjwt" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/a8/13/37f115637d49366397c60e05cb29cc3fbd333ea6258d86acda76eacd1369/meilisearch_python_sdk-7.1.5.tar.gz", hash = "sha256:ef5e8d3cbcdaed11bd99a1c49faf27ca483ef360eea643f63e1a9fc90373af6d", size = 262326, upload-time = "2026-05-13T19:20:07.194Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/70/2f/48bf5d753d4d6068c75f2ba1b6624c19d60e99142f7d229cccbebbb93d6e/meilisearch_python_sdk-7.2.1.tar.gz", hash = "sha256:f2f820521888a122764c21d50a7c4b70fa2476340488dd3f5e95e588f20bde90", size = 257157, upload-time = "2026-05-28T16:27:33.349Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/7d/60/4a688433a71ba5ff127d5f60f58443157fc35d68008232b29667d2f1189a/meilisearch_python_sdk-7.1.5-py3-none-any.whl", hash = "sha256:ae468abf9899d00327688493aad34e64fe098068018339655eb895c72f167df8", size = 76894, upload-time = "2026-05-13T19:20:06.124Z" },
+    { url = "https://files.pythonhosted.org/packages/4d/a2/6a558502c25a7608c677ab61809de257e691887006c6f3645c11599ae1e6/meilisearch_python_sdk-7.2.1-py3-none-any.whl", hash = "sha256:0ee7ad469950edf2b7a6478326439c8f96c2e3facd286358761fa18b29537a45", size = 79470, upload-time = "2026-05-28T16:27:32.283Z" },
 ]
 
 [[package]]
@@ -1189,7 +1188,7 @@ requires-dist = [
     { name = "gel", specifier = "==3.1.0" },
     { name = "hypercorn", specifier = "==0.18.0" },
     { name = "icalendar", specifier = "==7.1.2" },
-    { name = "meilisearch-python-sdk", specifier = "==7.1.5" },
+    { name = "meilisearch-python-sdk", specifier = "==7.2.1" },
     { name = "numpy", specifier = "==2.4.6" },
     { name = "orjson", specifier = "==3.11.9" },
     { name = "pillow", specifier = "==12.2.0" },
