@@ -14,7 +14,7 @@ dependencies = [
     "gel==3.1.0",
     "fastapi==0.136.3",
     "pydantic==2.13.4",
-    "aiohttp[speedups]==3.14.0",
+    "aiohttp[speedups]==3.14.1",
     # https://github.com/PyYoshi/cChardet/issues/81
     "faust-cchardet==2.1.19",
     "orjson==3.11.9",
