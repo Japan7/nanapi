@@ -21,7 +21,7 @@ dependencies = [
     "backoff==2.2.1",
     "meilisearch-python-sdk==7.2.3",
     "numpy==2.5.0",
-    "pillow==12.2.0",
+    "pillow==12.3.0",
     "rich==15.0.0",
     "discord-webhook[async]==1.4.1",
     "python-multipart==0.0.32",
