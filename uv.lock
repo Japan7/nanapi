@@ -1024,7 +1024,7 @@ wheels = [
 
 [[package]]
 name = "meilisearch-python-sdk"
-version = "7.2.3"
+version = "7.3.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -1032,9 +1032,9 @@ dependencies = [
     { name = "httpx2", extra = ["http2"] },
     { name = "pydantic" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/dc/da/7fd3f62742fdd9f0d47ee1309d549e8bdc00f7d321351c5793fbd911fd82/meilisearch_python_sdk-7.2.3.tar.gz", hash = "sha256:d3e7bd5909ee19b1bb55dc891f3ac269d5d4d9dcee9bc8fffed5312e04aaeb6c", size = 241317, upload-time = "2026-06-23T14:20:59.491Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/9f/f7/f5ea8e4dfb7128bfa71f13642bd3cd7690c829c673a9309fa950aca71f79/meilisearch_python_sdk-7.3.0.tar.gz", hash = "sha256:6649979cc6f89e46a1f4d7d053c6b389acb5f3871fbb6ccc685035b1ffa859d3", size = 242216, upload-time = "2026-07-15T20:29:24.178Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/56/93/120adb81e6e5511d00e7fdfac3a53eb5696bf94618352d9b98d899865781/meilisearch_python_sdk-7.2.3-py3-none-any.whl", hash = "sha256:8cb9362373271fcb9c2ea717c39827848d88a3f91a42a47e190738ff32beab05", size = 79579, upload-time = "2026-06-23T14:20:58.495Z" },
+    { url = "https://files.pythonhosted.org/packages/95/12/de4ba2edb66d1db9db08d700a8d7761e8633c9508d384f4aded1641a556b/meilisearch_python_sdk-7.3.0-py3-none-any.whl", hash = "sha256:31eb5331c4b4f2cefdc694b49b78e8d7601927fdf5167ef3c1a2a0caaf56bfde", size = 80286, upload-time = "2026-07-15T20:29:23.149Z" },
 ]
 
 [[package]]
@@ -1190,7 +1190,7 @@ requires-dist = [
     { name = "gel", specifier = "==3.1.0" },
     { name = "hypercorn", specifier = "==0.18.0" },
     { name = "icalendar", specifier = "==7.2.0" },
-    { name = "meilisearch-python-sdk", specifier = "==7.2.3" },
+    { name = "meilisearch-python-sdk", specifier = "==7.3.0" },
     { name = "numpy", specifier = "==2.5.1" },
     { name = "orjson", specifier = "==3.11.9" },
     { name = "pillow", specifier = "==12.3.0" },
