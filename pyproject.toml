@@ -16,7 +16,7 @@ dependencies = [
     "pydantic==2.13.4",
     "aiohttp[speedups]==3.14.1",
     # https://github.com/PyYoshi/cChardet/issues/81
-    "faust-cchardet==2.1.20",
+    "faust-cchardet==2.2.1",
     "orjson==3.11.9",
     "backoff==2.2.1",
     "meilisearch-python-sdk==7.3.0",
