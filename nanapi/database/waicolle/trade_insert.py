@@ -78,6 +78,13 @@ class WaicolleCollagePosition(StrEnum):
     RIGHT_OF = 'RIGHT_OF'
 
 
+class WaicolleWaifuStatus(StrEnum):
+    DEAD = 'DEAD'
+    RETIRED = 'RETIRED'
+    WAICOLLE = 'WAICOLLE'
+    WAIVENTURE = 'WAIVENTURE'
+
+
 class TradeInsertResultReceivedOwnerUser(BaseModel):
     discord_id: str
 
@@ -118,6 +125,8 @@ class TradeInsertResultReceived(BaseModel):
     nanaed: bool
     original_owner: TradeInsertResultReceivedOriginalOwner | None
     owner: TradeInsertResultReceivedOwner
+    season: str | None
+    status: WaicolleWaifuStatus | None
     timestamp: datetime
     trade_locked: bool
 
@@ -170,6 +179,8 @@ class TradeInsertResultOffered(BaseModel):
     nanaed: bool
     original_owner: TradeInsertResultOfferedOriginalOwner | None
     owner: TradeInsertResultOfferedOwner
+    season: str | None
+    status: WaicolleWaifuStatus | None
     timestamp: datetime
     trade_locked: bool
 
