@@ -35,7 +35,7 @@ dependencies = [
     "yarl==1.24.5",
     "starlette==1.6.0",
     "tiktoken==0.14.0",
-    "tqdm==4.70.0",
+    "tqdm==4.70.1",
 ]
 
 [dependency-groups]
