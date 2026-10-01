@@ -35,6 +35,7 @@ module waicolle {
   }
 
   scalar type CollagePosition extending enum<DEFAULT, LEFT_OF, RIGHT_OF>;
+  scalar type WaifuStatus extending enum<WAICOLLE, WAIVENTURE, DEAD, RETIRED>;
 
   type Waifu extending default::ClientObject {
     required property timestamp -> datetime {
@@ -76,6 +77,10 @@ module waicolle {
       on target delete allow;
     }
     multi link ascended_to := .<ascended_from[is Waifu];
+    property status -> WaifuStatus {
+        default := WaifuStatus.WAICOLLE;
+    }
+    property season -> str;
     property disabled := exists .ascended_to;
     property frozen := exists .owner.frozen_at;
     property trade_locked := exists (
