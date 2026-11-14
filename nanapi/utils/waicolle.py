@@ -10,9 +10,7 @@ from typing import Any, Callable, Coroutine, Self, cast
 
 import numpy as np
 import numpy.typing as npt
-from asyncache import cached
-from cachetools import TTLCache
-from cachetools.keys import hashkey
+from async_lru import alru_cache
 from gel import AsyncIOExecutor
 
 from nanapi.database.anilist.anime_select_ids_upcoming import anime_select_ids_upcoming
@@ -175,9 +173,10 @@ class UserRoll(BaseRoll):
         return charas, probas
 
     @classmethod
-    @cached(
-        cache=TTLCache(1024, ttl=timedelta(hours=6).seconds),
-        key=lambda *args, **kwargs: hashkey(kwargs.get('discord_id', None)),
+    @alru_cache(
+        maxsize=1024,
+        ttl=timedelta(hours=6).total_seconds(),
+        key=lambda *args, **kwargs: (kwargs.get('discord_id'),),
     )
     async def _cached_user_pool(cls, executor: AsyncIOExecutor, *, discord_id: str | None = None):
         res = await user_pool(executor, discord_id=discord_id)
@@ -220,10 +219,13 @@ class BaseMediaRoll(BaseRoll, metaclass=abc.ABCMeta):
         return pool
 
     @classmethod
-    @cached(
-        cache=TTLCache(1024, ttl=timedelta(days=1).seconds),
-        key=lambda *args, **kwargs: hashkey(
-            kwargs.get('ids_al', None), kwargs.get('discord_id', None), kwargs.get('genred', None)
+    @alru_cache(
+        maxsize=1024,
+        ttl=timedelta(days=1).seconds,
+        key=lambda *args, **kwargs: (
+            kwargs.get('ids_al'),
+            kwargs.get('discord_id'),
+            kwargs.get('genred'),
         ),
     )
     async def _cached_medias_pool(

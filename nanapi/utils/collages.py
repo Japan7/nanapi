@@ -15,8 +15,7 @@ import aiohttp
 import backoff
 import numpy as np
 import numpy.typing as npt
-from asyncache import cached
-from cachetools import LRUCache
+from async_lru import alru_cache
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps, UnidentifiedImageError
 
 import nanapi.resources
@@ -41,7 +40,7 @@ def load_img(buffer: bytes) -> Image.Image:
     return img
 
 
-@cached(cache=LRUCache(2048))
+@alru_cache(maxsize=2048)
 @backoff.on_exception(backoff.expo, (aiohttp.ServerTimeoutError, ValueError), max_time=600)
 @default_backoff
 async def fetch_img(url: str) -> Image.Image:
@@ -406,7 +405,7 @@ async def chara_collage(ids_al: list[int], hide_no_images: bool = False, blooded
             yield b
 
 
-@cached(cache=LRUCache(1024))
+@alru_cache(maxsize=1024)
 async def _chara_collage(
     ids_al: tuple[int, ...], hide_no_images: bool = False, blooded: bool = False
 ) -> bytes:
@@ -557,7 +556,7 @@ async def media_collage(ids_al: list[int]):
             yield b
 
 
-@cached(cache=LRUCache(1024))
+@alru_cache(maxsize=1024)
 async def _media_collage(ids_al: tuple[int, ...]) -> bytes:
     medias_data = await media_select(get_edgedb(), ids_al=list(ids_al))
     media_dict = {m.id_al: m for m in medias_data}
