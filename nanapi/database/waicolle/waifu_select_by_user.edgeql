@@ -11,6 +11,7 @@ with
   as_og := <optional bool>$as_og ?? false,
   disabled := <optional bool>$disabled ?? false,
   exclude_custom_image := <optional bool>$exclude_custom_image ?? false,
+  status := <waicolle::WaifuStatus>$status,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
 select waicolle::Waifu {
   *,
@@ -37,6 +38,7 @@ and (.trade_locked = trade_locked if exists trade_locked else true)
 and (.blooded = blooded if exists blooded else true)
 and (.nanaed = nanaed if exists nanaed else true)
 and (.custom_collage = custom_collage if exists custom_collage else true)
+and (.status = status if exists status else true)
 and (.level > 0 if exists ascended else true)
 and .disabled = disabled
 order by .timestamp desc
