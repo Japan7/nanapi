@@ -24,7 +24,7 @@ dependencies = [
     "pillow==13.0.0",
     "rich==15.0.0",
     "discord-webhook[async]==1.4.1",
-    "python-multipart==0.0.33",
+    "python-multipart==0.0.34",
     "bcrypt==5.0.0",
     "async-lru==2.4.0",
     "hypercorn==0.18.0",
