@@ -57,6 +57,13 @@ class WaicolleCollagePosition(StrEnum):
     RIGHT_OF = 'RIGHT_OF'
 
 
+class WaicolleWaifuStatus(StrEnum):
+    DEAD = 'DEAD'
+    RETIRED = 'RETIRED'
+    WAICOLLE = 'WAICOLLE'
+    WAIVENTURE = 'WAIVENTURE'
+
+
 class WaifuEdgedResultKey(BaseModel):
     chara_id_al: int
 
@@ -101,6 +108,8 @@ class WaifuEdgedResultElements(BaseModel):
     nanaed: bool
     original_owner: WaifuEdgedResultElementsOriginalOwner | None
     owner: WaifuEdgedResultElementsOwner
+    season: str | None
+    status: WaicolleWaifuStatus | None
     timestamp: datetime
     trade_locked: bool
 
