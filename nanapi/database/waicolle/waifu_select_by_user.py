@@ -2,6 +2,7 @@
 # pyright: strict
 from datetime import datetime
 from enum import StrEnum
+from typing import Literal
 from uuid import UUID
 
 from gel import AsyncIOExecutor
@@ -21,6 +22,7 @@ with
   as_og := <optional bool>$as_og ?? false,
   disabled := <optional bool>$disabled ?? false,
   exclude_custom_image := <optional bool>$exclude_custom_image ?? false,
+  status := <waicolle::WaifuStatus>$status,
   player := (select waicolle::Player filter .client = global client and .user.discord_id = discord_id),
 select waicolle::Waifu {
   *,
@@ -47,16 +49,32 @@ and (.trade_locked = trade_locked if exists trade_locked else true)
 and (.blooded = blooded if exists blooded else true)
 and (.nanaed = nanaed if exists nanaed else true)
 and (.custom_collage = custom_collage if exists custom_collage else true)
+and (.status = status if exists status else true)
 and (.level > 0 if exists ascended else true)
 and .disabled = disabled
 order by .timestamp desc
 """
 
 
+WAIFU_SELECT_BY_USER_STATUS = Literal[
+    'WAICOLLE',
+    'WAIVENTURE',
+    'DEAD',
+    'RETIRED',
+]
+
+
 class WaicolleCollagePosition(StrEnum):
     DEFAULT = 'DEFAULT'
     LEFT_OF = 'LEFT_OF'
     RIGHT_OF = 'RIGHT_OF'
+
+
+class WaicolleWaifuStatus(StrEnum):
+    DEAD = 'DEAD'
+    RETIRED = 'RETIRED'
+    WAICOLLE = 'WAICOLLE'
+    WAIVENTURE = 'WAIVENTURE'
 
 
 class WaifuSelectByUserResultOwnerUser(BaseModel):
@@ -99,6 +117,8 @@ class WaifuSelectByUserResult(BaseModel):
     nanaed: bool
     original_owner: WaifuSelectByUserResultOriginalOwner | None
     owner: WaifuSelectByUserResultOwner
+    season: str | None
+    status: WaicolleWaifuStatus | None
     timestamp: datetime
     trade_locked: bool
 
@@ -110,6 +130,7 @@ async def waifu_select_by_user(
     executor: AsyncIOExecutor,
     *,
     discord_id: str,
+    status: WAIFU_SELECT_BY_USER_STATUS,
     characters_ids_al: list[int] | None = None,
     level: int | None = None,
     locked: bool | None = None,
@@ -125,6 +146,7 @@ async def waifu_select_by_user(
     resp = await executor.query_json(  # pyright: ignore[reportUnknownMemberType]
         EDGEQL_QUERY,
         discord_id=discord_id,
+        status=status,
         characters_ids_al=characters_ids_al,
         level=level,
         locked=locked,

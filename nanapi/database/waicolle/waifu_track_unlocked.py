@@ -76,6 +76,13 @@ class WaicolleCollagePosition(StrEnum):
     RIGHT_OF = 'RIGHT_OF'
 
 
+class WaicolleWaifuStatus(StrEnum):
+    DEAD = 'DEAD'
+    RETIRED = 'RETIRED'
+    WAICOLLE = 'WAICOLLE'
+    WAIVENTURE = 'WAIVENTURE'
+
+
 class WaifuTrackUnlockedResultOwnerUser(BaseModel):
     discord_id: str
 
@@ -116,6 +123,8 @@ class WaifuTrackUnlockedResult(BaseModel):
     nanaed: bool
     original_owner: WaifuTrackUnlockedResultOriginalOwner | None
     owner: WaifuTrackUnlockedResultOwner
+    season: str | None
+    status: WaicolleWaifuStatus | None
     timestamp: datetime
     trade_locked: bool
 

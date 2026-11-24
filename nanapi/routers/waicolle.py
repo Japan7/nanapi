@@ -107,7 +107,10 @@ from nanapi.database.waicolle.waifu_select_by_chara import (
     WaifuSelectByCharaResult,
     waifu_select_by_chara,
 )
-from nanapi.database.waicolle.waifu_select_by_user import waifu_select_by_user
+from nanapi.database.waicolle.waifu_select_by_user import (
+    WAIFU_SELECT_BY_USER_STATUS,
+    waifu_select_by_user,
+)
 from nanapi.database.waicolle.waifu_track_unlocked import waifu_track_unlocked
 from nanapi.database.waicolle.waifu_update_ascended_from import waifu_update_ascended_from
 from nanapi.database.waicolle.waifu_update_custom_image_name import (
@@ -441,7 +444,12 @@ async def get_player_track_reversed(
     """
     try:
         unlocked = await waifu_select_by_user(
-            edgedb, discord_id=discord_id, locked=False, trade_locked=False, blooded=False
+            edgedb,
+            discord_id=discord_id,
+            locked=False,
+            trade_locked=False,
+            blooded=False,
+            status='WAICOLLE',
         )
     except CardinalityViolationError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
@@ -646,7 +654,7 @@ async def get_player_collage(
                 (group.elements[0] for group in resp), key=lambda w: w.timestamp, reverse=True
             )
         else:
-            kwargs = dict(blooded=False)
+            kwargs: dict[str, Any] = dict(blooded=False)
             if _filter is CollageChoice.FULL:
                 pass
             elif _filter is CollageChoice.LOCKED:
@@ -710,6 +718,7 @@ async def get_player_media_album(
             discord_id=discord_id,
             characters_ids_al=[c.id_al for c in sorted_charas],
             blooded=False,
+            status='WAICOLLE',
         )
 
         url = await chara_album(list(sorted_charas), list(waifus), owned_only=bool(owned_only))
@@ -754,6 +763,7 @@ async def get_player_staff_album(
             discord_id=discord_id,
             characters_ids_al=[c.id_al for c in sorted_charas],
             blooded=False,
+            status='WAICOLLE',
         )
 
         url = await chara_album(list(sorted_charas), list(waifus), owned_only=bool(owned_only))
@@ -794,6 +804,7 @@ async def get_player_collection_album(
             discord_id=discord_id,
             characters_ids_al=[c.id_al for c in sorted_charas],
             blooded=False,
+            status='WAICOLLE',
         )
 
         url = await chara_album(list(sorted_charas), list(waifus), owned_only=bool(owned_only))
@@ -830,10 +841,12 @@ async def get_waifus(
     edged: int | None = None,
     ascendable: int | None = None,
     chara_id_al: int | None = None,
+    waifu_status: WAIFU_SELECT_BY_USER_STATUS = 'WAICOLLE',
     edgedb: AsyncIOClient = Depends(get_client_edgedb),
 ):
     """
     Get waifus with various filters:
+
     ids: List of waifu IDs
     discord_id: Owner or original owner (if as_og)
     level: Waifu level
@@ -847,6 +860,7 @@ async def get_waifus(
     exclude_custom_image: Exclude custom_images from the response (0 or None: no, 1: yes)
     edged: Whether waifu is close to a level upgrade (0 or None: ignore filter, 1: yes)
     ascendable: Whether waifu can level up (0 or None: ignore filter, 1: yes)
+    status: Status of waifu (Waicolle, Waiventure, dead)
     chara_id_al: Waifus matching a specific character ID.
     chara_id_al is exclusive and cannot be used with other filters.
     """
@@ -871,6 +885,7 @@ async def get_waifus(
         exclude_custom_image=(
             bool(exclude_custom_image) if exclude_custom_image is not None else None
         ),
+        waifu_status=waifu_status,
         edged=bool(edged) if edged is not None else None,
         ascendable=bool(ascendable) if ascendable is not None else None,
         chara_id_al=chara_id_al,
@@ -906,6 +921,7 @@ async def _search_waifus(
     ascended: bool | None = None,
     exclude_custom_image: bool | None = None,
     edged: bool | None = None,
+    waifu_status: WAIFU_SELECT_BY_USER_STATUS = 'WAICOLLE',
     ascendable: bool | None = None,
     chara_id_al: int | None = None,
 ):
@@ -939,6 +955,7 @@ async def _search_waifus(
                     as_og=as_og,
                     ascended=ascended,
                     exclude_custom_image=exclude_custom_image,
+                    status=waifu_status,
                 )
         except CardinalityViolationError as e:
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=str(e))
@@ -1050,6 +1067,7 @@ async def blood_expired_waifus(
                 trade_locked=False,
                 blooded=False,
                 nanaed=True,
+                status='WAICOLLE',
             )
             expired = [w for w in waifus if w.timestamp < datetime.now(tz=TZ) - timedelta(days=30)]
             return await waifu_bulk_update(tx, ids=[w.id for w in expired], blooded=True)
